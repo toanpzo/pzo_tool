@@ -1,0 +1,44 @@
+
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:vietjet_tool/controllers/provider/provider.dart';
+
+class TimeUTC extends StatefulWidget {
+  const TimeUTC({super.key});
+
+  @override
+  State<TimeUTC> createState() => _TimeUTCState();
+}
+
+class _TimeUTCState extends State<TimeUTC> {
+  String time="";
+  DateFormat dateFormat = DateFormat("dd/MM/yyyy hh:mm");
+
+  Timer scheduleTimeout([int milliseconds = 10000]) =>
+      Timer(Duration(milliseconds: milliseconds), handleTimeout);
+
+  void handleTimeout() {
+    time="UTC: ${dateFormat.format(DateTime.now().toUtc())}";
+    setState(() {
+
+    });
+
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    time="UTC: ${dateFormat.format(DateTime.now().toUtc())}";
+
+    scheduleTimeout(1000*60);
+    return Text(time,
+    style: TextStyle(color: Theme.of(context).colorScheme.primary,
+    ),
+      textAlign: TextAlign.center,
+    );
+  }
+}

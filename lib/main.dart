@@ -1,0 +1,167 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:vietjet_tool/common/local_storage/my_storage.dart';
+import 'package:vietjet_tool/controllers/provider/provider.dart';
+import 'package:vietjet_tool/models/fuel/fuel.dart';
+import 'package:vietjet_tool/models/person/person.dart';
+import 'package:vietjet_tool/models/theme_models/my_color_scheme.dart';
+import 'package:vietjet_tool/theme/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:vietjet_tool/ui/splash/splash_screen.dart';
+
+import 'common/localizations/appLocalizations.dart';
+import 'models/theme_models/my_theme.dart';
+
+void main() async{
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  var path = Directory.current.path;
+
+  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+
+  Hive.init(appDocumentDirectory.path);
+  Hive.registerAdapter(PersonAdapter());
+  Hive.registerAdapter(FuelAdapter());
+  Hive.registerAdapter(MyThemeAdapter());
+  Hive.registerAdapter(MyColorSchemeAdapter());
+
+
+
+
+
+
+
+  runApp(
+    /// Providers are above [MyApp] instead of inside it, so that tests
+    /// can use [MyApp] while mocking the providers
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ChangeTheme()),
+        ChangeNotifierProvider(create: (_) => ChangeTimeUtc()),
+      ],
+      child: const MyApp(),
+    ),
+  );
+}
+
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    Hive.close();
+
+  }
+  Locale? _locale;
+
+  void loadData()async{
+    MyTheme myTheme = await MyStorage().getTheme();
+    //await Future.delayed(Duration(seconds: 3));
+    if (!mounted) return;
+
+    if(myTheme.myColorScheme==null&&myTheme.brightness==null){
+      myTheme=myTheme.copyWith(myColorScheme: MyColorScheme(primary: MyColorSchemeConstant.primary.value,
+          background: MyColorSchemeConstant.background.value
+      ));
+    }
+
+     context.read<ChangeTheme>().setAppColor(myTheme);
+    //
+    //  loaded=true;
+
+
+
+    // Navigator.pushAndRemoveUntil(
+    //   context, MaterialPageRoute(builder: (context){
+    //
+    //   return MyMenu(myTheme: myTheme,);
+    // }),(route) => false,);
+
+    //context.read<ChangeTheme>().setAppColor(myTheme);
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   // TODO: implement didChangeDependencies
+  //   super.didChangeDependencies();
+  //   loadData();
+  //
+  // }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadData();
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    return MaterialApp(
+      title: 'Flutter Demo',
+      locale: _locale?? const Locale('vi', 'VN'),
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('vi', 'VN'),
+        Locale('sk', 'SK'),
+      ],
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+
+
+      theme:context.watch<ChangeTheme>().theme,
+      //darkTheme: darkMode,
+      home:  const SplashScreen(),
+
+      //MyMenu(),
+      //Home()
+
+      // MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+
+
+// class MyApp extends StatelessWidget {
+//
+//   const MyApp({super.key});
+//
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Flutter Demo',
+//
+//
+//       theme:context.watch<ChangeTheme>().theme==0?lightMode:darkMode,
+//       //darkTheme: darkMode,
+//       home: const MyMenu(),
+//
+//      // MyHomePage(title: 'Flutter Demo Home Page'),
+//     );
+//   }
+// }
