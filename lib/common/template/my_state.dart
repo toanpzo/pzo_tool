@@ -10,6 +10,7 @@ import 'package:vietjet_tool/common/template/my_page.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
 import 'package:vietjet_tool/controllers/provider/provider.dart';
 import 'package:vietjet_tool/ui/home/my_home.dart';
+import 'package:vietjet_tool/ui/question/question.dart';
 import 'package:vietjet_tool/ui/setting/setting_screen.dart';
 import 'package:vietjet_tool/ui/time_utc_screen/time_utc.dart';
 import 'package:vietjet_tool/widgets/MyListtitle/list_title.dart';
@@ -27,12 +28,27 @@ abstract class MyState<W extends StatefulWidget> extends State<W> {
   Widget? bottomNavigationBar;
   String bottomNavigationBarStr = "";
 
+
+
+  Widget? floatButton;
+  FloatingActionButtonLocation? floatButtonLocation;
+
   String setTitle();
   Widget setBody();
+
   MyController createController();
 
   Future<void> afterLoadData() async {}
   Future<void> beforeLoadData() async {}
+
+  bool actionBack=false;
+  Future<bool> backFunction()async {
+    return false;
+
+  }
+
+
+
 
   @override
   void initState() {
@@ -129,13 +145,13 @@ abstract class MyState<W extends StatefulWidget> extends State<W> {
               colorText: Theme.of(context).colorScheme.primary),
           MyListTitle(
               context: context,
-              iconMenu:  Icon(Icons.home,
+              iconMenu:  Icon(Icons.question_mark,
                   color: Theme.of(context).colorScheme.primary
               ),
-              title: AppLocalizations.of(context).translate("Home"),
+              title: AppLocalizations.of(context).translate("Question"),
               type: TypeListTitle.menu,
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const MyHome(),));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const QuestionScreen(edit: true,typePage: TypePage.isTypeQuestions),));
               },
               colorText: Theme.of(context).colorScheme.primary),
         ],
@@ -144,13 +160,15 @@ abstract class MyState<W extends StatefulWidget> extends State<W> {
   }
 
   Widget loadedPage() {
-    return Scaffold(
+    Widget child=Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       drawer: drawer ? drawerMenu() : null,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(AppLocalizations.of(context).translate(title)),
       ),
+      floatingActionButton: floatButton,
+      floatingActionButtonLocation: floatButtonLocation,
       body: setBody(),
       bottomNavigationBar: bottomNavigationBar ??
           Container(
@@ -160,6 +178,14 @@ abstract class MyState<W extends StatefulWidget> extends State<W> {
             //Text(context.watch<ChangeTimeUtc>().time, textAlign: TextAlign.center,style: TextStyle(color: Theme.of(context).colorScheme.primary)),
           ),
     );
+    return actionBack?
+    WillPopScope(
+      child: child,
+      onWillPop:() async =>backFunction(),
+
+    ):child;
+
+
   }
 
   Widget errorPage(String error) {

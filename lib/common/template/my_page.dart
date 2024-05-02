@@ -10,6 +10,9 @@ class MyPage extends StatefulWidget {
    String title;
    MyViewState myViewState;
    Widget? body;
+   Widget? floatButton;
+   FloatingActionButtonLocation? floatButtonLocation;
+
 
   @override
   State<MyPage> createState() => _MyPageState();
@@ -66,6 +69,8 @@ class _MyPageState extends State<MyPage> {
           backgroundColor: Theme.of(context).colorScheme.primary,
           title: Text(widget.title),
         ),
+        floatingActionButton: widget.floatButton,
+        floatingActionButtonLocation: widget.floatButtonLocation,
         body:widget.body??Container()
     );
   }

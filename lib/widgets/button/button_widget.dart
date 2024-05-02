@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vietjet_tool/common/localizations/appLocalizations.dart';
 
 enum TypeButton{ delete,link,radio,check,icon}
 
@@ -9,56 +10,29 @@ class MyButton extends StatelessWidget {
   final Function()? onPressed;
   final double? width;
   final double? height;
+  final EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? padding;
   final Widget? iconWidget;
   final bool? isEnable;
+  final ButtonStyle?  style;
 
     MyButton(
-       {super.key,this.typeButton,required this.content,this.onPressed, this.width, this.height, this.iconWidget,this.isEnable
+       {super.key,this.typeButton,required this.content,this.onPressed, this.width, this.height, this.iconWidget,this.isEnable, this.style, this.margin, this.padding
    });
 
   @override
   Widget build(BuildContext context) {
-    switch (typeButton){
-      case TypeButton.link:
-        return  SizedBox(
-            width: width,
-            height: height,
-            child:
-            TextButton(onPressed: isEnable!=false?onPressed:null, child: Text(content))
-        );
-      case TypeButton.radio:
-        return TextButton(onPressed: isEnable!=false?onPressed:null, child: Text(content));
-      case TypeButton.check:
-        return TextButton(onPressed: isEnable!=false?onPressed:null, child: Text(content));
-      case TypeButton.delete:
-        return  SizedBox(
-            width: width,
-            height: height,
-            child:
-            ElevatedButton(style: ElevatedButton.styleFrom(
-              backgroundColor: isEnable!=false?Colors.red:null,
-            ),  onPressed: isEnable!=false?onPressed:null,
-                child: Text(content,style: isEnable!=false?TextStyle(color: Colors.white70):null
+
+    return Container(
+        width: width,
+        height: height,
+        margin:   margin??const EdgeInsets.only(bottom: 5) ,
+    padding: padding,
+    child: getChildButton()
+    );
 
 
-            ))
-        );
-    case TypeButton.icon :
-    return  SizedBox(
-    width: width,
-    height: height,
-    child:
-    ElevatedButton.icon(onPressed: isEnable!=false?onPressed:null, icon: iconWidget??const Icon(Icons.do_not_disturb_on_total_silence), label: Text(content))
-    );
-    default :
-    return  SizedBox(
-    width: width,
-    height: height,
-    child:
-    ElevatedButton(
-    onPressed: isEnable!=false?onPressed:null, child: Text(content))
-    );
-    }
+
 
     // return  SizedBox(
     //   width: width,
@@ -66,6 +40,50 @@ class MyButton extends StatelessWidget {
     //   child:
     //   ElevatedButton(onPressed: onPressed??(){}, child: Text(content))
     // );
+  }
+
+
+
+
+  Widget getChildButton(){
+    switch (typeButton){
+      case TypeButton.link:
+        return
+            TextButton(
+                style: style,
+                onPressed: isEnable!=false?onPressed:null, child: Text(content));
+      case TypeButton.radio:
+        return TextButton(
+            style: style,
+            onPressed: isEnable!=false?onPressed:null, child: Text(content));
+      case TypeButton.check:
+        return TextButton(
+            style: style,
+            onPressed: isEnable!=false?onPressed:null, child: Text(content));
+      case TypeButton.delete:
+        return
+            ElevatedButton(style:
+            style??
+                ElevatedButton.styleFrom(
+                  backgroundColor: isEnable!=false?Colors.red:null,
+                ),  onPressed: isEnable!=false?onPressed:null,
+                child: Text(content,style: isEnable!=false?TextStyle(color: Colors.white70):null
+
+
+                ));
+      case TypeButton.icon :
+
+            ElevatedButton.icon(
+                style: style,
+                onPressed: isEnable!=false?onPressed:null, icon: iconWidget??const Icon(Icons.do_not_disturb_on_total_silence), label: Text(content));
+      default :
+        return
+            ElevatedButton(
+                style: style,
+                onPressed: isEnable!=false?onPressed:null, child: Text(content));
+    }
+
+    return const SizedBox();
   }
 }
 

@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void loadData()async{
     //MyTheme myTheme = await MyStorage().getTheme();
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 1));
     // if (!mounted) return;
     //
     //   if(myTheme.myColorScheme==null){

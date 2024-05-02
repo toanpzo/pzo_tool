@@ -8,6 +8,8 @@ class MyTextFiled extends StatelessWidget {
   final String? hintText;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
+  final int? minLines;
+  final int? maxLines;
 
   final TextCapitalization? textCapitalization;
 
@@ -25,7 +27,7 @@ class MyTextFiled extends StatelessWidget {
   final Widget? prefix;
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
-    const MyTextFiled({super.key,this.width,this.hintText, this.height, this.keyboardType, this.textInputAction, this.textCapitalization, this.textAlign, this.style, this.maxLength, this.pass, this.suffixIcon, this.prefixIcon, this.controller, this.onChanged, this.text, this.readOnly, this.label, this.suffix, this.prefix, this.margin, this.padding});
+    const MyTextFiled({super.key,this.width,this.hintText, this.height, this.keyboardType, this.textInputAction, this.textCapitalization, this.textAlign, this.style, this.maxLength, this.pass, this.suffixIcon, this.prefixIcon, this.controller, this.onChanged, this.text, this.readOnly, this.label, this.suffix, this.prefix, this.margin, this.padding, this.minLines, this.maxLines});
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,8 @@ class MyTextFiled extends StatelessWidget {
       width: width,
       height: height,
       child:  TextField(
+        minLines: minLines,
+        maxLines: maxLines,
 
 
 

@@ -20,14 +20,17 @@ class FuelAdapter extends TypeAdapter<_$FuelImpl> {
       beforeL: fields[0] as int?,
       beforeC: fields[1] as int?,
       beforeR: fields[2] as int?,
+      beforeOr: fields[17] as int?,
       beforeTotal: fields[3] as int?,
       upliftL: fields[4] as int?,
       upliftC: fields[5] as int?,
       upliftR: fields[6] as int?,
+      upliftOr: fields[18] as int?,
       upliftTotal: fields[7] as int?,
       afterL: fields[8] as int?,
       afterC: fields[9] as int?,
       afterR: fields[10] as int?,
+      afterOr: fields[19] as int?,
       afterTotal: fields[11] as int?,
       gaLon: fields[12] as int?,
       liter: fields[13] as double?,
@@ -40,13 +43,15 @@ class FuelAdapter extends TypeAdapter<_$FuelImpl> {
   @override
   void write(BinaryWriter writer, _$FuelImpl obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(20)
       ..writeByte(0)
       ..write(obj.beforeL)
       ..writeByte(1)
       ..write(obj.beforeC)
       ..writeByte(2)
       ..write(obj.beforeR)
+      ..writeByte(17)
+      ..write(obj.beforeOr)
       ..writeByte(3)
       ..write(obj.beforeTotal)
       ..writeByte(4)
@@ -55,6 +60,8 @@ class FuelAdapter extends TypeAdapter<_$FuelImpl> {
       ..write(obj.upliftC)
       ..writeByte(6)
       ..write(obj.upliftR)
+      ..writeByte(18)
+      ..write(obj.upliftOr)
       ..writeByte(7)
       ..write(obj.upliftTotal)
       ..writeByte(8)
@@ -63,6 +70,8 @@ class FuelAdapter extends TypeAdapter<_$FuelImpl> {
       ..write(obj.afterC)
       ..writeByte(10)
       ..write(obj.afterR)
+      ..writeByte(19)
+      ..write(obj.afterOr)
       ..writeByte(11)
       ..write(obj.afterTotal)
       ..writeByte(12)
@@ -96,14 +105,17 @@ _$FuelImpl _$$FuelImplFromJson(Map<String, dynamic> json) => _$FuelImpl(
       beforeL: json['beforeL'] as int?,
       beforeC: json['beforeC'] as int?,
       beforeR: json['beforeR'] as int?,
+      beforeOr: json['beforeOr'] as int?,
       beforeTotal: json['beforeTotal'] as int?,
       upliftL: json['upliftL'] as int?,
       upliftC: json['upliftC'] as int?,
       upliftR: json['upliftR'] as int?,
+      upliftOr: json['upliftOr'] as int?,
       upliftTotal: json['upliftTotal'] as int?,
       afterL: json['afterL'] as int?,
       afterC: json['afterC'] as int?,
       afterR: json['afterR'] as int?,
+      afterOr: json['afterOr'] as int?,
       afterTotal: json['afterTotal'] as int?,
       gaLon: json['gaLon'] as int?,
       liter: (json['liter'] as num?)?.toDouble(),
@@ -117,14 +129,17 @@ Map<String, dynamic> _$$FuelImplToJson(_$FuelImpl instance) =>
       'beforeL': instance.beforeL,
       'beforeC': instance.beforeC,
       'beforeR': instance.beforeR,
+      'beforeOr': instance.beforeOr,
       'beforeTotal': instance.beforeTotal,
       'upliftL': instance.upliftL,
       'upliftC': instance.upliftC,
       'upliftR': instance.upliftR,
+      'upliftOr': instance.upliftOr,
       'upliftTotal': instance.upliftTotal,
       'afterL': instance.afterL,
       'afterC': instance.afterC,
       'afterR': instance.afterR,
+      'afterOr': instance.afterOr,
       'afterTotal': instance.afterTotal,
       'gaLon': instance.gaLon,
       'liter': instance.liter,

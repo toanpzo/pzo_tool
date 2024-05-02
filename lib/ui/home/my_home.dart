@@ -12,6 +12,8 @@ import 'package:vietjet_tool/ui/fuelCalc/fuel_calc.dart';
 import 'package:vietjet_tool/ui/home/my_home_controller.dart';
 import 'package:vietjet_tool/ui/mel_cat/mel_cat_screen.dart';
 import 'package:vietjet_tool/ui/test/test.dart';
+import 'package:vietjet_tool/ui/test/testuploadphoto.dart';
+import 'package:vietjet_tool/ui/testScreen/testScreen.dart';
 import 'package:vietjet_tool/widgets/button/button_widget.dart';
 import 'package:vietjet_tool/widgets/dialog/dialogs.dart';
 
@@ -60,6 +62,12 @@ class _MyHomeState extends MyState<MyHome> {
               primary: Colors.red.value
 
             )));
+          }),
+          MyButton( width: MediaQuery.of(context).size.width*0.8,content: AppLocalizations.of(context).translate("test"),onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const SignInDemo(),));
+          }),
+          MyButton( width: MediaQuery.of(context).size.width*0.8,content: AppLocalizations.of(context).translate("upload phôt"),onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const UploadPhotoScreen(),));
           }),
           Expanded(child: SizedBox()),
         ],

@@ -26,6 +26,8 @@ mixin _$Fuel {
   int? get beforeC => throw _privateConstructorUsedError;
   @HiveField(2)
   int? get beforeR => throw _privateConstructorUsedError;
+  @HiveField(17)
+  int? get beforeOr => throw _privateConstructorUsedError;
   @HiveField(3)
   int? get beforeTotal => throw _privateConstructorUsedError;
   @HiveField(4)
@@ -34,6 +36,8 @@ mixin _$Fuel {
   int? get upliftC => throw _privateConstructorUsedError;
   @HiveField(6)
   int? get upliftR => throw _privateConstructorUsedError;
+  @HiveField(18)
+  int? get upliftOr => throw _privateConstructorUsedError;
   @HiveField(7)
   int? get upliftTotal => throw _privateConstructorUsedError;
   @HiveField(8)
@@ -42,6 +46,8 @@ mixin _$Fuel {
   int? get afterC => throw _privateConstructorUsedError;
   @HiveField(10)
   int? get afterR => throw _privateConstructorUsedError;
+  @HiveField(19)
+  int? get afterOr => throw _privateConstructorUsedError;
   @HiveField(11)
   int? get afterTotal => throw _privateConstructorUsedError;
   @HiveField(12)
@@ -69,14 +75,17 @@ abstract class $FuelCopyWith<$Res> {
       {@HiveField(0) int? beforeL,
       @HiveField(1) int? beforeC,
       @HiveField(2) int? beforeR,
+      @HiveField(17) int? beforeOr,
       @HiveField(3) int? beforeTotal,
       @HiveField(4) int? upliftL,
       @HiveField(5) int? upliftC,
       @HiveField(6) int? upliftR,
+      @HiveField(18) int? upliftOr,
       @HiveField(7) int? upliftTotal,
       @HiveField(8) int? afterL,
       @HiveField(9) int? afterC,
       @HiveField(10) int? afterR,
+      @HiveField(19) int? afterOr,
       @HiveField(11) int? afterTotal,
       @HiveField(12) int? gaLon,
       @HiveField(13) double? liter,
@@ -101,14 +110,17 @@ class _$FuelCopyWithImpl<$Res, $Val extends Fuel>
     Object? beforeL = freezed,
     Object? beforeC = freezed,
     Object? beforeR = freezed,
+    Object? beforeOr = freezed,
     Object? beforeTotal = freezed,
     Object? upliftL = freezed,
     Object? upliftC = freezed,
     Object? upliftR = freezed,
+    Object? upliftOr = freezed,
     Object? upliftTotal = freezed,
     Object? afterL = freezed,
     Object? afterC = freezed,
     Object? afterR = freezed,
+    Object? afterOr = freezed,
     Object? afterTotal = freezed,
     Object? gaLon = freezed,
     Object? liter = freezed,
@@ -129,6 +141,10 @@ class _$FuelCopyWithImpl<$Res, $Val extends Fuel>
           ? _value.beforeR
           : beforeR // ignore: cast_nullable_to_non_nullable
               as int?,
+      beforeOr: freezed == beforeOr
+          ? _value.beforeOr
+          : beforeOr // ignore: cast_nullable_to_non_nullable
+              as int?,
       beforeTotal: freezed == beforeTotal
           ? _value.beforeTotal
           : beforeTotal // ignore: cast_nullable_to_non_nullable
@@ -145,6 +161,10 @@ class _$FuelCopyWithImpl<$Res, $Val extends Fuel>
           ? _value.upliftR
           : upliftR // ignore: cast_nullable_to_non_nullable
               as int?,
+      upliftOr: freezed == upliftOr
+          ? _value.upliftOr
+          : upliftOr // ignore: cast_nullable_to_non_nullable
+              as int?,
       upliftTotal: freezed == upliftTotal
           ? _value.upliftTotal
           : upliftTotal // ignore: cast_nullable_to_non_nullable
@@ -160,6 +180,10 @@ class _$FuelCopyWithImpl<$Res, $Val extends Fuel>
       afterR: freezed == afterR
           ? _value.afterR
           : afterR // ignore: cast_nullable_to_non_nullable
+              as int?,
+      afterOr: freezed == afterOr
+          ? _value.afterOr
+          : afterOr // ignore: cast_nullable_to_non_nullable
               as int?,
       afterTotal: freezed == afterTotal
           ? _value.afterTotal
@@ -200,14 +224,17 @@ abstract class _$$FuelImplCopyWith<$Res> implements $FuelCopyWith<$Res> {
       {@HiveField(0) int? beforeL,
       @HiveField(1) int? beforeC,
       @HiveField(2) int? beforeR,
+      @HiveField(17) int? beforeOr,
       @HiveField(3) int? beforeTotal,
       @HiveField(4) int? upliftL,
       @HiveField(5) int? upliftC,
       @HiveField(6) int? upliftR,
+      @HiveField(18) int? upliftOr,
       @HiveField(7) int? upliftTotal,
       @HiveField(8) int? afterL,
       @HiveField(9) int? afterC,
       @HiveField(10) int? afterR,
+      @HiveField(19) int? afterOr,
       @HiveField(11) int? afterTotal,
       @HiveField(12) int? gaLon,
       @HiveField(13) double? liter,
@@ -229,14 +256,17 @@ class __$$FuelImplCopyWithImpl<$Res>
     Object? beforeL = freezed,
     Object? beforeC = freezed,
     Object? beforeR = freezed,
+    Object? beforeOr = freezed,
     Object? beforeTotal = freezed,
     Object? upliftL = freezed,
     Object? upliftC = freezed,
     Object? upliftR = freezed,
+    Object? upliftOr = freezed,
     Object? upliftTotal = freezed,
     Object? afterL = freezed,
     Object? afterC = freezed,
     Object? afterR = freezed,
+    Object? afterOr = freezed,
     Object? afterTotal = freezed,
     Object? gaLon = freezed,
     Object? liter = freezed,
@@ -257,6 +287,10 @@ class __$$FuelImplCopyWithImpl<$Res>
           ? _value.beforeR
           : beforeR // ignore: cast_nullable_to_non_nullable
               as int?,
+      beforeOr: freezed == beforeOr
+          ? _value.beforeOr
+          : beforeOr // ignore: cast_nullable_to_non_nullable
+              as int?,
       beforeTotal: freezed == beforeTotal
           ? _value.beforeTotal
           : beforeTotal // ignore: cast_nullable_to_non_nullable
@@ -273,6 +307,10 @@ class __$$FuelImplCopyWithImpl<$Res>
           ? _value.upliftR
           : upliftR // ignore: cast_nullable_to_non_nullable
               as int?,
+      upliftOr: freezed == upliftOr
+          ? _value.upliftOr
+          : upliftOr // ignore: cast_nullable_to_non_nullable
+              as int?,
       upliftTotal: freezed == upliftTotal
           ? _value.upliftTotal
           : upliftTotal // ignore: cast_nullable_to_non_nullable
@@ -288,6 +326,10 @@ class __$$FuelImplCopyWithImpl<$Res>
       afterR: freezed == afterR
           ? _value.afterR
           : afterR // ignore: cast_nullable_to_non_nullable
+              as int?,
+      afterOr: freezed == afterOr
+          ? _value.afterOr
+          : afterOr // ignore: cast_nullable_to_non_nullable
               as int?,
       afterTotal: freezed == afterTotal
           ? _value.afterTotal
@@ -325,14 +367,17 @@ class _$FuelImpl implements _Fuel {
       {@HiveField(0) this.beforeL,
       @HiveField(1) this.beforeC,
       @HiveField(2) this.beforeR,
+      @HiveField(17) this.beforeOr,
       @HiveField(3) this.beforeTotal,
       @HiveField(4) this.upliftL,
       @HiveField(5) this.upliftC,
       @HiveField(6) this.upliftR,
+      @HiveField(18) this.upliftOr,
       @HiveField(7) this.upliftTotal,
       @HiveField(8) this.afterL,
       @HiveField(9) this.afterC,
       @HiveField(10) this.afterR,
+      @HiveField(19) this.afterOr,
       @HiveField(11) this.afterTotal,
       @HiveField(12) this.gaLon,
       @HiveField(13) this.liter,
@@ -353,6 +398,9 @@ class _$FuelImpl implements _Fuel {
   @HiveField(2)
   final int? beforeR;
   @override
+  @HiveField(17)
+  final int? beforeOr;
+  @override
   @HiveField(3)
   final int? beforeTotal;
   @override
@@ -365,6 +413,9 @@ class _$FuelImpl implements _Fuel {
   @HiveField(6)
   final int? upliftR;
   @override
+  @HiveField(18)
+  final int? upliftOr;
+  @override
   @HiveField(7)
   final int? upliftTotal;
   @override
@@ -376,6 +427,9 @@ class _$FuelImpl implements _Fuel {
   @override
   @HiveField(10)
   final int? afterR;
+  @override
+  @HiveField(19)
+  final int? afterOr;
   @override
   @HiveField(11)
   final int? afterTotal;
@@ -397,7 +451,7 @@ class _$FuelImpl implements _Fuel {
 
   @override
   String toString() {
-    return 'Fuel(beforeL: $beforeL, beforeC: $beforeC, beforeR: $beforeR, beforeTotal: $beforeTotal, upliftL: $upliftL, upliftC: $upliftC, upliftR: $upliftR, upliftTotal: $upliftTotal, afterL: $afterL, afterC: $afterC, afterR: $afterR, afterTotal: $afterTotal, gaLon: $gaLon, liter: $liter, kg: $kg, density: $density, discrepancy: $discrepancy)';
+    return 'Fuel(beforeL: $beforeL, beforeC: $beforeC, beforeR: $beforeR, beforeOr: $beforeOr, beforeTotal: $beforeTotal, upliftL: $upliftL, upliftC: $upliftC, upliftR: $upliftR, upliftOr: $upliftOr, upliftTotal: $upliftTotal, afterL: $afterL, afterC: $afterC, afterR: $afterR, afterOr: $afterOr, afterTotal: $afterTotal, gaLon: $gaLon, liter: $liter, kg: $kg, density: $density, discrepancy: $discrepancy)';
   }
 
   @override
@@ -408,16 +462,21 @@ class _$FuelImpl implements _Fuel {
             (identical(other.beforeL, beforeL) || other.beforeL == beforeL) &&
             (identical(other.beforeC, beforeC) || other.beforeC == beforeC) &&
             (identical(other.beforeR, beforeR) || other.beforeR == beforeR) &&
+            (identical(other.beforeOr, beforeOr) ||
+                other.beforeOr == beforeOr) &&
             (identical(other.beforeTotal, beforeTotal) ||
                 other.beforeTotal == beforeTotal) &&
             (identical(other.upliftL, upliftL) || other.upliftL == upliftL) &&
             (identical(other.upliftC, upliftC) || other.upliftC == upliftC) &&
             (identical(other.upliftR, upliftR) || other.upliftR == upliftR) &&
+            (identical(other.upliftOr, upliftOr) ||
+                other.upliftOr == upliftOr) &&
             (identical(other.upliftTotal, upliftTotal) ||
                 other.upliftTotal == upliftTotal) &&
             (identical(other.afterL, afterL) || other.afterL == afterL) &&
             (identical(other.afterC, afterC) || other.afterC == afterC) &&
             (identical(other.afterR, afterR) || other.afterR == afterR) &&
+            (identical(other.afterOr, afterOr) || other.afterOr == afterOr) &&
             (identical(other.afterTotal, afterTotal) ||
                 other.afterTotal == afterTotal) &&
             (identical(other.gaLon, gaLon) || other.gaLon == gaLon) &&
@@ -430,25 +489,29 @@ class _$FuelImpl implements _Fuel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      beforeL,
-      beforeC,
-      beforeR,
-      beforeTotal,
-      upliftL,
-      upliftC,
-      upliftR,
-      upliftTotal,
-      afterL,
-      afterC,
-      afterR,
-      afterTotal,
-      gaLon,
-      liter,
-      kg,
-      density,
-      discrepancy);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        beforeL,
+        beforeC,
+        beforeR,
+        beforeOr,
+        beforeTotal,
+        upliftL,
+        upliftC,
+        upliftR,
+        upliftOr,
+        upliftTotal,
+        afterL,
+        afterC,
+        afterR,
+        afterOr,
+        afterTotal,
+        gaLon,
+        liter,
+        kg,
+        density,
+        discrepancy
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -469,14 +532,17 @@ abstract class _Fuel implements Fuel {
       {@HiveField(0) final int? beforeL,
       @HiveField(1) final int? beforeC,
       @HiveField(2) final int? beforeR,
+      @HiveField(17) final int? beforeOr,
       @HiveField(3) final int? beforeTotal,
       @HiveField(4) final int? upliftL,
       @HiveField(5) final int? upliftC,
       @HiveField(6) final int? upliftR,
+      @HiveField(18) final int? upliftOr,
       @HiveField(7) final int? upliftTotal,
       @HiveField(8) final int? afterL,
       @HiveField(9) final int? afterC,
       @HiveField(10) final int? afterR,
+      @HiveField(19) final int? afterOr,
       @HiveField(11) final int? afterTotal,
       @HiveField(12) final int? gaLon,
       @HiveField(13) final double? liter,
@@ -496,6 +562,9 @@ abstract class _Fuel implements Fuel {
   @HiveField(2)
   int? get beforeR;
   @override
+  @HiveField(17)
+  int? get beforeOr;
+  @override
   @HiveField(3)
   int? get beforeTotal;
   @override
@@ -508,6 +577,9 @@ abstract class _Fuel implements Fuel {
   @HiveField(6)
   int? get upliftR;
   @override
+  @HiveField(18)
+  int? get upliftOr;
+  @override
   @HiveField(7)
   int? get upliftTotal;
   @override
@@ -519,6 +591,9 @@ abstract class _Fuel implements Fuel {
   @override
   @HiveField(10)
   int? get afterR;
+  @override
+  @HiveField(19)
+  int? get afterOr;
   @override
   @HiveField(11)
   int? get afterTotal;

@@ -1,10 +1,11 @@
-import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vietjet_tool/models/fuel/fuel.dart';
+import 'package:vietjet_tool/models/questions/question/question.dart';
+import 'package:vietjet_tool/models/questions/type_question/type_question.dart';
 import 'package:vietjet_tool/models/theme_models/my_theme.dart';
+
+import '../../models/questions/bank_question/bank_question.dart';
 
 class MyStorage {
 
@@ -95,9 +96,86 @@ class MyStorage {
     box.put("value", value);
   }
 
-  Future<List<Fuel>?> getListFuel() async {
+  Future<List<TypeQuestion>?> getListFuel() async {
     final box= await Hive.openBox("fuelList");
     return box.get("value");
   }
+//type question
+  Future<void> setListTypeQuestion(List<TypeQuestion> value) async {
+    final box= await Hive.openBox("typeQuestionList");
+    box.put("value", value);
+  }
+
+  Future<List<dynamic>?> getListTypeQuestion() async {
+    final box= await Hive.openBox("typeQuestionList");
+    return box.get("value");
+  }
+  //question
+
+  Future<void> deleteListQuestion(String idBankQuestion) async {
+    final box= await Hive.openBox("QuestionList");
+    box.delete(idBankQuestion);
+  }
+
+  Future<void> setListQuestion(List<Question> value, String idBankQuestion) async {
+    final box= await Hive.openBox("QuestionList");
+    box.put(idBankQuestion, value);
+  }
+
+  Future<List<dynamic>?> getListQuestion(idBankQuestion) async {
+    final box= await Hive.openBox("QuestionList");
+    return box.get(idBankQuestion);
+  }
+  //questions
+  Future<void> deleteListBankQuestion(String idTypeQuest) async {
+    final box= await Hive.openBox("BankQuestionsList");
+    box.delete(idTypeQuest);
+  }
+
+  Future<void> setListBankQuestion(List<BankQuestion> value, String idTypeQuest) async {
+    final box= await Hive.openBox("BankQuestionsList");
+    box.put(idTypeQuest, value);
+  }
+
+  Future<List<dynamic>?> getListBankQuestion(String idTypeQuest) async {
+    final box= await Hive.openBox("BankQuestionsList");
+    return box.get(idTypeQuest);
+  }
+
+  //
+  // Future<void> setIdTypeQuestion(int value) async {
+  //   final box= await Hive.openBox("IdList");
+  //   box.put("IdTypeQuestion", value);
+  // }
+  //
+  // Future<int?> getIdTypeQuestion() async {
+  //   final box= await Hive.openBox("IdList");
+  //   return box.get("IdTypeQuestion");
+  // }
+  //
+  // Future<void> setIdQuestions(int value) async {
+  //   final box= await Hive.openBox("IdList");
+  //   box.put("IdQuestions", value);
+  // }
+  //
+  // Future<int?> getIdQuestions() async {
+  //   final box= await Hive.openBox("IdList");
+  //   return box.get("IdQuestions");
+  // }
+  //
+  // Future<void> setIdQuestion(int value) async {
+  //   final box= await Hive.openBox("IdList");
+  //   box.put("IdQuestion", value);
+  // }
+  //
+  // Future<int?> getIdQuestion() async {
+  //   final box= await Hive.openBox("IdList");
+  //   return box.get("IdQuestion");
+  // }
+
+
+
+
+
 
 }

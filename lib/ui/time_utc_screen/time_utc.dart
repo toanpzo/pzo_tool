@@ -15,7 +15,7 @@ class TimeUTC extends StatefulWidget {
 
 class _TimeUTCState extends State<TimeUTC> {
   String time="";
-  DateFormat dateFormat = DateFormat("dd/MM/yyyy hh:mm");
+  DateFormat dateFormat = DateFormat("dd/MM/yyyy H:mm");
 
   Timer scheduleTimeout([int milliseconds = 10000]) =>
       Timer(Duration(milliseconds: milliseconds), handleTimeout);
@@ -34,7 +34,7 @@ class _TimeUTCState extends State<TimeUTC> {
   Widget build(BuildContext context) {
     time="UTC: ${dateFormat.format(DateTime.now().toUtc())}";
 
-    scheduleTimeout(1000*60);
+    scheduleTimeout(1000*5);
     return Text(time,
     style: TextStyle(color: Theme.of(context).colorScheme.primary,
     ),

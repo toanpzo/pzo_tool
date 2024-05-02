@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:vietjet_tool/theme/text_theme.dart';
 import '../../common/color/colors.dart';
+import '../../common/localizations/appLocalizations.dart';
 //import '../button/button_widget.dart';
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
 // import 'package:DragonV_app/res/res.dart';
@@ -86,28 +87,24 @@ class MyAlertDialog extends StatelessWidget {
     this.type=MyAlertDialogType.info,
     required this.title,
     required this.message,
-    required this.action,
+    this.action,
     this.onAction,
   }) : super(key: key);
 
   final MyAlertDialogType type;
   final String title;
   final String message;
-  final String action;
+  final String? action;
   final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
-    // Color colorBtn=MyAlertDialogType.info.color;
-    // if(type!=null){
-    //   colorBtn=type!.color;
-    // }
 
 
     return AlertDialog(
       title:
       Text(
-              title,
+        AppLocalizations.of(context).translate(title),
               style: Theme.of(context).textTheme.bodyLarge!//?.medium// context.theme.textTheme.bodyLarge?.medium
                   .copyWith(color: type.color),
             ),
@@ -126,7 +123,7 @@ class MyAlertDialog extends StatelessWidget {
         ElevatedButton(onPressed: () {
           onAction?.call();
           Navigator.pop(context);
-        }, child: Text(action))
+        }, child: Text(AppLocalizations.of(context).translate(action??"Ok")))
 
       ],
     );
@@ -168,8 +165,54 @@ class MyConfirmDialog extends StatelessWidget {
         title: title != null ? Text(title!) : null,
         content: Text(message ?? ""),
         actions: [
-          cancelButton,
           continueButton,
+          cancelButton,
+
+        ]);
+  }
+}
+
+class MyCustomDialog extends StatelessWidget {
+  final String title;
+  final Widget content;
+  final String? firstButton;
+  final String? secondButton;
+  final VoidCallback? onFirstButton;
+  final VoidCallback? onSecondButton;
+  final List<Widget>? actions;
+
+   MyCustomDialog(
+      {required this.title, required this.content, this.firstButton, this.secondButton, this.onFirstButton, this.onSecondButton, this.actions,
+        });
+
+  @override
+  Widget build(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(AppLocalizations.of(context).translate(secondButton?? "cancel") ),//context.localization!.cancel),
+      onPressed: () {
+        Navigator.of(context).pop();
+        onSecondButton?.call();
+
+      },
+    );
+    Widget okButton = TextButton(
+      child: Text(AppLocalizations.of(context).translate(firstButton ?? "confirm")),//context.localization!.confirm),
+      onPressed: () {
+        Navigator.of(context).pop();
+        onFirstButton?.call();
+      },
+    );
+
+    return AlertDialog(
+        title: title != null ? Text(AppLocalizations.of(context).translate(title)) : null,
+        content: content??const Text(""),
+        actions:
+        actions??
+        [
+
+          okButton,
+          cancelButton,
         ]);
   }
 }

@@ -28,10 +28,12 @@ class _FuelCalcScreenState extends MyState<FuelCalcScreen> {
   late TextEditingController _controllerBfL;
   late TextEditingController _controllerBfR;
   late TextEditingController _controllerBfC;
+  late TextEditingController _controllerBfOr;
 
   late TextEditingController _controllerAfL;
   late TextEditingController _controllerAfR;
   late TextEditingController _controllerAfC;
+  late TextEditingController _controllerAfOr;
 
   late TextEditingController _controllerGaLon;
   //late TextEditingController _controllerKg;
@@ -81,6 +83,8 @@ class _FuelCalcScreenState extends MyState<FuelCalcScreen> {
     _controllerAfL=TextEditingController(text: fuel.afterL?.toString());
     _controllerAfC=TextEditingController(text: fuel.afterC?.toString());
     _controllerAfR=TextEditingController(text: fuel.afterR?.toString());
+    _controllerAfOr=TextEditingController(text: fuel.afterOr?.toString());
+    _controllerBfOr=TextEditingController(text: fuel.beforeOr?.toString());
 
     _controllerGaLon=TextEditingController(text: fuel.gaLon?.toString());
     //_controllerKg=TextEditingController(text: fuel.kg?.toString());
@@ -91,6 +95,8 @@ class _FuelCalcScreenState extends MyState<FuelCalcScreen> {
 
   void onChangeFuel(){
     fuelCalcController.setFuel(fuel.copyWith(beforeL: int.parse(_controllerBfL.text),
+    beforeOr: int.tryParse(_controllerBfOr.text),
+    afterOr: int.tryParse(_controllerAfOr.text),
     beforeC: int.tryParse(_controllerBfC.text),
       beforeR: int.tryParse(_controllerBfR.text),
       afterL: int.tryParse(_controllerAfL.text),
@@ -153,6 +159,14 @@ class _FuelCalcScreenState extends MyState<FuelCalcScreen> {
                       keyboardType: TextInputType.number,
                     ),
                     MyTextFiled(
+                      onChanged: (value)=> onChangeFuel(),// fuelCalcController.setFuel(fuel.copyWith(beforeR: int.tryParse(value))),
+                      controller:_controllerBfOr,
+                      width: widthThree,
+                      hintText: "Other",
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                    ),
+                    MyTextFiled(
                       readOnly: true,
                       controller: TextEditingController(text: fuel.beforeTotal?.toString()??""),
                       style: const TextStyle(fontWeight: FontWeight.bold),
@@ -191,6 +205,14 @@ class _FuelCalcScreenState extends MyState<FuelCalcScreen> {
                     MyTextFiled(
                       readOnly: true,
                       controller: TextEditingController(text: fuel.upliftR?.toString()??""),
+                      width: widthThree,
+                      hintText: "Right",
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                    ),
+                    MyTextFiled(
+                      readOnly: true,
+                      controller: TextEditingController(text: fuel.upliftOr?.toString()??""),
                       width: widthThree,
                       hintText: "Right",
                       textAlign: TextAlign.center,
@@ -237,6 +259,14 @@ class _FuelCalcScreenState extends MyState<FuelCalcScreen> {
                       controller:_controllerAfR,
                       width: widthThree,
                       hintText: "Right",
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                    ),
+                    MyTextFiled(
+                      onChanged: (value)=> onChangeFuel(),// fuelCalcController.setFuel(fuel.copyWith(afterR: int.tryParse(value))),
+                      controller:_controllerAfOr,
+                      width: widthThree,
+                      hintText: "Other",
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.number,
                     ),

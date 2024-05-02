@@ -21,7 +21,7 @@ class MelCatController extends MyController{
     today= "Today: ${dateFormat.format(DateTime.now().toUtc())}";
     catB= "CAT B: ${dateFormat.format(DateTime.now().add(const Duration(days: 3)).toUtc())}";
     catC= "CAT C: ${dateFormat.format(DateTime.now().add(const Duration(days: 10)).toUtc())}";
-    catD= "CAT D: ${dateFormat.format(DateTime.now().add(const Duration(days: 60)).toUtc())}";
+    catD= "CAT D: ${dateFormat.format(DateTime.now().add(const Duration(days: 120)).toUtc())}";
     cat180= "180 DAYS: ${dateFormat.format(DateTime.now().add(const Duration(days: 180)).toUtc())}";
   }
 

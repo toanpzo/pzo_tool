@@ -18,8 +18,11 @@ class Fuel with _$Fuel {
     int? beforeC,
     @HiveField(2)
     int? beforeR,
+    @HiveField(17)
+    int? beforeOr,
     @HiveField(3)
     int? beforeTotal,
+
 
     @HiveField(4)
     int? upliftL,
@@ -27,6 +30,8 @@ class Fuel with _$Fuel {
     int? upliftC,
     @HiveField(6)
     int? upliftR,
+    @HiveField(18)
+    int? upliftOr,
     @HiveField(7)
     int? upliftTotal,
 
@@ -37,6 +42,8 @@ class Fuel with _$Fuel {
     int? afterC,
     @HiveField(10)
     int? afterR,
+    @HiveField(19)
+    int? afterOr,
     @HiveField(11)
     int? afterTotal,
     @HiveField(12)

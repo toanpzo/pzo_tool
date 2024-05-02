@@ -1,5 +1,6 @@
-import 'dart:io';
+//import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
@@ -8,27 +9,49 @@ import 'package:vietjet_tool/common/local_storage/my_storage.dart';
 import 'package:vietjet_tool/controllers/provider/provider.dart';
 import 'package:vietjet_tool/models/fuel/fuel.dart';
 import 'package:vietjet_tool/models/person/person.dart';
+import 'package:vietjet_tool/models/questions/question/question.dart';
+import 'package:vietjet_tool/models/questions/type_question/type_question.dart';
 import 'package:vietjet_tool/models/theme_models/my_color_scheme.dart';
 import 'package:vietjet_tool/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:vietjet_tool/ui/splash/splash_screen.dart';
 
 import 'common/localizations/appLocalizations.dart';
+import 'models/questions/anwser/answer.dart';
+import 'models/questions/bank_question/bank_question.dart';
 import 'models/theme_models/my_theme.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
+
 
 void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  var path = Directory.current.path;
+  String path = "/assets/data";
 
-  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  if(kIsWeb){
 
-  Hive.init(appDocumentDirectory.path);
+  }else{
+    final appDocumentDirectory = await getApplicationDocumentsDirectory();
+    path=appDocumentDirectory.path;
+  }
+
+
+
+
+  Hive.init(path);
   Hive.registerAdapter(PersonAdapter());
   Hive.registerAdapter(FuelAdapter());
   Hive.registerAdapter(MyThemeAdapter());
   Hive.registerAdapter(MyColorSchemeAdapter());
+
+  Hive.registerAdapter(TypeQuestionAdapter());
+  Hive.registerAdapter(BankQuestionAdapter());
+  Hive.registerAdapter(QuestionAdapter());
+  Hive.registerAdapter(AnswerAdapter());
+
+  //typeid 6
 
 
 
@@ -44,7 +67,8 @@ void main() async{
         ChangeNotifierProvider(create: (_) => ChangeTheme()),
         ChangeNotifierProvider(create: (_) => ChangeTimeUtc()),
       ],
-      child: const MyApp(),
+      child: const MyApp(
+      ),
     ),
   );
 }
@@ -125,6 +149,7 @@ class _MyAppState extends State<MyApp> {
         Locale('vi', 'VN'),
         Locale('sk', 'SK'),
       ],
+      navigatorKey: navigatorKey,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -136,6 +161,7 @@ class _MyAppState extends State<MyApp> {
       theme:context.watch<ChangeTheme>().theme,
       //darkTheme: darkMode,
       home:  const SplashScreen(),
+      //const UploadPhotoScreen(),
 
       //MyMenu(),
       //Home()
