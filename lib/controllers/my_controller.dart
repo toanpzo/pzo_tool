@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:vietjet_tool/common/template/my_state.dart';
 import 'package:vietjet_tool/main.dart';
 import 'package:vietjet_tool/widgets/dialog/dialogs.dart';
@@ -8,7 +9,12 @@ class MyController{
   MyState myState;
 
 
+
+
   MyController(this.myState);
+
+
+
 
   Future<void> loadData()async{
 
@@ -29,13 +35,86 @@ class MyController{
     });
   }
 
-
-  void showErrorDialog(String error){
+  void  showErrorDialog(String error){
     BuildContext? context =navigatorKey.currentContext;
     if(context!=null) {
       showDialog(context: navigatorKey.currentContext!,
         builder: (context) =>
             MyAlertDialog(title: "Error", message: error, action: "Ok"),);
+    }
+  }
+   void showSuccessDialog(String message){
+    BuildContext? context =navigatorKey.currentContext;
+    if(context!=null) {
+      showDialog(context: navigatorKey.currentContext!,
+          builder: (context) =>
+              MyAlertDialog(title: "ok", message: message));
+    }
+  }
+
+
+  static void  showErrorDialogEvery(String error){
+    BuildContext? context =navigatorKey.currentContext;
+    if(context!=null) {
+      showDialog(context: navigatorKey.currentContext!,
+        builder: (context) =>
+            MyAlertDialog(title: "Error", message: error, action: "Ok"),);
+    }
+  }
+
+  static void showSuccessDialogEvery(String message){
+    BuildContext? context =navigatorKey.currentContext;
+    if(context!=null) {
+      showDialog(context: navigatorKey.currentContext!,
+        builder: (context) =>
+        MyAlertDialog(title: "Success", message: message));
+    }
+  }
+
+  Future<bool> getExStoragePermission() async{
+    try {
+      PermissionStatus status = await Permission.storage.request();
+      if (status.isGranted) {
+        return true;
+      } else if (status.isDenied) {
+        var a= await Permission.manageExternalStorage.request();
+        if(a.isGranted){
+          return true;
+        }else{
+
+          return false;
+        }
+      } else if (status.isPermanentlyDenied) {
+        // Notification permissions permanently denied, open app settings
+        return await openAppSettings();
+      }
+      return false;
+
+
+    }
+    catch(e){
+      showErrorDialog(e.toString());
+      return false;
+    }
+  }
+
+  Future<void> actionWithPermission(Permission permission,Function function ) async{
+    try {
+      PermissionStatus status = await permission.request();
+      if (status.isGranted) {
+        function;
+      } else if (status.isDenied) {
+        showErrorDialog("Not Permission");
+
+      } else if (status.isPermanentlyDenied) {
+        // Notification permissions permanently denied, open app settings
+        await openAppSettings();
+      }
+
+
+    }
+    catch(e){
+      showErrorDialog(e.toString());
     }
   }
 

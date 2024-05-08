@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+Person _$PersonFromJson(Map<String, dynamic> json) {
+  return _Person.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Person {
   @JsonKey(name: 'name')
@@ -23,6 +27,7 @@ mixin _$Person {
   @HiveField(1)
   int get age => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $PersonCopyWith<Person> get copyWith => throw _privateConstructorUsedError;
 }
@@ -107,11 +112,15 @@ class __$$PersonImplCopyWithImpl<$Res>
 
 /// @nodoc
 
+@JsonSerializable(explicitToJson: true)
 @HiveType(typeId: 30, adapterName: 'PersonAdapter')
 class _$PersonImpl implements _Person {
   const _$PersonImpl(
       {@JsonKey(name: 'name') @HiveField(0) required this.name,
       @JsonKey(name: 'age') @HiveField(1) required this.age});
+
+  factory _$PersonImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PersonImplFromJson(json);
 
   @override
   @JsonKey(name: 'name')
@@ -136,6 +145,7 @@ class _$PersonImpl implements _Person {
             (identical(other.age, age) || other.age == age));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, name, age);
 
@@ -144,6 +154,13 @@ class _$PersonImpl implements _Person {
   @pragma('vm:prefer-inline')
   _$$PersonImplCopyWith<_$PersonImpl> get copyWith =>
       __$$PersonImplCopyWithImpl<_$PersonImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$PersonImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Person implements Person {
@@ -151,6 +168,8 @@ abstract class _Person implements Person {
           {@JsonKey(name: 'name') @HiveField(0) required final String name,
           @JsonKey(name: 'age') @HiveField(1) required final int age}) =
       _$PersonImpl;
+
+  factory _Person.fromJson(Map<String, dynamic> json) = _$PersonImpl.fromJson;
 
   @override
   @JsonKey(name: 'name')

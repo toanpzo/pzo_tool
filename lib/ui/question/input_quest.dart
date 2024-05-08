@@ -1,8 +1,10 @@
 
+
 import 'package:flutter/material.dart';
 import 'package:vietjet_tool/common/localizations/appLocalizations.dart';
 import 'package:vietjet_tool/common/template/my_state.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
+import 'package:vietjet_tool/models/questions/anwser/answer.dart';
 import 'package:vietjet_tool/ui/question/question.dart';
 import 'package:vietjet_tool/ui/question/question_controller.dart';
 import 'package:vietjet_tool/widgets/button/button_widget.dart';
@@ -12,12 +14,17 @@ import 'package:vietjet_tool/widgets/text_field/text_filed.dart';
 import '../../models/questions/question/question.dart';
 enum MyCheckbox {numberQuestion1,numberQuestion2,numberQuestion3,numberQuestion4}
 
+enum ActionQuest{view,add,edit,delete}
+
 
 
 class InputQuestionScreen extends StatefulWidget {
+  final ActionQuest? actionQuest;
+  final Question? question;
+  final int? index;
   final String idBankQuest;
   final List<Question>? quests;
-  const InputQuestionScreen({super.key, required this.idBankQuest, this.quests});
+  const InputQuestionScreen({super.key, required this.idBankQuest, this.quests, this.actionQuest, this.question, this.index});
 
   @override
   MyState createState() => _InputQuestionScreenState();
@@ -31,7 +38,7 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
 
   List<Question>? questions;
   int numberAnswer=4;
-  List<Map> answers=List<Map>.empty(growable: true);
+  List<Answer> answers=List<Answer>.empty(growable: true);
   int isCorrect=0;
   Question question = Question(idBankQuestion: "idBankQuestion",
       numberQuestion: 1,
@@ -39,6 +46,8 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
       question: "question",
       answers: []
   );
+  int? index;
+  ActionQuest? actionQuest;
 
 
 
@@ -59,13 +68,21 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
   Future<void> afterLoadData() async{
     QuestionController questionController = controller as QuestionController;
     questions=questionController.questions??List<Question>.empty(growable: true);
+    index=widget.index;
+    actionQuest=widget.actionQuest;
 
-    question=Question(idBankQuestion: widget.idBankQuest,
+
+    question=widget.question??  Question(idBankQuestion: widget.idBankQuest,
         numberQuestion: numberAnswer,
         id: DateTime.now().toString(),
         question: "",
     answers: []
     );
+    if(actionQuest==ActionQuest.edit){
+      for (var element in question.answers) {
+        answers.add(element);
+      }
+    }
 
   }
   @override
@@ -73,7 +90,6 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
   bool get actionBack => true;
   @override
   Future<bool> backFunction() async{
-    print("dsa");
     Navigator.pop(context,questions);
 
     return true;
@@ -124,9 +140,24 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
   // }
   //
   Future<void> saveQuestion() async{
+
+
+
+
+
     QuestionController questionController = controller as QuestionController;
-    List<Map> answersSave= answers.toList();
-    Question questionSave=question.copyWith(answers: answersSave,answerCorrect: answers[isCorrect]);
+    if(actionQuest==ActionQuest.edit){
+      Question questionSave=question.copyWith(answers: answers,answerCorrect: answers[isCorrect],
+          numberQuestion: numberAnswer
+      );
+      questions![index??0]=questionSave;
+      await questionController.saveQuestion(questions!, widget.idBankQuest);
+      return;
+    }
+    List<Answer> answersSave= answers.toList();
+    Question questionSave=question.copyWith(answers: answersSave,answerCorrect: answers[isCorrect],
+    numberQuestion: numberAnswer
+    );
 
     questions!.add(questionSave);
     await questionController.saveQuestion(questions!, widget.idBankQuest);
@@ -190,8 +221,9 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
 
 
     //add question
+    String questStr="Questions${(index??questions!.length)+1}?";
     widgets.add(
-      Text(AppLocalizations.of(context).translate("Questions ${questions!.length+1}?"),
+      Text(AppLocalizations.of(context).translate(questStr),
         style: Theme.of(context).textTheme.titleLarge
     ),);
     widgets.add(MyTextFiled( width: MediaQuery.of(context).size.width*0.9,
@@ -230,24 +262,32 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
 
 
       );
-      Map map= {"answerText$i":"","answersImage$i":""};
+
+
+
+
+
+
+      Answer answer=Answer(text: "");
+      //Map map= {"answerText$i":"","answersImage$i":""};
       if(i>answers.length-1){
-        answers.add(map);
+        answers.add(answer);
       }else{
-        map=answers[i];
+        answer=answers[i];
       }
-      //
-      // Map map= {"answerText$i":"","answersImage$i":""};
-      // answers.add(map);
+
+
+
 
       widgets.add(MyTextFiled( width: MediaQuery.of(context).size.width*0.9,
-        text: answers[i]["answerText$i"],
+        text: answers[i].text,//  ["answerText$i"],
         minLines: 1,
         maxLines: 5,
         onChanged:
             (value)
         {
-          map["answerText$i"] = value;
+          answers[i]=answers[i].copyWith(text: value);
+          //map["answerText$i"] = value;
         }
       ));
     }
@@ -278,13 +318,14 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
     },);
     MyButton doneButton= MyButton(
       margin: EdgeInsets.only(left: 10),
-      content: "Done",onPressed: ()async{
+      content:  actionQuest==ActionQuest.edit?"Save":"Done",onPressed: ()async{
       await saveQuestion();
       Navigator.pop(context,questions);
     },);
     widgets.add(Row(
       children: [
-        continueButton,doneButton
+        actionQuest==ActionQuest.edit?const SizedBox(): continueButton,
+        doneButton
       ],
     ));
     return widgets;

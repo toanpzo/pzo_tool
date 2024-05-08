@@ -16,7 +16,7 @@ import 'package:vietjet_tool/common/Constant/constant.dart';
 
 final GoogleSignIn _googleSignIn = GoogleSignIn(
   // Optional clientId
-   clientId: keyUploadPhotoAndroid,
+   clientId: MyConstant.keyUploadPhotoAndroid,
   //scopes: <String>[PeopleServiceApi.contactsReadonlyScope],
   scopes: <String>['https://www.googleapis.com/auth/photoslibrary'],
 );

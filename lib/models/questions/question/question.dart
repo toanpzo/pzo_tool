@@ -2,16 +2,17 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
+import 'package:vietjet_tool/models/questions/anwser/answer.dart';
 
 part 'question.freezed.dart';
 part 'question.g.dart';
 
 @Freezed()
-@JsonSerializable()
 class Question with _$Question {
+  @JsonSerializable(explicitToJson: true)
 
   @HiveType(typeId: 6, adapterName: 'QuestionAdapter')
-  const factory Question({
+  factory Question({
     @JsonKey(name: 'idBankQuestion')
     @HiveField(0)
     required String idBankQuestion,
@@ -23,6 +24,7 @@ class Question with _$Question {
     @JsonKey(name: 'id')
     @HiveField(2)
     required String id,
+
     @JsonKey(name: 'question')
     @HiveField(3)
     required String question,
@@ -33,11 +35,11 @@ class Question with _$Question {
 
     @JsonKey(name: 'answers')
     @HiveField(5)
-    required List<Map> answers,
+    required List<Answer> answers,
 
     @JsonKey(name: 'answerCorrect')
     @HiveField(6)
-    Map? answerCorrect,
+    Answer? answerCorrect,
 
 
     // @JsonKey(name: 'answer1Text')
@@ -85,4 +87,7 @@ class Question with _$Question {
     // @HiveField(14)
     //  String? answerCorrect,
   }) = _Question;
+
+  factory Question.fromJson(Map<String, Object?> json)
+  => _$QuestionFromJson(json);
 }

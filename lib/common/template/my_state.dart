@@ -27,6 +27,7 @@ abstract class MyState<W extends StatefulWidget> extends State<W> {
   bool drawer = false;
   Widget? bottomNavigationBar;
   String bottomNavigationBarStr = "";
+  List<Widget>? actionMenu;
 
 
 
@@ -151,7 +152,18 @@ abstract class MyState<W extends StatefulWidget> extends State<W> {
               title: AppLocalizations.of(context).translate("Question"),
               type: TypeListTitle.menu,
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const QuestionScreen(edit: true,typePage: TypePage.isTypeQuestions),));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const QuestionScreen(typePage: TypePage.isTypeQuestions),));
+              },
+              colorText: Theme.of(context).colorScheme.primary),
+          MyListTitle(
+              context: context,
+              iconMenu:  Icon(Icons.question_mark,
+                  color: Theme.of(context).colorScheme.primary
+              ),
+              title: AppLocalizations.of(context).translate("EditQuestion"),
+              type: TypeListTitle.menu,
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const QuestionScreen( edit: true,typePage: TypePage.isTypeQuestions),));
               },
               colorText: Theme.of(context).colorScheme.primary),
         ],
@@ -166,6 +178,7 @@ abstract class MyState<W extends StatefulWidget> extends State<W> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(AppLocalizations.of(context).translate(title)),
+        actions: actionMenu,
       ),
       floatingActionButton: floatButton,
       floatingActionButtonLocation: floatButtonLocation,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:vietjet_tool/controllers/ggPhotoController/ggPhoto_controller.dart';
+import 'package:vietjet_tool/models/questions/anwser/answer.dart';
 
 class UploadPhotoScreen extends StatefulWidget {
   const UploadPhotoScreen({Key? key}) : super(key: key);
@@ -12,6 +13,9 @@ class UploadPhotoScreen extends StatefulWidget {
 }
 
 class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
+
+  Answer answer=Answer(text: "text");
+
   bool loading = false;
   pickAndUploadFile() async {
     loading = true;

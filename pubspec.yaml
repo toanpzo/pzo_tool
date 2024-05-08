@@ -56,6 +56,11 @@ dependencies:
   googleapis: ^13.1.0
   http: ^1.1.0
   flutter_launcher_icons: ^0.13.1
+  permission_handler: ^11.0.1
+  tiengviet: ^1.0.0
+  excel: any
+
+
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

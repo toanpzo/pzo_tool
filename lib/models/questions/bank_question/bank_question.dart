@@ -1,14 +1,16 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
+import 'package:vietjet_tool/models/questions/anwser/answer.dart';
+import 'package:vietjet_tool/models/questions/type_question/type_question.dart';
 part 'bank_question.freezed.dart';
 part 'bank_question.g.dart';
 
 @Freezed()
-@JsonSerializable()
 class BankQuestion with _$BankQuestion {
+  @JsonSerializable(explicitToJson: true)
 
   @HiveType(typeId: 4, adapterName: 'BankQuestionAdapter')
-  const factory BankQuestion({
+  factory BankQuestion({
     @JsonKey(name: 'id')
     @HiveField(0)
     required String id,
@@ -19,4 +21,8 @@ class BankQuestion with _$BankQuestion {
     @HiveField(2)
     required String name,
   }) = _BankQuestion;
+
+  factory BankQuestion.fromJson(Map<String, Object?> json)
+  => _$BankQuestionFromJson(json);
 }
+

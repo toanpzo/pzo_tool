@@ -30,9 +30,9 @@ class PhotosController {
   String? getKeyApi(){
     String? apiKey;
     if(Platform.isIOS){
-      apiKey=keyUploadPhotoIOS;
+      apiKey=MyConstant.keyUploadPhotoIOS;
     }else if(Platform.isAndroid){
-      apiKey=keyUploadPhotoAndroid;
+      apiKey=MyConstant.keyUploadPhotoAndroid;
     }else{
 
     }
@@ -54,15 +54,15 @@ class PhotosController {
   Future<AuthClient?> getHttpClient() async {
     String keyApiGGPhoto="";
     if(Platform.isIOS){
-      keyApiGGPhoto=keyUploadPhotoIOS;
+      keyApiGGPhoto=MyConstant.keyUploadPhotoIOS;
     }else if(Platform.isAndroid){
-      keyApiGGPhoto=keyUploadPhotoAndroid;
+      keyApiGGPhoto=MyConstant.keyUploadPhotoAndroid;
     }else{
 
     }
     await _googleSignIn.signOut();
     //await _googleSignIn.signInSilently();
-    await _googleSignIn.canAccessScopes(['https://www.googleapis.com/auth/photoslibrary'],accessToken: keyUploadPhotoAndroid);
+    await _googleSignIn.canAccessScopes(['https://www.googleapis.com/auth/photoslibrary'],accessToken: MyConstant.keyUploadPhotoAndroid);
 
 
 

@@ -4,8 +4,8 @@ part 'person.freezed.dart';
 part 'person.g.dart';
 
 @Freezed()
-@JsonSerializable()
 class Person with _$Person {
+  @JsonSerializable(explicitToJson: true)
 
   @HiveType(typeId: 30, adapterName: 'PersonAdapter')
   const factory Person({
@@ -16,4 +16,7 @@ class Person with _$Person {
     @HiveField(1)
     required int age,
   }) = _Person;
+
+  factory Person.fromJson(Map<String, Object?> json)
+  => _$PersonFromJson(json);
 }

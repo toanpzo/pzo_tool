@@ -4,11 +4,13 @@ part 'type_question.freezed.dart';
 part 'type_question.g.dart';
 
 @Freezed()
-@JsonSerializable()
+// @JsonSerializable()//explicitToJson: true)
+
 class TypeQuestion with _$TypeQuestion {
+  @JsonSerializable(explicitToJson: true)
 
   @HiveType(typeId: 5, adapterName: 'TypeQuestionAdapter')
-  const factory TypeQuestion({
+   factory TypeQuestion({
     @JsonKey(name: 'id')
     @HiveField(0)
     required String id,
@@ -16,4 +18,7 @@ class TypeQuestion with _$TypeQuestion {
     @HiveField(1)
     required String name,
   }) = _TypeQuestion;
+
+  factory TypeQuestion.fromJson(Map<String, Object?> json)
+  => _$TypeQuestionFromJson(json);
 }

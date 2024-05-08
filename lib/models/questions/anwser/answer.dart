@@ -4,8 +4,9 @@ part 'answer.freezed.dart';
 part 'answer.g.dart';
 
 @Freezed()
-@JsonSerializable()
+
 class Answer with _$Answer {
+  @JsonSerializable(explicitToJson: true)
 
   @HiveType(typeId: 3, adapterName: 'AnswerAdapter')
    factory Answer({
@@ -17,4 +18,7 @@ class Answer with _$Answer {
     @HiveField(1)
      String? image,
   }) = _Answer;
+
+  factory Answer.fromJson(Map<String, Object?> json)
+  => _$AnswerFromJson(json);
 }
