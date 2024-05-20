@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vietjet_tool/common/localizations/appLocalizations.dart';
 
 enum TypeButton{ delete,link,radio,check,icon}
 

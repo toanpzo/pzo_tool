@@ -1,14 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:provider/provider.dart';
 import 'package:vietjet_tool/common/localizations/appLocalizations.dart';
-import 'package:vietjet_tool/common/template/my_page.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
-import 'package:vietjet_tool/controllers/provider/provider.dart';
 import 'package:vietjet_tool/ui/home/my_home.dart';
 import 'package:vietjet_tool/ui/question/question.dart';
 import 'package:vietjet_tool/ui/setting/setting_screen.dart';
