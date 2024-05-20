@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vietjet_tool/common/local_storage/my_storage.dart';
 import 'package:vietjet_tool/common/localizations/appLocalizations.dart';
 import 'package:vietjet_tool/common/template/my_state.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
@@ -45,30 +44,14 @@ class _FuelCalcScreenState extends MyState<FuelCalcScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
   }
 
-  //FuelCalcController? fuelCalcController =FuelCalcController(this);
-  //String? afterL;
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   fuelCalcController=controller as FuelCalcController;
-  //   //afterL = fuelCalcController?.fuel?.afterL?.toString();
-  // }
-  // @override
-  // void didChangeDependencies() {
-  //   // TODO: implement didChangeDependencies
-  //   super.didChangeDependencies();
-  //   afterL = fuelCalcController?.fuel?.afterL?.toString();
-  // }
+
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
 
   }
@@ -116,12 +99,11 @@ class _FuelCalcScreenState extends MyState<FuelCalcScreen> {
 
     return SingleChildScrollView(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // SizedBox(
-          //   height: height*0.03,
-          // ),
-          SizedBox(
-            height: height*0.5,
+          Container(
+            margin: EdgeInsets.only(bottom: 20,top: 20),
+            //height: height*0.5,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -283,14 +265,15 @@ class _FuelCalcScreenState extends MyState<FuelCalcScreen> {
                 ),
               ],
             ),
+
           ),
 
 
-          // SizedBox(
-          //   height: height*0.03,
-          // ),
+
+
+
           SizedBox(
-            height: height*0.3,
+            //height: height*0.3,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -354,6 +337,7 @@ class _FuelCalcScreenState extends MyState<FuelCalcScreen> {
               ],
             ),
           ),
+
 
         ],
       )

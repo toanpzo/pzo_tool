@@ -43,7 +43,7 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
   List<Question>? questions;
   String idParentPage="";
   Object parent="";
-
+  String? searchValue;
 
 
 
@@ -137,68 +137,66 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
 
   }
 
+  // @override
+  // List<Widget>? get actionMenu => pageType==TypePage.isQuestion
+  //     ?
+  // [
+  // PopupMenuButton(
+  //   onSelected: (value) {
+  //
+  //     switch(value){
+  //       case 0 :
+  //          (controller as QuestionController).saveListQuestionToDisk(questions!, (parent is BankQuestion)? TiengViet.parse((parent as BankQuestion).name):"bank"
+  //             , MyConstant.fileNameQuest);
+  //
+  //         break;
+  //       case 1 :
+  //          Navigator.push(context, MaterialPageRoute(builder: (context) => InputQuestionScreen(idBankQuest: idParentPage),)).then((value) {
+  //            setState(() {
+  //               questions=value;
+  //            });
+  //         });
+  //
+  //
+  //         break;
+  //       case 2 :
+  //         actionInputFromPzoFile(typeFile: ["xlsx","xls"]);
+  //         break;
+  //       case 3 :
+  //          actionInputFromPzoFile(typeFile: ["bin"]);
+  //
+  //         break;
+  //
+  //     }
+  //     // your logic
+  //   },
+  //   itemBuilder:
+  //       (context) {
+  //     return  [
+  //       PopupMenuItem(
+  //         value: 0,
+  //         child: Text( AppLocalizations.of(context).translate("Save bank question")),
+  //       ),
+  //       PopupMenuItem(
+  //         value: 1,
+  //         child: Text( AppLocalizations.of(context).translate("Add Manual")),
+  //       ),
+  //       PopupMenuItem(
+  //         value: 2,
+  //         child: Text( AppLocalizations.of(context).translate("Add from Excel")),
+  //       ),
+  //       PopupMenuItem(
+  //         value: 3,
+  //         child: Text( AppLocalizations.of(context).translate("Add from pzo File")),
+  //       ),
+  //     ];
+  //   },
+  // )
+  // ]
+  //     :null;
+
+
   @override
-  // TODO: implement actionMenu
-  List<Widget>? get actionMenu => pageType==TypePage.isQuestion
-      ?
-  [
-  PopupMenuButton(
-    onSelected: (value) {
-      
-      switch(value){
-        case 0 :
-           (controller as QuestionController).saveListQuestionToDisk(questions!, (parent is BankQuestion)? TiengViet.parse((parent as BankQuestion).name):"bank"
-              , MyConstant.fileNameQuest);
-
-          break;
-        case 1 :
-           Navigator.push(context, MaterialPageRoute(builder: (context) => InputQuestionScreen(idBankQuest: idParentPage),)).then((value) {
-             setState(() {
-                questions=value;
-             });
-          });
-
-          
-          break;
-        case 2 :
-          actionInputFromPzoFile(typeFile: ["xlsx","xls"]);
-          break;
-        case 3 :
-           actionInputFromPzoFile(typeFile: ["bin"]);
-          
-          break;
-        
-      }
-      // your logic
-    },
-    itemBuilder:
-        (context) {
-      return  [
-        PopupMenuItem(
-          value: 0,
-          child: Text( AppLocalizations.of(context).translate("Save bank question")),
-        ),
-        PopupMenuItem(
-          value: 1,
-          child: Text( AppLocalizations.of(context).translate("Add Manual")),
-        ),
-        PopupMenuItem(
-          value: 2,
-          child: Text( AppLocalizations.of(context).translate("Add from Excel")),
-        ),
-        PopupMenuItem(
-          value: 3,
-          child: Text( AppLocalizations.of(context).translate("Add from pzo File")),
-        ),
-      ];
-    },
-  )
-  ]
-      :null;
-
-
-  @override
-  // TODO: implement floatButton
   Widget? get floatButton =>
       isEdit?
 
@@ -275,7 +273,6 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
           },
 
         );
-          // TODO: Handle this case.
       }
 
 
@@ -330,7 +327,6 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
           },
 
         );
-      // TODO: Handle this case.
       }
 
 
@@ -442,7 +438,6 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
           },
 
         );
-      // TODO: Handle this case.
       }
 
 
@@ -514,7 +509,10 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
 
               }else{
                 questions=  await (controller as QuestionController).getQuestions(bankQuestions![index].id);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ShowChoice(title: "Choice", questions: questions??[Question(idBankQuestion: "idBankQuestion", numberQuestion: 4, id: "id", question: "question", answers: [])]),));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ShowChoice(title: "Choice",
+                    bankQuestion: bankQuestions![index],
+
+                    questions: questions??[Question(idBankQuestion: "idBankQuestion", numberQuestion: 4, id: "id", question: "question", answers: [])]),));
               }
 
 
@@ -544,68 +542,211 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
       case TypePage.isQuestion:
 
         if(questions!=null) {
-          return ListView.builder(
 
-            itemCount: questions!.length,
-            itemBuilder: (context, index) {
-              List<Widget> answers= List<Widget>.empty(growable: true);
-              answers.add(Text(AppLocalizations.of(context).translate("Question:")+questions![index].question),);
-              for(int i=0;i<questions![index].numberQuestion;i++){
-                String textAnswer=questions![index].answers[i].text;
-                if( questions![index].answerCorrect==questions![index].answers[i])
-               {
-                  answers.add(Text(textAnswer,style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),));
-                }else{
-                  answers.add(Text(textAnswer));
-                }
+         return
 
-              }
-              if(isEdit){
-                return
-                Row(
-                  //crossAxisAlignment: CrossAxisAlignment.start,
-                  //mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width*0.7,
-                      margin: const EdgeInsets.all(5),
-                      child: Column(
-                        //mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: answers,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  margin: const EdgeInsets.only(left: 10),
+                  child: Row(
+                    children: [
+                      IconButton(onPressed: (){
+                        (controller as QuestionController).downloadInputForm();
+                      }, icon:Image.asset("assets/images/download.png",height: 30),
+
+                        tooltip: AppLocalizations.of(context).translate("Download excel input form"),
                       ),
+                      IconButton(onPressed: (){
+                        (controller as QuestionController).saveListQuestionToDisk(questions!, (parent is BankQuestion)? TiengViet.parse((parent as BankQuestion).name):"bank"
+                        , MyConstant.fileNameQuest);
+                      }, icon:Image.asset("assets/images/save.png",height: 30),
+                          tooltip: AppLocalizations.of(context).translate("Save BankQuest"),
+
+
+                      ),
+                      const Icon(Icons.drag_indicator,size: 20,),
+                      IconButton(onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => InputQuestionScreen(idBankQuest: idParentPage),)).then((value) {
+                          setState(() {
+                            questions=value;
+                          });
+                        });
+
+                      }, icon:Image.asset("assets/images/add_quest.png",height: 30),
+                        tooltip: AppLocalizations.of(context).translate("Add quest manual"),
+
+
+                      ),
+                      IconButton(onPressed: (){
+                        actionInputFromPzoFile(typeFile: ["xlsx","xls"]);
+
+                      }, icon:Image.asset("assets/images/excel.png",height: 30),
+                        tooltip: AppLocalizations.of(context).translate("Add from excel"),
+
+
+                      ),
+                      IconButton(onPressed: (){
+                        actionInputFromPzoFile(typeFile: ["bin"]);
+                      }, icon:Image.asset("assets/icons/logo.png",height: 30),
+                        tooltip: AppLocalizations.of(context).translate("Add from pzo file"),
+
+
+                      ),
+                    ],
+                  )
+                ),
+                 MyTextFiled(
+                   margin: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                   hintText: "Search",
+                   onChanged: (value){
+                     searchValue=value;
+                     setState(() {
+
+                     });
+                   },
+
+                ),
+
+
+                    Expanded(child:
+                        ListView.builder(
+                          //shrinkWrap: true,
+
+                          itemCount: questions!.length,
+                          itemBuilder: (context, index) {
+                            List<Widget> answers= List<Widget>.empty(growable: true);
+                            answers.add(Text(AppLocalizations.of(context).translate("Question:")+questions![index].question),);
+                            for(int i=0;i<questions![index].numberQuestion;i++){
+                              String textAnswer=questions![index].answers[i].text;
+                              if( questions![index].answerCorrect==questions![index].answers[i])
+                              {
+                                answers.add(Text(textAnswer,style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),));
+                              }else{
+                                answers.add(Text(textAnswer));
+                              }
+
+                            }
+                            if(isEdit){
+                              return
+                              questions![index].question.contains(searchValue??"")?
+                                Row(
+                                  //crossAxisAlignment: CrossAxisAlignment.start,
+                                  //mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width*0.7,
+                                      margin: const EdgeInsets.all(5),
+                                      child: Column(
+                                        //mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: answers,
+                                      ),
+                                    ),
+                                    const Expanded(child: SizedBox()),
+
+                                    IconButton(onPressed: ()async{
+                                      questions= await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                          InputQuestionScreen(idBankQuest: idParentPage,
+                                            actionQuest: ActionQuest.edit,
+                                            index: index,
+                                            quests: questions,
+                                            question: questions?[index],
+
+                                          ),));
+                                      setState(() {
+
+                                      });
+                                    }, icon: const Icon(Icons.edit,color: Colors.blue,)),
+                                    IconButton(onPressed: ()async{
+                                      questions!.removeAt(index);
+                                      await (controller as QuestionController).saveQuestion(questions!, idParentPage);
+                                      setState(() {
+
+                                      });
+                                    }, icon: const Icon(Icons.delete,color: Colors.red,)),
+                                  ],
+
+                                ):const SizedBox();
+
+                            }else{
+                              return Container();
+                            }
+                          },
+                        ),
+
                     ),
-                    const Expanded(child: SizedBox()),
 
-                    IconButton(onPressed: ()async{
-                      questions= await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                          InputQuestionScreen(idBankQuest: idParentPage,
-                            actionQuest: ActionQuest.edit,
-                            index: index,
-                            quests: questions,
-                            question: questions?[index],
 
-                          ),));
-                      setState(() {
 
-                      });
-                    }, icon: const Icon(Icons.edit,color: Colors.blue,)),
-                    IconButton(onPressed: ()async{
-                      questions!.removeAt(index);
-                      await (controller as QuestionController).saveQuestion(questions!, idParentPage);
-                       setState(() {
+              ],
+            );
 
-                       });
-                    }, icon: const Icon(Icons.delete,color: Colors.red,)),
-                  ],
 
-                );
-
-              }else{
-                return Container();
-              }
-            },
-          );
+          // return ListView.builder(
+          //
+          //   itemCount: questions!.length,
+          //   itemBuilder: (context, index) {
+          //     List<Widget> answers= List<Widget>.empty(growable: true);
+          //     answers.add(Text(AppLocalizations.of(context).translate("Question:")+questions![index].question),);
+          //     for(int i=0;i<questions![index].numberQuestion;i++){
+          //       String textAnswer=questions![index].answers[i].text;
+          //       if( questions![index].answerCorrect==questions![index].answers[i])
+          //      {
+          //         answers.add(Text(textAnswer,style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),));
+          //       }else{
+          //         answers.add(Text(textAnswer));
+          //       }
+          //
+          //     }
+          //     if(isEdit){
+          //       return
+          //       Row(
+          //         //crossAxisAlignment: CrossAxisAlignment.start,
+          //         //mainAxisAlignment: MainAxisAlignment.start,
+          //         children: [
+          //           Container(
+          //             width: MediaQuery.of(context).size.width*0.7,
+          //             margin: const EdgeInsets.all(5),
+          //             child: Column(
+          //               //mainAxisAlignment: MainAxisAlignment.start,
+          //               crossAxisAlignment: CrossAxisAlignment.start,
+          //               children: answers,
+          //             ),
+          //           ),
+          //           const Expanded(child: SizedBox()),
+          //
+          //           IconButton(onPressed: ()async{
+          //             questions= await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+          //                 InputQuestionScreen(idBankQuest: idParentPage,
+          //                   actionQuest: ActionQuest.edit,
+          //                   index: index,
+          //                   quests: questions,
+          //                   question: questions?[index],
+          //
+          //                 ),));
+          //             setState(() {
+          //
+          //             });
+          //           }, icon: const Icon(Icons.edit,color: Colors.blue,)),
+          //           IconButton(onPressed: ()async{
+          //             questions!.removeAt(index);
+          //             await (controller as QuestionController).saveQuestion(questions!, idParentPage);
+          //              setState(() {
+          //
+          //              });
+          //           }, icon: const Icon(Icons.delete,color: Colors.red,)),
+          //         ],
+          //
+          //       );
+          //
+          //     }else{
+          //       return Container();
+          //     }
+          //   },
+          // );
         }
         else {
           return Container();

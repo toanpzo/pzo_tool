@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:vietjet_tool/common/local_storage/my_storage.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
 import 'package:vietjet_tool/models/questions/anwser/answer.dart';
@@ -15,6 +14,7 @@ import '../../common/Constant/constant.dart';
 import '../../models/questions/bank_question/bank_question.dart';
 import '../../models/questions/question/question.dart';
 import '../../models/questions/type_question/type_question.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class QuestionController extends MyController{
   QuestionController(super.myState);
@@ -32,11 +32,11 @@ class QuestionController extends MyController{
 
   @override
   Future<void> loadData() async{
-    // TODO: implement loadData
     switch(type){
       case TypePage.isTypeQuestions:await getTypeQuestions();break;
       case TypePage.isBankQuestion: await getBankQuestions(idParentPage); break;
       case TypePage.isQuestion: await getQuestions(idParentPage); break;
+      default: break;
     }
 
 
@@ -97,6 +97,24 @@ class QuestionController extends MyController{
     //update();
   }
 
+  Future<List<Question>> getQuestionsShow(String idBank) async{
+
+    questions= List<Question>.empty(growable: true);
+    var result= await MyStorage().getListQuestionShow(idBank);
+    result?.forEach((element) {
+      questions?.add(element as Question);
+    });
+
+    return questions!;
+
+  }
+  Future<void> saveQuestionShow(List<Question> values,String idBankQuestion) async{
+    questions=values;
+    await MyStorage().setListQuestionShow(values,idBankQuestion);
+
+    //update();
+  }
+
 
   Future<void> deleteBankQuestion(String idBankQuestion)async{
     try{
@@ -142,29 +160,98 @@ try {
   Future<void> saveListQuestionToDisk( List<Question> questions,String fileName,String typeFile)async {
     try {
       String json= jsonEncode(questions);
-       PermissionStatus status = await Permission.storage.request();
-      if (status.isGranted) {
 
-        await MyStorage().writeFileJson(json,fileName,typeFile: typeFile).then((value) {
+      if(!kIsWeb){
 
-        }
-        );
-
-      } else if (status.isDenied) {
-        var a= await Permission.manageExternalStorage.request();
-        if(a.isGranted){
-          await MyStorage().writeFileJson(json, fileName,typeFile: typeFile).then((value) {
-
-          }
-          );
-
+        bool getPermission= await getExStoragePermission();
+        if(getPermission){
+          await MyStorage().writeFileJson(json, fileName,typeFile: typeFile);
         }else{
-
+          showErrorDialog("Not storage Permission");
         }
-      } else if (status.isPermanentlyDenied) {
-        // Notification permissions permanently denied, open app settings
-        await openAppSettings();
+
+        // PermissionStatus status = await Permission.storage.request();
+        // if (status.isGranted) {
+        //
+        //   await MyStorage().writeFileJson(json,fileName,typeFile: typeFile).then((value) {
+        //
+        //   }
+        //   );
+        //
+        // } else if (status.isDenied) {
+        //   var a= await Permission.manageExternalStorage.request();
+        //   if(a.isGranted){
+        //     await MyStorage().writeFileJson(json, fileName,typeFile: typeFile).then((value) {
+        //
+        //     }
+        //     );
+        //
+        //   }else{
+        //
+        //   }
+        // } else if (status.isPermanentlyDenied) {
+        //   // Notification permissions permanently denied, open app settings
+        //   await openAppSettings();
+        // }
+      }else{
+        await MyStorage().writeFileJson(json,fileName,typeFile: typeFile);
+
       }
+
+
+
+    }
+    catch(e){
+      showErrorDialog(e.toString());
+    }
+  }
+
+  Future<void> downloadInputForm()async {
+    try {
+      // String path = "";
+      //
+      // if(kIsWeb){
+      //
+      // }else{
+      //   final appDocumentDirectory = await getApplicationDocumentsDirectory();
+      //   path=appDocumentDirectory.path;
+      // }
+      //
+      // print("vo ne");
+
+
+      //Excel excelN =Excel.createExcel();
+
+      ByteData data = await rootBundle.load("assets/data/input_form.xlsx");
+      List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+     // excelN = Excel.decodeBytes(bytes);
+     // var decoder = SpreadsheetDecoder.decodeBytes(bytes);
+
+
+      // var a=    await rootBundle.load("key");
+
+
+      // File file = File("$path/assets/data/input_form.xlsx");
+      // excelN = Excel.decodeBytes(file.readAsBytesSync());
+      // print("may tinh dc k");
+
+
+
+
+      if(!kIsWeb){
+
+        bool exPermission=await getExStoragePermission();
+        if(exPermission){
+          await MyStorage().writeFile(bytes,"inputForm",typeFile: "xlsx");
+        }else{
+          showErrorDialog("Not permission ExternalStorage");
+        }
+
+      }else{
+        await MyStorage().writeFile(bytes,"inputForm",typeFile: "xlsx");
+
+      }
+
 
 
     }
@@ -178,11 +265,11 @@ try {
     List<Question> questions=List<Question>.empty(growable: true);
 
     try {
-      File file;
+
       FilePickerResult? filePickerResult=await MyStorage().readFilePicker(typeFile: typeFile);
 
       if(filePickerResult!=null){
-        file = File(filePickerResult.files.single.path!);
+
 
         String? typeFilePicker=filePickerResult.files.single.extension;
 
@@ -190,12 +277,16 @@ try {
           case "bin"||MyConstant.fileNameQuest:
             String jsonQuestions="";
               if (!kIsWeb && Platform.isAndroid) {
+                File file = File(filePickerResult.files.single.path!);
                 jsonQuestions = utf8.decode(file.readAsBytesSync());
               }
               else if (!kIsWeb && Platform.isIOS) {
+                File file = File(filePickerResult.files.single.path!);
                 jsonQuestions = utf8.decode(file.readAsBytesSync());
               } else {
-                //jsonQuestions = utf8.decode(file.bytes!.toList());
+                print("asjdhsajkd");
+                print("fdsfds");
+                jsonQuestions = utf8.decode(filePickerResult.files.first.bytes!.toList());
               }
 
             for (var element in (jsonDecode(jsonQuestions)as List<dynamic>)) {
@@ -209,12 +300,16 @@ try {
             Excel excelN =Excel.createExcel();
 
             if (!kIsWeb && Platform.isAndroid) {
+              File file = File(filePickerResult.files.single.path!);
               excelN = Excel.decodeBytes(file.readAsBytesSync());
             }
             else if (!kIsWeb && Platform.isIOS) {
+              File file = File(filePickerResult.files.single.path!);
               excelN = Excel.decodeBytes(file.readAsBytesSync());
             } else {
-              //excelN = Excel.decodeBytes(file.bytes!.toList());
+              print("sadas");
+              print("djsahdkjs");
+              excelN = Excel.decodeBytes(filePickerResult.files.first.bytes!.toList());
             }
 
 

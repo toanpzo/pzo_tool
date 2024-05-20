@@ -59,6 +59,9 @@ dependencies:
   permission_handler: ^11.0.1
   tiengviet: ^1.0.0
   excel: any
+  html: ^0.15.4
+  universal_html: ^2.2.4
+  device_info_plus: ^9.1.2
 
 
 flutter_launcher_icons:
@@ -115,6 +118,7 @@ flutter:
     - assets/
     - assets/data/
     - assets/icons/
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

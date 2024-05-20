@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vietjet_tool/common/template/my_state.dart';
@@ -53,7 +56,7 @@ class MyController{
   }
 
 
-  static void  showErrorDialogEvery(String error){
+  static void showErrorDialogEvery(String error) {
     BuildContext? context =navigatorKey.currentContext;
     if(context!=null) {
       showDialog(context: navigatorKey.currentContext!,
@@ -71,25 +74,36 @@ class MyController{
     }
   }
 
-  Future<bool> getExStoragePermission() async{
+   Future<bool> getExStoragePermission() async{
     try {
-      PermissionStatus status = await Permission.storage.request();
+      Permission permission = Permission.storage;
+
+      DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidDeviceInfo = await deviceInfoPlugin
+            .androidInfo;
+        if (androidDeviceInfo.version.sdkInt >= 33) {
+          permission = Permission.manageExternalStorage;
+        }
+      }
+      return getPermission(permission);
+    }
+    catch(e){
+      showErrorDialog(e.toString());
+      return false;
+    }
+  }
+  Future<bool> getPermission(Permission permission) async{
+    try {
+      PermissionStatus status=await permission.request();
       if (status.isGranted) {
         return true;
-      } else if (status.isDenied) {
-        var a= await Permission.manageExternalStorage.request();
-        if(a.isGranted){
-          return true;
-        }else{
 
-          return false;
-        }
       } else if (status.isPermanentlyDenied) {
         // Notification permissions permanently denied, open app settings
         return await openAppSettings();
       }
       return false;
-
 
     }
     catch(e){
@@ -104,12 +118,53 @@ class MyController{
       if (status.isGranted) {
         function;
       } else if (status.isDenied) {
-        showErrorDialog("Not Permission");
+        showErrorDialog("Not Permission ${permission.toString()}");
 
       } else if (status.isPermanentlyDenied) {
         // Notification permissions permanently denied, open app settings
         await openAppSettings();
       }
+
+
+    }
+    catch(e){
+      showErrorDialog(e.toString());
+    }
+  }
+  Future<void> actionWithPermissionStorage(  Function function ) async {
+    try {
+      //PermissionStatus status = await Permission.storage.request();
+
+      Permission permission= Permission.storage;
+
+      DeviceInfoPlugin  deviceInfoPlugin =DeviceInfoPlugin();
+      if(Platform.isAndroid){
+        AndroidDeviceInfo androidDeviceInfo = await deviceInfoPlugin.androidInfo;
+        if(androidDeviceInfo.version.sdkInt>=33){
+          permission= Permission.manageExternalStorage;
+        }
+        await actionWithPermission(permission, function);
+      }else{
+        await actionWithPermission(permission, function);
+      }
+
+
+
+
+
+
+
+
+
+      // if (status.isGranted) {
+      //   function;
+      // } else if (status.isDenied) {
+      //   showErrorDialog("Not Permission ${Permission.storage.toString()}");
+      //
+      // } else if (status.isPermanentlyDenied) {
+      //   // Notification permissions permanently denied, open app settings
+      //   await openAppSettings();
+      // }
 
 
     }

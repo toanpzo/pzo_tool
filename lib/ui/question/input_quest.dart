@@ -12,7 +12,7 @@ import 'package:vietjet_tool/widgets/dialog/dialogs.dart';
 import 'package:vietjet_tool/widgets/text_field/text_filed.dart';
 
 import '../../models/questions/question/question.dart';
-enum MyCheckbox {numberQuestion1,numberQuestion2,numberQuestion3,numberQuestion4}
+enum MyCheckbox {numberQuestion1,numberQuestion2,numberQuestion3,numberQuestion4,numberQuestion5}
 
 enum ActionQuest{view,add,edit,delete}
 
@@ -61,6 +61,7 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
       QuestionController questionController = controller as QuestionController;
       questionController.type = TypePage.isQuestion;
       questionController.idParentPage = widget.idBankQuest;
+
     }
 
   }
@@ -79,14 +80,23 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
     answers: []
     );
     if(actionQuest==ActionQuest.edit){
-      for (var element in question.answers) {
-        answers.add(element);
+      for ( int i=0;i<question.numberQuestion;i++) {
+        if(question.answerCorrect==question.answers[i]){
+          //selectChk=MyCheckbox.values[i];
+          isCorrect=i;
+        }
+        answers.add(question.answers[i]);
       }
+
+
+
+
+      numberAnswer= question.numberQuestion;
+      selectChk=MyCheckbox.values[numberAnswer-1];
     }
 
   }
   @override
-  // TODO: implement actionBack
   bool get actionBack => true;
   @override
   Future<bool> backFunction() async{
@@ -227,7 +237,7 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
         style: Theme.of(context).textTheme.titleLarge
     ),);
     widgets.add(MyTextFiled( width: MediaQuery.of(context).size.width*0.9,
-      text: question.question??"",
+      text: question.question,
       minLines: 1,
       maxLines: 5,
       onChanged: (value) => question=question.copyWith(question: value),

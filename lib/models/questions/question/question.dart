@@ -9,35 +9,35 @@ part 'question.g.dart';
 
 @Freezed()
 class Question with _$Question {
-  @JsonSerializable(explicitToJson: true)
+  //@JsonSerializable(explicitToJson: true)
 
   @HiveType(typeId: 6, adapterName: 'QuestionAdapter')
   factory Question({
-    @JsonKey(name: 'idBankQuestion')
+   // @JsonKey(name: 'idBankQuestion')
     @HiveField(0)
     required String idBankQuestion,
 
-    @JsonKey(name: 'numberQuestion')
+   // @JsonKey(name: 'numberQuestion')
     @HiveField(1)
     required int numberQuestion,
 
-    @JsonKey(name: 'id')
+    //@JsonKey(name: 'id')
     @HiveField(2)
     required String id,
 
-    @JsonKey(name: 'question')
+    //@JsonKey(name: 'question')
     @HiveField(3)
     required String question,
 
-    @JsonKey(name: 'questionImage')
+   // @JsonKey(name: 'questionImage')
     @HiveField(4)
      String? questionImage,
 
-    @JsonKey(name: 'answers')
+   // @JsonKey(name: 'answers')
     @HiveField(5)
     required List<Answer> answers,
 
-    @JsonKey(name: 'answerCorrect')
+   // @JsonKey(name: 'answerCorrect')
     @HiveField(6)
     Answer? answerCorrect,
 

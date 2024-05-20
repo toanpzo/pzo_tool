@@ -2,6 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pick file and save file to user device</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Pick file and save file to user device</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Scan document</string>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>Pick file and save file to user device</string>
+	<key>OSBundleUsageDescription</key>
+	<string>Pick file and save file to user device</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>Pick file and save file to user device</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

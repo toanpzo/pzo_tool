@@ -10,13 +10,16 @@ import 'package:vietjet_tool/controllers/provider/provider.dart';
 import 'package:vietjet_tool/models/fuel/fuel.dart';
 import 'package:vietjet_tool/models/person/person.dart';
 import 'package:vietjet_tool/models/questions/question/question.dart';
+import 'package:vietjet_tool/models/questions/save_score/save_score.dart';
 import 'package:vietjet_tool/models/questions/type_question/type_question.dart';
+import 'package:vietjet_tool/models/questions/wrong_question/wrong_question.dart';
 import 'package:vietjet_tool/models/theme_models/my_color_scheme.dart';
 import 'package:vietjet_tool/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:vietjet_tool/ui/splash/splash_screen.dart';
 
 import 'common/localizations/appLocalizations.dart';
+import 'common/router/my_router.dart';
 import 'models/questions/anwser/answer.dart';
 import 'models/questions/bank_question/bank_question.dart';
 import 'models/theme_models/my_theme.dart';
@@ -50,8 +53,11 @@ void main() async{
   Hive.registerAdapter(BankQuestionAdapter());
   Hive.registerAdapter(QuestionAdapter());
   Hive.registerAdapter(AnswerAdapter());
+  Hive.registerAdapter(WrongQuestionAdapter());
+  Hive.registerAdapter(SaveScoreAdapter());
+  //Hive.registerAdapter(Wrong)
 
-  //typeid 6
+  //typeid 8
 
 
 
@@ -88,7 +94,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     Hive.close();
 
@@ -123,7 +128,6 @@ class _MyAppState extends State<MyApp> {
 
   // @override
   // void didChangeDependencies() {
-  //   // TODO: implement didChangeDependencies
   //   super.didChangeDependencies();
   //   loadData();
   //
@@ -131,7 +135,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     loadData();
   }
@@ -161,6 +164,10 @@ class _MyAppState extends State<MyApp> {
       theme:context.watch<ChangeTheme>().theme,
       //darkTheme: darkMode,
       home:  const SplashScreen(),
+
+      onGenerateRoute: (RouteSettings settings) {
+        return RouteController().getGenerateRoute(settings, context);
+      },
       //const UploadPhotoScreen(),
 
       //MyMenu(),

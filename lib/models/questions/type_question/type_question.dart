@@ -7,14 +7,14 @@ part 'type_question.g.dart';
 // @JsonSerializable()//explicitToJson: true)
 
 class TypeQuestion with _$TypeQuestion {
-  @JsonSerializable(explicitToJson: true)
+  //@JsonSerializable(explicitToJson: true)
 
   @HiveType(typeId: 5, adapterName: 'TypeQuestionAdapter')
    factory TypeQuestion({
-    @JsonKey(name: 'id')
+    //@JsonKey(name: 'id')
     @HiveField(0)
     required String id,
-    @JsonKey(name: 'name')
+    //@JsonKey(name: 'name')
     @HiveField(1)
     required String name,
   }) = _TypeQuestion;

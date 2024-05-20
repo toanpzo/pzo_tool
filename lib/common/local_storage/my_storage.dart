@@ -1,19 +1,20 @@
 
 import 'dart:convert';
+//import 'dart:html' show AnchorElement;
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:vietjet_tool/common/localizations/appLocalizations.dart';
+import 'package:universal_html/html.dart' show AnchorElement;
 import 'package:vietjet_tool/controllers/my_controller.dart';
-import 'package:vietjet_tool/main.dart';
 import 'package:vietjet_tool/models/fuel/fuel.dart';
 import 'package:vietjet_tool/models/questions/question/question.dart';
+import 'package:vietjet_tool/models/questions/save_score/save_score.dart';
 import 'package:vietjet_tool/models/questions/type_question/type_question.dart';
+import 'package:vietjet_tool/models/questions/wrong_question/wrong_question.dart';
 import 'package:vietjet_tool/models/theme_models/my_theme.dart';
-import 'package:vietjet_tool/widgets/dialog/dialogs.dart';
 
 import '../../models/questions/bank_question/bank_question.dart';
 import '../Constant/constant.dart';
@@ -137,6 +138,21 @@ class MyStorage {
     final box= await Hive.openBox("QuestionList");
     return box.get(idBankQuestion);
   }
+
+  Future<void> setListQuestionShow(List<Question> value, String idBankQuestion) async {
+    final box= await Hive.openBox("QuestionListShow");
+    box.put(idBankQuestion, value);
+  }
+
+  Future<List<dynamic>?> getListQuestionShow(idBankQuestion) async {
+    final box= await Hive.openBox("QuestionListShow");
+    return box.get(idBankQuestion);
+  }
+
+  Future<void> deleteListQuestionShow(idBankQuestion) async {
+    final box= await Hive.openBox("QuestionListShow");
+    box.delete(idBankQuestion);
+  }
   //questions
   Future<void> deleteListBankQuestion(String idTypeQuest) async {
     final box= await Hive.openBox("BankQuestionsList");
@@ -151,6 +167,27 @@ class MyStorage {
   Future<List<dynamic>?> getListBankQuestion(String idTypeQuest) async {
     final box= await Hive.openBox("BankQuestionsList");
     return box.get(idTypeQuest);
+  }
+
+
+  Future<void> setSaveScore(SaveScore value,String idBankQuest) async {
+    final box= await Hive.openBox("SaveScore");
+    box.put(idBankQuest, value);
+  }
+
+  Future<SaveScore?> getSaveScore(String idBankQuest) async {
+    final box= await Hive.openBox("SaveScore");
+    return box.get(idBankQuest);
+  }
+
+  Future<void> setWrongQuestion(List<WrongQuestion> value,String idBankQuest) async {
+    final box= await Hive.openBox("WrongQuestion");
+    box.put(idBankQuest, value);
+  }
+
+  Future<List<WrongQuestion>?> getWrongQuestion(String idBankQuest) async {
+    final box= await Hive.openBox("WrongQuestion");
+    return box.get(idBankQuest);
   }
 
   //
@@ -227,6 +264,7 @@ class MyStorage {
     String? pathSave= await getPathSave(typeFile: typeFile);
 
     if(pathSave==null|| changePath==true){
+
       String? path = await FilePicker.platform.getDirectoryPath();
 
       if (path != null) {
@@ -312,34 +350,114 @@ class MyStorage {
 
   }
 
-  Future<void> writeFileJson(String jsonEncode ,String fileName,{String? typeFile}) async {
+  Future<void> writeFile(List<int> bytes ,String fileName,{String? typeFile}) async {
     try {
-      int dem=1;
 
-      final path = await getPathFromFilePicker(typeFile: typeFile);
+      if(kIsWeb){
+        String name="$fileName.${typeFile??MyConstant.fileNameDefault}";
+        AnchorElement()
+          ..href = '${Uri.dataFromBytes(bytes //, mimeType: 'text/plain'
+          )}'
+          ..download = name
+          ..style.display = 'none'
+          ..click();
 
-      String pathFile="$path/$fileName.${typeFile??MyConstant.fileNameDefault}";
+      }else{
+        int dem=1;
+
+        final path = await getPathFromFilePicker(typeFile: typeFile);
+
+        String pathFile="$path/$fileName.${typeFile??MyConstant.fileNameDefault}";
 
 
 
 
-       File file = File(pathFile);
+        File file = File(pathFile);
 
 
-       bool exist= await  file.exists();
-      if(exist){
-        dem=1;
-        //pathFile=   "$path/$fileName$dem.${typeFile??fileNameDefault}";
-        file=  await checkFileExist(path, fileName, typeFile, dem);
+        bool exist= await  file.exists();
+        if(exist){
+          dem=1;
+          //pathFile=   "$path/$fileName$dem.${typeFile??fileNameDefault}";
+          file=  await checkFileExist(path, fileName, typeFile, dem);
+        }
+
+        //file.writeAsBytesSync(utf8.encode(jsonEncode));
+
+
+        file.writeAsBytes(bytes).whenComplete((){
+          MyController.showSuccessDialogEvery("save in ${file.path}");
+
+        });
+
       }
 
-      //file.writeAsBytesSync(utf8.encode(jsonEncode));
 
 
-      file.writeAsBytes(utf8.encode(jsonEncode)).whenComplete((){
-        MyController.showSuccessDialogEvery("save in ${file.path}");
 
-      });
+
+
+
+
+
+
+
+
+
+    }catch(e){
+      MyController.showErrorDialogEvery(e.toString());
+
+
+    }
+  }
+
+
+  Future<void> writeFileJson(String jsonEncode ,String fileName,{String? typeFile}) async {
+    try {
+
+      if(kIsWeb){
+        String name="$fileName.${typeFile??MyConstant.fileNameDefault}";
+        AnchorElement()
+          ..href = '${Uri.dataFromString(jsonEncode, mimeType: 'text/plain', encoding: utf8)}'
+          ..download = name
+          ..style.display = 'none'
+          ..click();
+
+      }else{
+        int dem=1;
+
+        final path = await getPathFromFilePicker(typeFile: typeFile);
+
+        String pathFile="$path/$fileName.${typeFile??MyConstant.fileNameDefault}";
+
+
+
+
+        File file = File(pathFile);
+
+
+        bool exist= await  file.exists();
+        if(exist){
+          dem=1;
+          //pathFile=   "$path/$fileName$dem.${typeFile??fileNameDefault}";
+          file=  await checkFileExist(path, fileName, typeFile, dem);
+        }
+
+        //file.writeAsBytesSync(utf8.encode(jsonEncode));
+
+
+        file.writeAsBytes(utf8.encode(jsonEncode)).whenComplete((){
+          MyController.showSuccessDialogEvery("save in ${file.path}");
+
+        });
+
+      }
+
+
+
+
+
+
 
 
 

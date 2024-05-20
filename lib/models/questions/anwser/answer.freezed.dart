@@ -20,10 +20,10 @@ Answer _$AnswerFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Answer {
-  @JsonKey(name: 'text')
+// @JsonKey(name: 'text')
   @HiveField(0)
-  String get text => throw _privateConstructorUsedError;
-  @JsonKey(name: 'image')
+  String get text =>
+      throw _privateConstructorUsedError; // @JsonKey(name: 'image')
   @HiveField(1)
   String? get image => throw _privateConstructorUsedError;
 
@@ -37,9 +37,7 @@ abstract class $AnswerCopyWith<$Res> {
   factory $AnswerCopyWith(Answer value, $Res Function(Answer) then) =
       _$AnswerCopyWithImpl<$Res, Answer>;
   @useResult
-  $Res call(
-      {@JsonKey(name: 'text') @HiveField(0) String text,
-      @JsonKey(name: 'image') @HiveField(1) String? image});
+  $Res call({@HiveField(0) String text, @HiveField(1) String? image});
 }
 
 /// @nodoc
@@ -78,9 +76,7 @@ abstract class _$$AnswerImplCopyWith<$Res> implements $AnswerCopyWith<$Res> {
       __$$AnswerImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {@JsonKey(name: 'text') @HiveField(0) String text,
-      @JsonKey(name: 'image') @HiveField(1) String? image});
+  $Res call({@HiveField(0) String text, @HiveField(1) String? image});
 }
 
 /// @nodoc
@@ -111,23 +107,20 @@ class __$$AnswerImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable()
 @HiveType(typeId: 3, adapterName: 'AnswerAdapter')
 class _$AnswerImpl implements _Answer {
-  _$AnswerImpl(
-      {@JsonKey(name: 'text') @HiveField(0) required this.text,
-      @JsonKey(name: 'image') @HiveField(1) this.image});
+  _$AnswerImpl({@HiveField(0) required this.text, @HiveField(1) this.image});
 
   factory _$AnswerImpl.fromJson(Map<String, dynamic> json) =>
       _$$AnswerImplFromJson(json);
 
+// @JsonKey(name: 'text')
   @override
-  @JsonKey(name: 'text')
   @HiveField(0)
   final String text;
+// @JsonKey(name: 'image')
   @override
-  @JsonKey(name: 'image')
   @HiveField(1)
   final String? image;
 
@@ -165,18 +158,15 @@ class _$AnswerImpl implements _Answer {
 
 abstract class _Answer implements Answer {
   factory _Answer(
-          {@JsonKey(name: 'text') @HiveField(0) required final String text,
-          @JsonKey(name: 'image') @HiveField(1) final String? image}) =
-      _$AnswerImpl;
+      {@HiveField(0) required final String text,
+      @HiveField(1) final String? image}) = _$AnswerImpl;
 
   factory _Answer.fromJson(Map<String, dynamic> json) = _$AnswerImpl.fromJson;
 
-  @override
-  @JsonKey(name: 'text')
+  @override // @JsonKey(name: 'text')
   @HiveField(0)
   String get text;
-  @override
-  @JsonKey(name: 'image')
+  @override // @JsonKey(name: 'image')
   @HiveField(1)
   String? get image;
   @override
