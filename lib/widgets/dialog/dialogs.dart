@@ -148,22 +148,27 @@ class MyConfirmDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     // set up the buttons
     Widget cancelButton = TextButton(
-      child: Text(cancelTitle ?? "cancel"),//context.localization!.cancel),
+      child: Text(AppLocalizations.of(context).translate(cancelTitle ?? "cancel")),//context.localization!.cancel),
       onPressed: () {
         Navigator.of(context).pop();
       },
     );
     Widget continueButton = TextButton(
-      child: Text(actionTitle ?? "confirm"),//context.localization!.confirm),
+      child: Text(AppLocalizations.of(context).translate(actionTitle ?? "confirm")),//context.localization!.confirm),
       onPressed: () {
-        Navigator.of(context).pop();
-        onContinue?.call();
+        if(onContinue!=null){
+          onContinue?.call();
+        }else{
+          Navigator.of(context).pop();
+        }
+
+
       },
     );
 
     return AlertDialog(
-        title: title != null ? Text(title!) : null,
-        content: Text(message ?? ""),
+        title: title != null ? Text(AppLocalizations.of(context).translate(title!)) : null,
+        content: Text(AppLocalizations.of(context).translate(message ?? "Are you sure?")),
         actions: [
           continueButton,
           cancelButton,

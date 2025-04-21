@@ -4,10 +4,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' show AnchorElement;
+import 'package:vietjet_tool/common/template/my_state.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
 import 'package:vietjet_tool/models/fuel/fuel.dart';
 import 'package:vietjet_tool/models/questions/question/question.dart';
@@ -164,6 +166,11 @@ class MyStorage {
     box.put(idTypeQuest, value);
   }
 
+  Future<Map<dynamic,dynamic>?> getAllListBankQuestion() async {
+    final box= await Hive.openBox("BankQuestionsList");
+    Map<dynamic,dynamic> allData=box.toMap();
+    return allData;
+  }
   Future<List<dynamic>?> getListBankQuestion(String idTypeQuest) async {
     final box= await Hive.openBox("BankQuestionsList");
     return box.get(idTypeQuest);
@@ -257,6 +264,11 @@ class MyStorage {
   Future<File> getLocalFile(String fileName) async {
     final path = await _localPath;
     return File('$path/$fileName');
+  }
+
+  writeFileLocal(String fileName,List<int> bytes)async{
+    File file= await getLocalFile(fileName);
+    file.writeAsBytes(bytes);
   }
 
   Future<String> getPathFromFilePicker({bool? changePath, String? typeFile}) async {
@@ -353,6 +365,11 @@ class MyStorage {
   Future<void> writeFile(List<int> bytes ,String fileName,{String? typeFile}) async {
     try {
 
+      bool permision= await MyController(null).getExStoragePermission();
+      if(!permision){
+        return;
+      }
+
       if(kIsWeb){
         String name="$fileName.${typeFile??MyConstant.fileNameDefault}";
         AnchorElement()
@@ -414,6 +431,10 @@ class MyStorage {
 
   Future<void> writeFileJson(String jsonEncode ,String fileName,{String? typeFile}) async {
     try {
+      bool permision= await MyController(null).getExStoragePermission();
+      if(!permision){
+        return;
+      }
 
       if(kIsWeb){
         String name="$fileName.${typeFile??MyConstant.fileNameDefault}";
@@ -478,3 +499,37 @@ class MyStorage {
 
 
 }
+
+
+class MyStorageAction extends StatefulWidget {
+  const MyStorageAction({super.key});
+
+  @override
+  State<MyStorageAction> createState() => _MyStorageActionState();
+}
+
+class _MyStorageActionState extends MyState<MyStorageAction> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+
+  @override
+  MyController createController() {
+    // TODO: implement createController
+    throw UnimplementedError();
+  }
+
+  @override
+  Widget setBody() {
+    // TODO: implement setBody
+    throw UnimplementedError();
+  }
+
+  @override
+  String setTitle() {
+    // TODO: implement setTitle
+    throw UnimplementedError();
+  }
+}
+

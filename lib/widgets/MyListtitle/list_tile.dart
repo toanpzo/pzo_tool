@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-enum TypeListTitle { menu, setting, text }
+enum TypeListTile { menu, setting, text }
 
-class MyListTitle extends StatelessWidget {
+class MyListTile extends StatelessWidget {
   final Function()? onTap;
-  final TypeListTitle? type;
+  final TypeListTile? type;
   final String title;
   final String? subTitle;
   final double? width;
@@ -22,7 +22,7 @@ class MyListTitle extends StatelessWidget {
   Widget? leading;
   final Decoration? decoration;
 
-   MyListTitle(
+   MyListTile(
       {super.key,
       this.onTap,
       this.type,
@@ -59,9 +59,9 @@ class MyListTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    if(type==TypeListTitle.menu ){
+    if(type==TypeListTile.menu ){
       leading ??= iconMenu??Icon(Icons.do_not_disturb_on_total_silence,color: colorText,);
-    }else if(type==TypeListTitle.setting && onTap!=null){
+    }else if(type==TypeListTile.setting && onTap!=null){
 
       trailing=const Icon(Icons.arrow_forward_ios);
     }

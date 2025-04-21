@@ -8,8 +8,9 @@ import 'package:vietjet_tool/ui/home/my_home.dart';
 import 'package:vietjet_tool/ui/question/question.dart';
 import 'package:vietjet_tool/ui/setting/setting_screen.dart';
 import 'package:vietjet_tool/ui/time_utc_screen/time_utc.dart';
-import 'package:vietjet_tool/widgets/MyListtitle/list_title.dart';
 import 'package:vietjet_tool/widgets/dialog/dialogs.dart';
+
+import '../../widgets/MyListtitle/list_tile.dart';
 
 enum MyViewState { loadingAll, loading, loaded, error }
 
@@ -105,57 +106,57 @@ abstract class MyState<W extends StatefulWidget> extends State<W> {
             margin: const EdgeInsets.symmetric(vertical: 10),
             child: const Icon(Icons.ac_unit_outlined, size: 200),
           ),
-          MyListTitle(
+          MyListTile(
               context: context,
               iconMenu:  Icon(Icons.home,
               color: Theme.of(context).colorScheme.primary
               ),
               title: AppLocalizations.of(context).translate("Home"),
-              type: TypeListTitle.menu,
+              type: TypeListTile.menu,
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const MyHome(),));
               },
               colorText: Theme.of(context).colorScheme.primary),
-          MyListTitle(
+          MyListTile(
               context: context,
               iconMenu:  Icon(Icons.settings,
                   color: Theme.of(context).colorScheme.primary
               ),
               title: AppLocalizations.of(context).translate("Setting"),
-              type: TypeListTitle.menu,
+              type: TypeListTile.menu,
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingScreen(),));
               },
               colorText: Theme.of(context).colorScheme.primary),
-          MyListTitle(
+          MyListTile(
               context: context,
               iconMenu:  Icon(Icons.logout,
                   color: Theme.of(context).colorScheme.primary
               ),
               title: AppLocalizations.of(context).translate("Logout"),
-              type: TypeListTitle.menu,
+              type: TypeListTile.menu,
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const MyHome(),));
               },
               colorText: Theme.of(context).colorScheme.primary),
-          MyListTitle(
+          MyListTile(
               context: context,
               iconMenu:  Icon(Icons.question_mark,
                   color: Theme.of(context).colorScheme.primary
               ),
               title: AppLocalizations.of(context).translate("Question"),
-              type: TypeListTitle.menu,
+              type: TypeListTile.menu,
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const QuestionScreen(typePage: TypePage.isTypeQuestions),));
               },
               colorText: Theme.of(context).colorScheme.primary),
-          MyListTitle(
+          MyListTile(
               context: context,
               iconMenu:  Icon(Icons.question_mark,
                   color: Theme.of(context).colorScheme.primary
               ),
               title: AppLocalizations.of(context).translate("EditQuestion"),
-              type: TypeListTitle.menu,
+              type: TypeListTile.menu,
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const QuestionScreen( edit: true,typePage: TypePage.isTypeQuestions),));
               },

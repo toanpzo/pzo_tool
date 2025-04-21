@@ -20,6 +20,7 @@ class QuestionController extends MyController{
   QuestionController(super.myState);
 
   List<TypeQuestion>? typeQuestions;
+  Map< String,List<BankQuestion>>? allBankQuestions;
   List<BankQuestion>? bankQuestions;
   List<Question>? questions;
 
@@ -29,11 +30,16 @@ class QuestionController extends MyController{
 
   TypePage type= TypePage.isTypeQuestions;
 
+  List<String> showBank=List<String>.empty(growable: true);
+
 
   @override
   Future<void> loadData() async{
     switch(type){
-      case TypePage.isTypeQuestions:await getTypeQuestions();break;
+      case TypePage.isTypeQuestions:
+        await getTypeQuestions();
+        await getAllBankQuestions();
+        break;
       case TypePage.isBankQuestion: await getBankQuestions(idParentPage); break;
       case TypePage.isQuestion: await getQuestions(idParentPage); break;
       default: break;
@@ -54,7 +60,27 @@ class QuestionController extends MyController{
     return typeQuestions!;
 
   }
+  Future<Map<String,List<BankQuestion>>> getAllBankQuestions() async{
 
+    Map<dynamic,dynamic>? result= await MyStorage().getAllListBankQuestion();
+    //result?
+    //allBankQuestions=result as Map<String,List<BankQuestion>>;
+    allBankQuestions={};
+    result?.forEach(
+      (key, value) {
+
+        List<BankQuestion> items= List<BankQuestion>.empty(growable: true);
+
+        for (var element in List.from(value)) {
+              items.add(element as BankQuestion);
+            }
+        allBankQuestions![key as String]=items;
+      },
+    );
+
+    return allBankQuestions!;
+
+  }
   Future<List<BankQuestion>> getBankQuestions(String idTypeQuest) async{
 
     bankQuestions= List<BankQuestion>.empty(growable: true);
@@ -76,6 +102,11 @@ class QuestionController extends MyController{
 
     return questions!;
 
+  }
+
+  Future<void> saveShowTypeQuestion(List<String> values) async{
+    showBank=values;
+    update();
   }
 
   Future<void> saveTypeQuestion(List<TypeQuestion> values) async{

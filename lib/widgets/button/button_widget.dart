@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vietjet_tool/common/localizations/appLocalizations.dart';
 
 enum TypeButton{ delete,link,radio,check,icon}
 
@@ -19,13 +20,18 @@ class MyButton extends StatelessWidget {
        {super.key,this.typeButton,required this.content,this.onPressed, this.width, this.height, this.iconWidget,this.isEnable, this.style, this.margin, this.padding
    });
 
+  String contentTrans="";
+
   @override
   Widget build(BuildContext context) {
+    contentTrans=AppLocalizations.of(context).translate(content);
+
+
 
     return Container(
         width: width,
         height: height,
-        margin:   margin??const EdgeInsets.only(bottom: 5) ,
+        margin:   margin??const EdgeInsets.only(bottom: 5,right: 5) ,
     padding: padding,
     child: getChildButton()
     );
@@ -50,15 +56,15 @@ class MyButton extends StatelessWidget {
         return
             TextButton(
                 style: style,
-                onPressed: isEnable!=false?onPressed:null, child: Text(content));
+                onPressed: isEnable!=false?onPressed:null, child: Text(contentTrans));
       case TypeButton.radio:
         return TextButton(
             style: style,
-            onPressed: isEnable!=false?onPressed:null, child: Text(content));
+            onPressed: isEnable!=false?onPressed:null, child: Text(contentTrans));
       case TypeButton.check:
         return TextButton(
             style: style,
-            onPressed: isEnable!=false?onPressed:null, child: Text(content));
+            onPressed: isEnable!=false?onPressed:null, child: Text(contentTrans));
       case TypeButton.delete:
         return
             ElevatedButton(style:
@@ -66,7 +72,7 @@ class MyButton extends StatelessWidget {
                 ElevatedButton.styleFrom(
                   backgroundColor: isEnable!=false?Colors.red:null,
                 ),  onPressed: isEnable!=false?onPressed:null,
-                child: Text(content,style: isEnable!=false?TextStyle(color: Colors.white70):null
+                child: Text(contentTrans,style: isEnable!=false?TextStyle(color: Colors.white70):null
 
 
                 ));
@@ -74,12 +80,12 @@ class MyButton extends StatelessWidget {
 
             ElevatedButton.icon(
                 style: style,
-                onPressed: isEnable!=false?onPressed:null, icon: iconWidget??const Icon(Icons.do_not_disturb_on_total_silence), label: Text(content));
+                onPressed: isEnable!=false?onPressed:null, icon: iconWidget??const Icon(Icons.do_not_disturb_on_total_silence), label: Text(contentTrans));
       default :
         return
             ElevatedButton(
                 style: style,
-                onPressed: isEnable!=false?onPressed:null, child: Text(content));
+                onPressed: isEnable!=false?onPressed:null, child: Text(contentTrans));
     }
 
     return const SizedBox();

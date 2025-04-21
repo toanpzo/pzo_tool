@@ -6,8 +6,9 @@ import 'package:vietjet_tool/controllers/my_controller.dart';
 import 'package:vietjet_tool/models/theme_models/my_theme.dart';
 import 'package:vietjet_tool/theme/theme.dart';
 import 'package:vietjet_tool/ui/setting/setting_controller.dart';
-import 'package:vietjet_tool/widgets/MyListtitle/list_title.dart';
 import 'package:vietjet_tool/widgets/dialog/dialogs.dart';
+
+import '../../widgets/MyListtitle/list_tile.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -33,7 +34,7 @@ class _SettingScreenState extends MyState<SettingScreen> {
 
    return ListView(
      children: [
-       MyListTitle(title: "Theme", context: context,type: TypeListTitle.setting,
+       MyListTile(title: "Theme", context: context,type: TypeListTile.setting,
        trailing: Switch(
          value: myTheme!.brightness==1?false:true,
          onChanged: (value)async{
@@ -49,7 +50,7 @@ class _SettingScreenState extends MyState<SettingScreen> {
          },
        ),
        ),
-       MyListTitle(title: title, context: context,type: TypeListTitle.setting,
+       MyListTile(title: title, context: context,type: TypeListTile.setting,
        onTap: ()async{
          Color cl=Colors.red;
          await showDialog(context: context, builder: (context) => MyColorPicker(pickerColor: Colors.white70, onColorChanged: (value){cl=value;}),);

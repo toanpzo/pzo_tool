@@ -9,7 +9,7 @@ import 'package:vietjet_tool/widgets/dialog/dialogs.dart';
 
 class MyController{
   
-  MyState myState;
+  MyState? myState;
 
 
 
@@ -26,14 +26,14 @@ class MyController{
 
   
   void update(){
-    myState.setState(() {
+    myState?.setState(() {
       
     });
   }
   
   void setViewState(MyViewState myViewState ){
-    myState.myViewState=myViewState;
-    myState.setState(() {
+    myState?.myViewState=myViewState;
+    myState?.setState(() {
 
     });
   }
@@ -93,7 +93,7 @@ class MyController{
       return false;
     }
   }
-  Future<bool> getPermission(Permission permission) async{
+   Future<bool> getPermission(Permission permission) async{
     try {
       PermissionStatus status=await permission.request();
       if (status.isGranted) {
@@ -195,3 +195,5 @@ class MyController{
   // }
 
 }
+
+

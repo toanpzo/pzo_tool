@@ -13,11 +13,14 @@ import 'package:vietjet_tool/widgets/text_field/text_filed.dart';
 import '../../common/Constant/constant.dart';
 import '../../models/questions/bank_question/bank_question.dart';
 import '../../models/questions/question/question.dart';
-import '../../widgets/MyListtitle/list_title.dart';
+import '../../widgets/MyExpansionTile/expansion_tile.dart';
+import '../../widgets/MyListtitle/list_tile.dart';
 
 enum TypePage{ isTypeQuestions,isBankQuestion,isQuestion}
 
 enum Modified{edit,add,delete,update}
+
+
 
 class QuestionScreen extends StatefulWidget {
 
@@ -38,7 +41,11 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
   bool isEdit=false;
   List<Widget> listTitles=List<Widget>.empty(growable: true);
 
+  //List<Widget> listTitles=List<Widget>.empty(growable: true);
+
   List<TypeQuestion>? typeQuestions;
+  List<String> showBank=List<String>.empty(growable: true);
+  Map<String,List<BankQuestion>>? allBankQuestions;
   List<BankQuestion>? bankQuestions;
   List<Question>? questions;
   String idParentPage="";
@@ -69,10 +76,18 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
   Future<void> afterLoadData() async{
     QuestionController questionController =controller as QuestionController;
 
+
+
     typeQuestions= questionController.typeQuestions;
+
+    allBankQuestions=questionController.allBankQuestions;
     bankQuestions=questionController.bankQuestions;
     questions=questionController.questions;
     parent=widget.parent??"";
+
+
+
+
 
   }
 
@@ -444,6 +459,18 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
     });
   }
 
+  void setVisibilityTypeBank(String idTypeBank,bool show){
+    if(show){
+      if(!showBank.contains(idTypeBank)){
+        showBank.add(idTypeBank);
+      }
+    }else{
+      showBank.remove(idTypeBank);
+    }
+    (controller as QuestionController).update();
+
+  }
+
 
 
 
@@ -456,17 +483,67 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
     return QuestionController(this);
   }
 
+
+
+
+
+
+
   @override
   Widget setBody() {
+
+
+
 
     switch (pageType){
 
       case TypePage.isTypeQuestions:
         if(typeQuestions!=null) {
+
+
+
+
+          /// list quest
+          listTitles.clear();
+
+          for (var type in typeQuestions!) {
+            bool show=showBank.contains(type.id);
+
+            listTitles.add(MyListTile(title: type.name, context: context,trailing:show?const Icon(Icons.expand_less):const Icon(Icons.expand_more),
+            onTap: (){
+              setVisibilityTypeBank(type.id,!show);
+            },
+            ));
+            /// column bankQuest
+            List<Widget> banks= List<Widget>.empty(growable: true);
+            allBankQuestions?[type.id]?.forEach((element) {
+              banks.add(MyListTile(
+                  padding: const EdgeInsets.only(left: 20),
+                  title: type.name, context: context));
+            },);
+            Widget bankQuest = Visibility(
+              visible: show,
+              child: Column(
+                children: banks,
+              ),
+            );
+
+
+            listTitles.add(bankQuest);
+
+          }
+
+          return
+
+            ListView(
+              children:
+              listTitles,
+          );
+
           return ListView.builder(
 
             itemCount: typeQuestions!.length,
-            itemBuilder: (context, index) =>MyListTitle(title: typeQuestions![index].name,
+            itemBuilder: (context, index) =>MyListTile(title: typeQuestions![index].name,
                 onTap: ()async{
 
               Navigator.push(context,MaterialPageRoute(builder: (context) => QuestionScreen(typePage: TypePage.isBankQuestion,edit: isEdit,idParent: typeQuestions![index].id,title: "Bank Questions"),));
@@ -499,7 +576,7 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
           return ListView.builder(
 
             itemCount: bankQuestions!.length,
-            itemBuilder: (context, index) =>MyListTitle(title: bankQuestions![index].name,
+            itemBuilder: (context, index) =>MyListTile(title: bankQuestions![index].name,
                 onTap: ()async{
               if(isEdit){
                 Navigator.push(context,MaterialPageRoute(builder: (context) => QuestionScreen(typePage: TypePage.isQuestion,edit: isEdit,

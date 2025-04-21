@@ -145,6 +145,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       locale: _locale?? const Locale('vi', 'VN'),
       supportedLocales: const [
