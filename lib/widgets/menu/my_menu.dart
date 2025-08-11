@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:vietjet_tool/common/localizations/appLocalizations.dart';
+import 'package:vietjet_tool/ui/setting/setting_screen.dart';
 
 import '../../models/my_menu/my_menu.dart';
 
@@ -10,13 +11,15 @@ enum MyMenuType{gridView,listTitle}
 class MyMenuWidgets extends StatelessWidget {
   final MyMenuType menuType;
   final List<MyMenu> menus;
+  final bool? addSetTing;
 
 
-   const MyMenuWidgets({super.key, required this.menuType, required this.menus});
+   const MyMenuWidgets({super.key, required this.menuType, required this.menus, this.addSetTing});
 
 
-  Widget menuItem(BuildContext context,String routerName,int imageColorPrimary,int numberColor,double heightImage,
-      String assetImage,String name, {Color? colorText}){
+  Widget menuItem({required BuildContext context,required String routerName,required int imageColorPrimary,
+    required int numberColor,required double heightImage,
+    required String assetImage,required String name, Color? colorText}){
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, routerName);
@@ -61,7 +64,7 @@ class MyMenuWidgets extends StatelessWidget {
 
         Widget menuWidget = InkWell(
           onTap: () {
-            //  Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
+             Navigator.pushNamed(context, menu.routerName);
           },
           child: Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
@@ -112,10 +115,17 @@ class MyMenuWidgets extends StatelessWidget {
       //       ],),
       //   ),
       // );
-
-      Widget questionWidget=menuItem(context, "/quest", imageColorPrimary, 1, heightImage, "assets/images/quest.png", "Question tools");
-      Widget scanWidget=menuItem(context, "/scan", imageColorPrimary, 2, heightImage, "assets/images/scan.png", "Scan tools");
-      Widget aircraftWidget=menuItem(context, "/aircraft", imageColorPrimary, 3, heightImage, "assets/images/aircraft.png", "Aircraft tools");
+      Widget questionWidget=menuItem(context: context, routerName: "/quest", imageColorPrimary: imageColorPrimary,
+          numberColor: 1, heightImage: heightImage, assetImage: "assets/images/quest.png", name: "Question tools");
+      Widget scanWidget=menuItem(context: context, routerName: "/scan", imageColorPrimary: imageColorPrimary, numberColor: 2, heightImage: heightImage, assetImage: "assets/images/scan.png", name:  "Scan tools");
+      Widget aircraftWidget=menuItem(context: context, routerName: "/aircraft", imageColorPrimary: imageColorPrimary, numberColor: 3,
+          heightImage: heightImage, assetImage: "assets/images/aircraft.png", name: "Aircraft tools");
+      // Widget questionWidget=menuItem(
+      //
+      //
+      //     context, "/quest", imageColorPrimary, 1, heightImage, "assets/images/quest.png", "Question tools");
+      //Widget scanWidget=menuItem(context, "/scan", imageColorPrimary, 2, heightImage, "assets/images/scan.png", "Scan tools");
+      //Widget aircraftWidget=menuItem(context, "/aircraft", imageColorPrimary, 3, heightImage, "assets/images/aircraft.png", "Aircraft tools");
 
       menuWidgets.add(questionWidget);
       menuWidgets.add(scanWidget);
@@ -125,23 +135,30 @@ class MyMenuWidgets extends StatelessWidget {
 
     
 
-      Widget menuSetTing= InkWell(
-          onTap: (){
-            //  Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
+    if(addSetTing==true) {
+      Widget menuSetTing = InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const SettingScreen()));
           },
           child: Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
-              color: Color(imageColorPrimary+menuWidgets.length*200),
+              color: Color(imageColorPrimary + menuWidgets.length * 200),
             ),
             //color: menu.colorBox!=null?Color(menu.colorBox!):menuWidgets.length%2==0?Theme.of(context).primaryColor:Theme.of(context).secondaryHeaderColor,),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset("assets/images/setting.png",
-                height: 50,
+                  height: 50,
 
                 ),
-                Text(AppLocalizations.of(context).translate("Setting"),style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),)
+                Text(AppLocalizations.of(context).translate("Setting"),
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(color: Colors.white),)
               ],
 
             ),
@@ -149,6 +166,7 @@ class MyMenuWidgets extends StatelessWidget {
           ));
 
       menuWidgets.add(menuSetTing);
+    }
 
 
 

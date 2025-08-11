@@ -17,6 +17,7 @@ import 'package:vietjet_tool/models/questions/save_score/save_score.dart';
 import 'package:vietjet_tool/models/questions/type_question/type_question.dart';
 import 'package:vietjet_tool/models/questions/wrong_question/wrong_question.dart';
 import 'package:vietjet_tool/models/theme_models/my_theme.dart';
+import 'package:vietjet_tool/models/user/myUser.dart';
 
 import '../../models/questions/bank_question/bank_question.dart';
 import '../Constant/constant.dart';
@@ -94,6 +95,47 @@ class MyStorage {
     // return myTheme;
   }
 
+
+  Future<void> setAccessTokenDrive(Map value) async {// {"token":"fjkhdsjk","exp":datetime}
+    final box= await Hive.openBox("AccessTokenDrive");
+    box.put("value", value);
+  }
+
+  Future<Map?> getAccessTokenDrive() async {
+    final box= await Hive.openBox("AccessTokenDrive");
+    return box.get("value");
+  }
+
+  Future<void> setAccessToken(String value) async {// {"token":"fjkhdsjk","exp":datetime}
+    final box= await Hive.openBox("AccessToken");
+    box.put("value", value);
+  }
+
+  Future<String?> getAccessToken() async {
+    final box= await Hive.openBox("AccessToken");
+    return box.get("value");
+  }
+
+  Future<void> setApiBaseUrl(String value) async {// {"token":"fjkhdsjk","exp":datetime}
+    final box= await Hive.openBox("apiBaseUrl");
+    box.put("value", value);
+  }
+
+  Future<String?> getApiBaseUrl() async {
+    final box= await Hive.openBox("apiBaseUrl");
+    return box.get("value");
+  }
+
+
+  Future<void> setUser(MyUser value) async {
+    final box= await Hive.openBox("user");
+    box.put("value", value);
+  }
+
+  Future<MyUser?> getUser() async {
+    final box= await Hive.openBox("user");
+    return box.get("value");
+  }
 
   Future<void> setFuel(Fuel value) async {
     final box= await Hive.openBox("fuel");
@@ -176,7 +218,7 @@ class MyStorage {
     return box.get(idTypeQuest);
   }
 
-
+/// MultiChoice
   Future<void> setSaveScore(SaveScore value,String idBankQuest) async {
     final box= await Hive.openBox("SaveScore");
     box.put(idBankQuest, value);
@@ -191,10 +233,43 @@ class MyStorage {
     final box= await Hive.openBox("WrongQuestion");
     box.put(idBankQuest, value);
   }
+  Future<void> deleteWrongQuestion(String idBankQuest) async {
+    final box= await Hive.openBox("WrongQuestion");
+    box.delete(idBankQuest);
+  }
+
 
   Future<List<WrongQuestion>?> getWrongQuestion(String idBankQuest) async {
     final box= await Hive.openBox("WrongQuestion");
-    return box.get(idBankQuest);
+    var result= box.get(idBankQuest);
+    if(result is List){
+      List<WrongQuestion> list= List<WrongQuestion>.empty(growable: true);
+      result.forEach(
+        (element) => list.add(element),
+      );
+        return list;
+    }else{
+return null;
+    }
+  }
+
+  Future<void> setRemainQuestion(List<Question> value,String idBankQuest) async {
+    final box= await Hive.openBox("WrongQuestion");
+    box.put(idBankQuest, value);
+  }
+
+  Future<List<Question>?> getRemainQuestion(String idBankQuest) async {
+    final box= await Hive.openBox("WrongQuestion");
+    var result= box.get(idBankQuest);
+    if(result is List){
+      List<Question> list= List<Question>.empty(growable: true);
+      result.forEach(
+            (element) => list.add(element),
+      );
+      return list;
+    }else{
+      return null;
+    }
   }
 
   //
@@ -218,6 +293,7 @@ class MyStorage {
   //   return box.get("IdQuestions");
   // }
   //
+  /// path
   Future<void> setPathSave(String value,{String? typeFile}) async {
     final box= await Hive.openBox("pathSave");
     box.put(typeFile??"pathSave", value);

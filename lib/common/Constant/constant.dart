@@ -9,6 +9,10 @@ class MyConstant{
   static const keyUploadPhotoAndroid="486195116690-681h7n6suf67bllklnfaqf1nkvtc8vg4.apps.googleusercontent.com";
   static const keyUploadPhotoIOS="486195116690-l235ibq25j929n9jeo8bfi5rpihhivgv.apps.googleusercontent.com";
 
+  /// gg drive (of toannoithat1992@gmail.com)
+  static const String appFolderName="PzoTool";
+
+
 
   ///file
 
@@ -19,6 +23,9 @@ class MyConstant{
   static const String beginQuest="BeginQuestPzo";
   static const String endQuest="EndQuestPzo";
   //
+
+/// api
+  static const String baseUrl="https://pzotoolservice.onrender.com/";
 
 }
 

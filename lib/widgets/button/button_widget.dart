@@ -85,7 +85,9 @@ class MyButton extends StatelessWidget {
         return
             ElevatedButton(
                 style: style,
-                onPressed: isEnable!=false?onPressed:null, child: Text(contentTrans));
+                onPressed: isEnable!=false?onPressed:null, child: Text(contentTrans,
+            textAlign: TextAlign.center,
+            ));
     }
 
     return const SizedBox();

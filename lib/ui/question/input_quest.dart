@@ -1,6 +1,10 @@
 
 
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:vietjet_tool/common/localizations/appLocalizations.dart';
 import 'package:vietjet_tool/common/template/my_state.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
@@ -15,6 +19,8 @@ import '../../models/questions/question/question.dart';
 enum MyCheckbox {numberQuestion1,numberQuestion2,numberQuestion3,numberQuestion4,numberQuestion5}
 
 enum ActionQuest{view,add,edit,delete}
+
+enum SelectTypeTextOrImage{text,image}
 
 
 
@@ -48,6 +54,11 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
   );
   int? index;
   ActionQuest? actionQuest;
+//select text or image
+  String typeQuestImage="image";
+  SelectTypeTextOrImage selectTypeTextOrImage=SelectTypeTextOrImage.text;
+  Uint8List? _imageFile;
+  bool  vip=false;
 
 
 
@@ -67,6 +78,7 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
   }
   @override
   Future<void> afterLoadData() async{
+    vip=await controller.getVip();
     QuestionController questionController = controller as QuestionController;
     questions=questionController.questions??List<Question>.empty(growable: true);
     index=widget.index;
@@ -161,6 +173,7 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
           numberQuestion: numberAnswer
       );
       questions![index??0]=questionSave;
+      await questionController.deleteQuestionFromWrongQuest(idBank: widget.idBankQuest,idQuestion: questionSave.id);
       await questionController.saveQuestion(questions!, widget.idBankQuest);
       return;
     }
@@ -189,6 +202,26 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
     
 
     List<Widget> widgets=List<Widget>.empty(growable: true);
+    // add select text image
+
+    if(vip) {
+      widgets.add(RadioListTile(title:
+      Text(AppLocalizations.of(context).translate("Only Text")),
+          value: SelectTypeTextOrImage.text,
+          groupValue: selectTypeTextOrImage,
+          onChanged: (value) =>
+              setState(() {
+                selectTypeTextOrImage = value ?? SelectTypeTextOrImage.text;
+              })),);
+      widgets.add(RadioListTile(title:
+      Text(AppLocalizations.of(context).translate("Text and Image")),
+          value: SelectTypeTextOrImage.image,
+          groupValue: selectTypeTextOrImage,
+          onChanged: (value) =>
+              setState(() {
+                selectTypeTextOrImage = value ?? SelectTypeTextOrImage.text;
+              })),);
+    }
     // add check box
 
     MyCheckbox.values[0];
@@ -242,6 +275,47 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
       maxLines: 5,
       onChanged: (value) => question=question.copyWith(question: value),
     ));
+
+    var orientation=  MediaQuery.of(context).orientation;
+
+
+
+    Uint8List? imageQuestion=question.questionImage!=null? controller.base64ToImageBytes(question.questionImage!):null;
+
+    Widget imagePicker= Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            imageQuestion != null
+                ? Image.memory(
+              imageQuestion,
+              width: orientation== Orientation.landscape?MediaQuery.of(context).size.width*0.8:null,//  200,
+              height: orientation== Orientation.portrait?MediaQuery.of(context).size.height*0.2:null,
+              fit: BoxFit.cover,
+            )
+                : Text(controller.ConvertMutiLaguage('Not image select', context)),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: ()async{
+                XFile? xFile= await controller.pickImage();
+                if(xFile!=null){
+                  String imageQuestion=await controller.imageToBase64(File(xFile.path));
+                  question= question.copyWith(questionImage:imageQuestion);
+                }
+
+                setState(() {
+
+
+                });
+              },
+
+
+              child: Text(controller.ConvertMutiLaguage('Select image', context)),
+            ),
+          ],
+        ),
+      );
+    widgets.add(imagePicker);
 
 //add answer
 
@@ -300,6 +374,44 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
           //map["answerText$i"] = value;
         }
       ));
+
+      Uint8List? imageAnswer=answers[i].image!=null? controller.base64ToImageBytes(answers[i].image!):null;
+
+      Widget imagePicker= Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            imageAnswer != null
+                ? Image.memory(
+              imageAnswer,
+              width: orientation== Orientation.landscape?MediaQuery.of(context).size.width*0.8:null,//  200,
+              height: orientation== Orientation.portrait?MediaQuery.of(context).size.height*0.2:null,
+              fit: BoxFit.cover,
+            )
+                : Text(controller.ConvertMutiLaguage('Not image select', context)),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: ()async{
+                XFile? xFile= await controller.pickImage();
+                if(xFile!=null){
+                  String imageStr=await controller.imageToBase64(File(xFile.path));
+                  answers[i]=answers[i].copyWith(image: imageStr);
+
+                }
+
+                setState(() {
+
+
+                });
+              },
+
+
+              child: Text(controller.ConvertMutiLaguage('Select image', context)),
+            ),
+          ],
+        ),
+      );
+      widgets.add(imagePicker);
     }
     //add button
     MyButton continueButton= MyButton(content: "Continue",onPressed: () {
@@ -327,10 +439,14 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
 
     },);
     MyButton doneButton= MyButton(
-      margin: EdgeInsets.only(left: 10),
+      margin: const EdgeInsets.only(left: 10),
       content:  actionQuest==ActionQuest.edit?"Save":"Done",onPressed: ()async{
-      await saveQuestion();
-      Navigator.pop(context,questions);
+        try {
+          await saveQuestion();
+          Navigator.pop(context, questions);
+        }catch(e){
+          print("error $e");
+        }
     },);
     widgets.add(Row(
       children: [
@@ -358,7 +474,7 @@ class _InputQuestionScreenState extends MyState<InputQuestionScreen> {
          Center(
            child:
                Container(
-                 margin:EdgeInsets.only(left: 15),
+                 margin:const EdgeInsets.only(left: 15),
 
                  child: Column(
                    //mainAxisAlignment: MainAxisAlignment.center,

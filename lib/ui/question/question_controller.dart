@@ -4,10 +4,12 @@ import 'dart:io';
 
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vietjet_tool/common/local_storage/my_storage.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
 import 'package:vietjet_tool/models/questions/anwser/answer.dart';
+import 'package:vietjet_tool/models/questions/wrong_question/wrong_question.dart';
 import 'package:vietjet_tool/ui/question/question.dart';
 
 import '../../common/Constant/constant.dart';
@@ -109,24 +111,29 @@ class QuestionController extends MyController{
     update();
   }
 
-  Future<void> saveTypeQuestion(List<TypeQuestion> values) async{
-    typeQuestions=values;
-    await MyStorage().setListTypeQuestion(values);
+  Future<void> saveTypeQuestion() async{
+    //typeQuestions=values;
+    await MyStorage().setListTypeQuestion(typeQuestions??[]);
     update();
   }
 
   Future<void> saveBankQuestion(List<BankQuestion> values,String idTypeQuestion) async{
-    bankQuestions=values;
+    //bankQuestions=values;
     await MyStorage().setListBankQuestion(values, idTypeQuestion);
     update();
   }
 
-  Future<void> saveQuestion(List<Question> values,String idBankQuestion) async{
+  Future<void> saveQuestion(List<Question> values,String idBankQuestion,{String? idQuestDelete}) async{
     questions=values;
     await MyStorage().setListQuestion(values,idBankQuestion);
+    if(idQuestDelete!=null){
+      await deleteQuestionFromWrongQuest(idBank: idBankQuestion,idQuestion: idQuestDelete);
+    }
 
     //update();
   }
+
+
 
   Future<List<Question>> getQuestionsShow(String idBank) async{
 
@@ -147,12 +154,13 @@ class QuestionController extends MyController{
   }
 
 
-  Future<void> deleteBankQuestion(String idBankQuestion)async{
+  Future<void> deleteBankQuestion({required String idBankQuestion,required String idTypeQuestion})async{
     try{
     await MyStorage().deleteListQuestion(idBankQuestion);
-    bankQuestions?.removeWhere((element) => element.id==idBankQuestion);
+    allBankQuestions![idTypeQuestion]!.removeWhere((element) => element.id==idBankQuestion);
+    //bankQuestions?.removeWhere((element) => element.id==idBankQuestion);
     if (bankQuestions!=null){
-      saveBankQuestion(bankQuestions!,idParentPage);
+      saveBankQuestion( allBankQuestions![idTypeQuestion]!,idTypeQuestion);
     }
     update();
     }
@@ -173,7 +181,7 @@ try {
 
   typeQuestions?.removeWhere((element) => element.id==idTypeQuestion);
   if (typeQuestions!=null){
-    saveTypeQuestion(typeQuestions!);
+    saveTypeQuestion();
   }
   update();
 
@@ -315,8 +323,6 @@ try {
                 File file = File(filePickerResult.files.single.path!);
                 jsonQuestions = utf8.decode(file.readAsBytesSync());
               } else {
-                print("asjdhsajkd");
-                print("fdsfds");
                 jsonQuestions = utf8.decode(filePickerResult.files.first.bytes!.toList());
               }
 
@@ -338,8 +344,6 @@ try {
               File file = File(filePickerResult.files.single.path!);
               excelN = Excel.decodeBytes(file.readAsBytesSync());
             } else {
-              print("sadas");
-              print("djsahdkjs");
               excelN = Excel.decodeBytes(filePickerResult.files.first.bytes!.toList());
             }
 
@@ -447,6 +451,20 @@ try {
       showErrorDialog(e.toString());
     }
     return questions;
+  }
+
+  Future<void> deleteQuestionFromWrongQuest({String? idQuestion, required String idBank}
+      )async{
+    List<WrongQuestion>? wrongQuests= await MyStorage().getWrongQuestion(idBank);
+    if(wrongQuests!=null){
+      if(idQuestion!=null){
+        wrongQuests.removeWhere((element) => element.questWrong.id==idQuestion,);
+        await MyStorage().setWrongQuestion(wrongQuests, idBank);
+
+      }else{
+        await MyStorage().deleteWrongQuestion(idBank);
+      }
+    }
   }
 
 

@@ -158,7 +158,8 @@ abstract class MyState<W extends StatefulWidget> extends State<W> {
               title: AppLocalizations.of(context).translate("EditQuestion"),
               type: TypeListTile.menu,
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const QuestionScreen( edit: true,typePage: TypePage.isTypeQuestions),));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const QuestionScreen(
+                    edit: true,typePage: TypePage.isTypeQuestions),));
               },
               colorText: Theme.of(context).colorScheme.primary),
         ],

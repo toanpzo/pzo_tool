@@ -7,6 +7,7 @@ import 'package:vietjet_tool/models/theme_models/my_theme.dart';
 import 'package:vietjet_tool/theme/theme.dart';
 import 'package:vietjet_tool/ui/setting/setting_controller.dart';
 import 'package:vietjet_tool/widgets/dialog/dialogs.dart';
+import 'package:vietjet_tool/widgets/text_field/text_filed.dart';
 
 import '../../widgets/MyListtitle/list_tile.dart';
 
@@ -31,6 +32,7 @@ class _SettingScreenState extends MyState<SettingScreen> {
   @override
   Widget setBody() {
     myTheme??=(controller as SettingController).myTheme;
+    TextEditingController codeVipController=TextEditingController();
 
    return ListView(
      children: [
@@ -56,6 +58,19 @@ class _SettingScreenState extends MyState<SettingScreen> {
          await showDialog(context: context, builder: (context) => MyColorPicker(pickerColor: Colors.white70, onColorChanged: (value){cl=value;}),);
           print(cl.toString());
        },
+       ),
+       MyListTile(title: "CodeVip", context: context,type: TypeListTile.setting,
+         onTap: ()async{
+           controller.showCusTomDialog(title: "Input CodeVip", content: MyTextFiled(
+             controller: codeVipController,
+
+           ),onFirstButton: (){
+             controller.setVip(codeVipController.text);
+           }
+
+           );
+
+         },
        )
      ],
    );

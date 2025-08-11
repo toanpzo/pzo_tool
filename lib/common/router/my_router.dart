@@ -6,6 +6,7 @@ import 'package:vietjet_tool/ui/mel_cat/mel_cat_screen.dart';
 import 'package:vietjet_tool/ui/question/question.dart';
 import 'package:vietjet_tool/ui/question/select_edit_review_quest.dart';
 import 'package:vietjet_tool/ui/scan_document/scan_document.dart';
+import 'package:vietjet_tool/ui/scan_document/scan_documet_controller.dart';
 
 class ScreenArguments {
   final String url;
@@ -29,7 +30,13 @@ class RouteController {
         return MaterialPageRoute(builder: (context) => const QuestionScreen(typePage: TypePage.isTypeQuestions));
 
       case '/scan':
-        return MaterialPageRoute(builder: (context) => const ScanDocument());
+        return MaterialPageRoute(builder: (context) =>  ScanDocument(typeScan: TypeScan.selectScan,));
+      case '/scan/scanDocument':
+        return MaterialPageRoute(builder: (context) =>  ScanDocument(typeScan: TypeScan.scanDocument,));
+      case '/scan/scanId':
+        return MaterialPageRoute(builder: (context) =>  ScanDocument(typeScan: TypeScan.scanID,));
+      case '/scan/scanPassPort':
+        return MaterialPageRoute(builder: (context) =>  ScanDocument(typeScan: TypeScan.scanPassPort,));
       case '/aircraft':
         return MaterialPageRoute(builder: (context) => const AirCraftToolScreen());
       case '/aircraft/fuel':

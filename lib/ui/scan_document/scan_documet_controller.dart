@@ -4,13 +4,27 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_watermark/image_watermark.dart';
 import 'package:pdf/pdf.dart';
+import 'package:vietjet_tool/common/local_storage/my_storage.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:vietjet_tool/models/my_menu/my_menu.dart';
+
+enum TypeScan{selectScan,scanID, scanPassPort,scanDocument}
 
 class ScanDocumentController extends MyController{
   @override
   Future<void> loadData() async {
-    //vip=true;
+    // User? user =await MyStorage().getUser();
+    // if(user!=null){
+    //   DateTime vipExd=user.vipExd??DateTime.now();
+    //   if(vipExd.isAfter(DateTime.now())){
+    //     vip=true;
+    //   }
+    //   else{
+    //     vip=false;
+    //   }
+    // }
+    vip= await getVip();
 
   }
   ScanDocumentController(super.myState);
@@ -19,9 +33,27 @@ class ScanDocumentController extends MyController{
 
   File? fileLocal;
   bool vip=false;
+  TypeScan typeScan=TypeScan.selectScan;
 
-  Future<Uint8List>  buildPdf(List<String> imageToPdf,{pw.EdgeInsetsGeometry? margin,PdfPageFormat? pageFormat,pw.PageOrientation? pageOrientation})async {
-    pageFormat = pageFormat ?? PdfPageFormat.undefined;
+  void selectScan({required MyMenu menu}){
+    //menu.
+  }
+
+  Future<Uint8List?>  buildPdf(List<String> imageToPdf,{bool? scanIdRow,pw.EdgeInsetsGeometry? margin,PdfPageFormat? pageFormat,pw.PageOrientation? pageOrientation})async {
+    if(imageToPdf.isEmpty) {
+      return null;
+    }
+
+
+    if(typeScan==TypeScan.scanID||typeScan==TypeScan.scanPassPort){
+      return scanId(
+          imageToPdf: imageToPdf,
+        scanIdRow: scanIdRow
+          );
+    }
+
+
+    PdfPageFormat pdfPageFormat = pageFormat ?? PdfPageFormat.a4;
 
     var pdfFinal = pw.Document();
 
@@ -86,18 +118,15 @@ class ScanDocumentController extends MyController{
         File(element).readAsBytesSync(),
       );
 
-      //Image.Me
-
-
-
-      if(pageOrientation==null){
+      pw.PageOrientation pageOrientationPage=pw.PageOrientation.portrait;
+      if(pageFormat==null){
         if(image.width!=null&&image.height!=null){
           if(image.width!>image.height!){
-            pageOrientation= pw.PageOrientation.landscape;
+            pdfPageFormat=PdfPageFormat.a4.landscape;
 
           }
           else{
-            pageOrientation= pw.PageOrientation.portrait;
+            pdfPageFormat=PdfPageFormat.a4.portrait;
           }
         }
 
@@ -108,17 +137,6 @@ class ScanDocumentController extends MyController{
       dtsYWaterMark=(image.height??50)-50;
       print(dtsYWaterMark);
       print(image.width);
-      // if(pageOrientation==pw.PageOrientation.portrait){
-      //   dtsYWaterMark=image.height??50-50;
-      // }
-      // if(pageOrientation==pw.PageOrientation.portrait){
-      //   dtsYWaterMark=image.width??50-50;
-      // }
-      // print(pageFormat.height);
-      // print(pageFormat.width);
-      //
-      // print(image.width);
-      // print(image.height);
 
 
       final imageWatermark=await ImageWatermark.addTextWatermark(
@@ -139,10 +157,6 @@ class ScanDocumentController extends MyController{
      pw.Center(
          child:
 
-      // pw.Container(
-      //   height: (pageFormat==PdfPageFormat.undefined)?null:vip?pageFormat.height:pageFormat.height*0.9,
-      //   child:
-
 
 
 
@@ -161,7 +175,9 @@ class ScanDocumentController extends MyController{
                   ///undefined
           [
 
-          pw.Image(image),
+          pw.Image(image,
+          height: pageFormat == PdfPageFormat.undefined?null:pdfPageFormat.height
+          ),
             pw.Text("Scan by Pzo Tools  ",
                 textAlign:  pw.TextAlign.right,
                 style: const pw.TextStyle(fontSize: 50)),
@@ -169,9 +185,11 @@ class ScanDocumentController extends MyController{
                   ///stand
                   [
                     pw.Image(
+                    height: pageFormat == PdfPageFormat.undefined?null:pdfPageFormat.height,
                         pw.MemoryImage(
+
                           imageWatermark
-                        )
+                        ),
                     )
 
 
@@ -179,15 +197,11 @@ class ScanDocumentController extends MyController{
                   ]:
                   ///VIP
               [
-                pw.Image(image),
-                // pageFormat == PdfPageFormat.undefined
-                //     ? pw.Image(image)
-                //     : pw.Expanded(child: pw.Image(image)),
-                //
-                // (pageFormat == PdfPageFormat.undefined&&!vip)
-                //     ? pw.Text("Scan by Pzo Tools",
-                //     textAlign:  pw.TextAlign.right,
-                //     style: const pw.TextStyle(fontSize: 50)) : pw.SizedBox(),
+                pw.Image(
+
+                    image,
+                    height: pageFormat == PdfPageFormat.undefined?null:pdfPageFormat.height
+                ),
 
               ]
 
@@ -199,71 +213,17 @@ class ScanDocumentController extends MyController{
       pdfFinal.addPage(
           pw.Page(
             margin: margin ?? const pw.EdgeInsets.all(0),
-            pageFormat: pageFormat,
-            orientation:  pageOrientation,
+            pageFormat: pdfPageFormat,
             build: (context) => page,
           )
       );
 
-      // pdfFinal.addPage(
-      //     pw.Page(
-      //       margin: margin ?? const pw.EdgeInsets.all(0),
-      //       pageFormat: pageFormat,
-      //       orientation: pageOrientation,
-      //       build: (context) => page,
-      //     )
-      // );
-
-      // if (pageFormat == PdfPageFormat.undefined) {
-      //   pdfFinal.addPage(
-      //       pw.Page(
-      //         margin: margin ?? const pw.EdgeInsets.all(0),
-      //         pageFormat: pageFormat,
-      //         orientation: pageOrientation,
-      //         build: (context) => page,
-      //       )
-      //   );
-      // } else {
-      //   pageWidgets.add(page);
-      // }
-
-      // Center
 
     }
 
 
-    // if (pageFormat != PdfPageFormat.undefined) {
-    //   pdfFinal.addPage(
-    //       pw.MultiPage(
-    //         footer:vip?null: (context) {
-    //           return pw.Text("Scan by Pzo Tools",textAlign: pw.TextAlign.right);
-    //         },
-    //         //footer: null,
-    //           // footer: (context)
-    //           // {
-    //           //   return pw.Text("Scan by Pzo Tools",textAlign: pw.TextAlign.right);
-    //           //  // return vip? pw.SizedBox():
-    //           // },
-    //           margin: margin ?? const pw.EdgeInsets.all(0),
-    //           pageFormat: pageFormat,
-    //           orientation: pageOrientation,
-    //
-    //
-    //
-    //           build: (pw.Context context) {
-    //             return pageWidgets;
-    //           })
-    //
-    //   );
-    // }
-
 
     return pdfFinal.save();
-    // String fileName="${DateTime.now().toString()}.pdf";
-    // await MyStorage().writeFileLocal(fileName, bytes);
-    // fileLocal= await MyStorage().getLocalFile(fileName);
-
-    //return bytes;
 
 
 
@@ -271,57 +231,49 @@ class ScanDocumentController extends MyController{
 
   }
 
-  Future<Uint8List>  scanId(List<String> imageToPdf)async {
-
-    var pdfFinal = pw.Document();
+  void addTwoImageToPage( {required pw.Document pdfFinal ,required List<pw.Widget> imageWidgets, bool? scanIdRow}){
 
 
-    if(imageToPdf.length>=2) {
-      var image = pw.MemoryImage(
-        File(imageToPdf[0]).readAsBytesSync(),
-      );
-      var image1 = pw.MemoryImage(
-        File(imageToPdf[1]).readAsBytesSync(),
-      );
 
-      double hightImage=PdfPageFormat.a4.height/2.8;
+    List<pw.Widget>images =List.from(imageWidgets);
+
+      if(!vip){
+        pw.Widget pwText =pw.Text("Scan by Pzo Tools  ",
+            textAlign: pw.TextAlign.right,
+            style: const pw.TextStyle(fontSize: 20));
+        images.add(pwText);
+      }
+
+
 
 
 
       pw.Widget page =
 
-      pw.Center(
-          child:
+      pw.Container(
+          child: scanIdRow==true?
 
-
-          pw.Column(
+          pw.Row(
 
               mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
               crossAxisAlignment: pw.CrossAxisAlignment.center,
-              children:
-
-              (!vip) ?
-
-              [
-
-                pw.Image(image,height: hightImage),
-                pw.Image(image1,height: hightImage),
-                pw.Text("Scan by Pzo Tools  ",
-                    textAlign: pw.TextAlign.right,
-                    style: const pw.TextStyle(fontSize: 20)),
-              ] :
-
-              ///stand
-
-              ///VIP
-              [
-                pw.Image(image,height: hightImage),
-                pw.Image(image1,height: hightImage),
-
-              ]
+              children: images
 
 
           )
+          :pw.Center(
+            child: pw.Column(
+
+
+                mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+                crossAxisAlignment: pw.CrossAxisAlignment.center,
+                children: images
+
+
+            )
+          )
+
+
 
       );
 
@@ -333,10 +285,140 @@ class ScanDocumentController extends MyController{
             build: (context) => page,
           )
       );
+
+      //images.clear();
+
+  }
+
+  Future<Uint8List>  scanId({ required List<String> imageToPdf,bool? scanIdRow })async {
+
+    var pdfFinal = pw.Document();
+
+
+    // if(imageToPdf.length>=2) {
+    //   var image = pw.MemoryImage(
+    //     File(imageToPdf[0]).readAsBytesSync(),
+    //   );
+    //   var image1 = pw.MemoryImage(
+    //     File(imageToPdf[1]).readAsBytesSync(),
+    //   );
+    //
+    //   double hightImage=PdfPageFormat.a4.height/2.8;
+    //
+    //   if(image1.height!=null&&image1.width!=null) {
+    //     if (image1.height! > image1.width!){
+    //       hightImage=(8.5 / 2.54) * 72;
+    //     }else{
+    //       hightImage=(5.5 / 2.54) * 72;
+    //     }
+    //
+    //   }
+    //
+    //
+    //
+    //   pw.Widget page =
+    //
+    //   pw.Center(
+    //       child:
+    //
+    //
+    //       pw.Column(
+    //
+    //           mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+    //           crossAxisAlignment: pw.CrossAxisAlignment.center,
+    //           children:
+    //
+    //           (!vip) ?
+    //
+    //           [
+    //
+    //             pw.Image(image,height: hightImage),
+    //             pw.Image(image1,height: hightImage),
+    //             pw.Text("Scan by Pzo Tools  ",
+    //                 textAlign: pw.TextAlign.right,
+    //                 style: const pw.TextStyle(fontSize: 20)),
+    //           ] :
+    //
+    //           ///stand
+    //
+    //           ///VIP
+    //           [
+    //             pw.Image(image,height: hightImage),
+    //             pw.Image(image1,height: hightImage),
+    //
+    //           ]
+    //
+    //
+    //       )
+    //
+    //   );
+    //
+    //   pdfFinal.addPage(
+    //       pw.Page(
+    //         //margin: margin ?? const pw.EdgeInsets.all(0),
+    //         pageFormat: PdfPageFormat.a4,
+    //         //orientation: pageOrientation,
+    //         build: (context) => page,
+    //       )
+    //   );
+    // }
+
+    if(imageToPdf.isNotEmpty){
+      List<pw.Widget> images=List<pw.Widget>.empty(growable: true);
+      for (int i=0;i<imageToPdf.length;i++) {
+        double heightImage=5;
+        var image = pw.MemoryImage(
+          File(imageToPdf[i]).readAsBytesSync(),
+        );
+
+        if(image.height!=null&&image.width!=null) {
+          if (image.height! > image.width!){
+            switch (typeScan){
+              case TypeScan.scanDocument: heightImage=29; break;
+              case TypeScan.scanID: heightImage=8.5; break;
+              case TypeScan.scanPassPort: heightImage=12.5; break;
+              default: heightImage=29;break;
+            }
+          }else{
+            switch (typeScan){
+              case TypeScan.scanDocument: heightImage=20; break;
+              case TypeScan.scanID: heightImage=5.5; break;
+              case TypeScan.scanPassPort: heightImage=8.8; break;
+              default: heightImage=20;break;
+            }
+          }
+
+        }
+        heightImage= ConvertCmToPt(heightImage);
+        pw.Widget pwImage=  pw.Image(image,height: heightImage);
+        images.add(pwImage);
+
+        //set page
+
+        if(images.length==2){
+
+          addTwoImageToPage(
+              imageWidgets: images,
+              pdfFinal:pdfFinal ,
+              scanIdRow: scanIdRow,
+               );
+
+          images.clear();
+
+        }
+
+      }
+
+      if(images.isNotEmpty){
+
+        addTwoImageToPage(
+            pdfFinal:pdfFinal ,
+            imageWidgets:images ,
+          scanIdRow: scanIdRow
+            );
+      }
+
     }
-
-
-
 
 
 

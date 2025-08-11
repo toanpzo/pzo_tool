@@ -136,6 +136,7 @@ class MyConfirmDialog extends StatelessWidget {
   final String? actionTitle;
   final String? cancelTitle;
   final VoidCallback? onContinue;
+  //final VoidCallback? onContinue;
 
   MyConfirmDialog(
       {this.title,

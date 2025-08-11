@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tiengviet/tiengviet.dart';
 import 'package:vietjet_tool/common/localizations/appLocalizations.dart';
@@ -13,23 +14,25 @@ import 'package:vietjet_tool/widgets/text_field/text_filed.dart';
 import '../../common/Constant/constant.dart';
 import '../../models/questions/bank_question/bank_question.dart';
 import '../../models/questions/question/question.dart';
-import '../../widgets/MyExpansionTile/expansion_tile.dart';
 import '../../widgets/MyListtitle/list_tile.dart';
 
-enum TypePage{ isTypeQuestions,isBankQuestion,isQuestion}
+enum TypePage { isTypeQuestions, isBankQuestion, isQuestion }
 
-enum Modified{edit,add,delete,update}
-
-
+enum Modified { edit, add, delete, update }
 
 class QuestionScreen extends StatefulWidget {
-
   final bool? edit;
   final TypePage typePage;
   final String? idParent;
   final String? title;
   final Object? parent;
-   const QuestionScreen({super.key, this.edit, required this.typePage, this.idParent, this.title, this.parent,
+  const QuestionScreen({
+    super.key,
+    this.edit,
+    required this.typePage,
+    this.idParent,
+    this.title,
+    this.parent,
   });
 
   @override
@@ -37,119 +40,112 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends MyState<QuestionScreen> {
-  TypePage pageType= TypePage.isTypeQuestions;
-  bool isEdit=false;
-  List<Widget> listTitles=List<Widget>.empty(growable: true);
+  TypePage pageType = TypePage.isTypeQuestions;
+  bool isEdit = false;
+  List<Widget> listTitles = List<Widget>.empty(growable: true);
 
   //List<Widget> listTitles=List<Widget>.empty(growable: true);
 
   List<TypeQuestion>? typeQuestions;
-  List<String> showBank=List<String>.empty(growable: true);
-  Map<String,List<BankQuestion>>? allBankQuestions;
+  List<String> showBank = List<String>.empty(growable: true);
+  Map<String, List<BankQuestion>>? allBankQuestions;
   List<BankQuestion>? bankQuestions;
   List<Question>? questions;
-  String idParentPage="";
-  Object parent="";
+  String idParentPage = "";
+  Object parent = "";
   String? searchValue;
 
-
-
-
-
-  String idTypeEdit="";
-  String idBankEdit="";
-  String idQuestEdit="";
+  String idTypeEdit = "";
+  String idBankEdit = "";
+  String idQuestEdit = "";
 
   @override
-  Future<void> beforeLoadData() async{
-    isEdit=widget.edit??false;
+  Future<void> beforeLoadData() async {
+    isEdit = widget.edit ?? false;
 
-    QuestionController questionController =controller as QuestionController;
-    questionController.type=pageType=widget.typePage;
-    questionController.idParentPage=idParentPage=widget.idParent??"";
-
-
+    QuestionController questionController = controller as QuestionController;
+    questionController.type = pageType = widget.typePage;
+    questionController.idParentPage = idParentPage = widget.idParent ?? "";
   }
-
 
   @override
-  Future<void> afterLoadData() async{
-    QuestionController questionController =controller as QuestionController;
+  Future<void> afterLoadData() async {
+    QuestionController questionController = controller as QuestionController;
 
+    typeQuestions = questionController.typeQuestions;
 
-
-    typeQuestions= questionController.typeQuestions;
-
-    allBankQuestions=questionController.allBankQuestions;
-    bankQuestions=questionController.bankQuestions;
-    questions=questionController.questions;
-    parent=widget.parent??"";
-
-
-
-
-
+    allBankQuestions = questionController.allBankQuestions;
+    bankQuestions = questionController.bankQuestions;
+    questions = questionController.questions;
+    parent = widget.parent ?? "";
   }
 
-  void actionInputFromPzoFile({List<String>? typeFile})async{
-    bool yesAll=false;
-    bool noAll=false;
-    List<Question> questPzo= await (controller as QuestionController).openListQuestionToDisk(typeFile: typeFile);
-     await Future.forEach<Question>(questPzo, (quest) async{
-       quest=quest.copyWith(id: idParentPage);
+  void actionInputFromPzoFile({List<String>? typeFile}) async {
+    bool yesAll = false;
+    bool noAll = false;
+    List<Question> questPzo = await (controller as QuestionController)
+        .openListQuestionToDisk(typeFile: typeFile);
+    await Future.forEach<Question>(questPzo, (quest) async {
+      quest = quest.copyWith(id: idParentPage);
 
-      if(questions!.where((element) => element.question==quest.question).isNotEmpty){
-
-
-        if(yesAll){
+      if (questions!
+          .where((element) => element.question == quest.question)
+          .isNotEmpty) {
+        if (yesAll) {
           questions!.add(quest);
+        } else if (noAll) {
+        } else {
+          bool result = await showDialog(
+            context: context,
+            builder: (context) => MyCustomDialog(
+              title: "",
+              content: Text(
+                AppLocalizations.of(context).translate("key"),
+              ),
+              actions: [
+                MyButton(
+                  content: "Yes",
+                  onPressed: () {
+                    // questions!.add(quest);
+                    Navigator.pop(context, true);
+                  },
+                ),
+                MyButton(
+                  content: "No",
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
+                ),
+                MyButton(
+                  content: "Yes to all",
+                  onPressed: () {
+                    yesAll = true;
+                    //questions!.add(quest);
+                    Navigator.pop(context, true);
+                  },
+                ),
+                MyButton(
+                  content: "No to all",
+                  onPressed: () {
+                    noAll = true;
+                    Navigator.pop(context, false);
+                  },
+                ),
+              ],
+            ),
+          );
 
-        }else if(noAll){
-
-        }else{
-
-
-          bool result= await showDialog(context: context, builder: (context) => MyCustomDialog(title: "", content: Text(
-            AppLocalizations.of(context).translate("key"),),
-            actions: [
-              MyButton(content: "Yes", onPressed: (){
-                // questions!.add(quest);
-                Navigator.pop(context,true);
-              },),
-              MyButton(content: "No", onPressed: (){
-                Navigator.pop(context,false);
-              },),
-              MyButton(content: "Yes to all", onPressed: (){
-                yesAll=true;
-                //questions!.add(quest);
-                Navigator.pop(context,true);
-              },),
-              MyButton(content: "No to all", onPressed: (){
-                noAll=true;
-                Navigator.pop(context,false);
-              },),
-            ],
-          ),);
-
-          if(result){
+          if (result) {
             questions!.add(quest);
           }
-
-
         }
-
-      }
-      else{
+      } else {
         questions!.add(quest);
       }
-
     });
-    await (controller as QuestionController).saveQuestion(questions!, idParentPage);
-    setState(() {
-
-    });
-
-
+    await (controller as QuestionController)
+        .saveQuestion(questions!, idParentPage);
+    setState(() {});
   }
 
   // @override
@@ -210,145 +206,170 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
   // ]
   //     :null;
 
-
   @override
-  Widget? get floatButton =>
-      isEdit?
+  Widget? get floatButton => isEdit
+      ? pageType == TypePage.isQuestion
+          ? const SizedBox()
+          : FloatingActionButton(
+              onPressed: () async {
+                switch (pageType) {
+                  case TypePage.isTypeQuestions:
+                    onShowDialogTypeQuest(Modified.add);
+                    break;
+                  case TypePage.isBankQuestion:
+                    onShowDialogBankQuest(value: Modified.add, idTypeQuest: '');
+                    break;
+                  case TypePage.isQuestion:
+                    //onShowDialogQuest(Modified.add);
+                    questions = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              InputQuestionScreen(idBankQuest: idParentPage),
+                        ));
+                    setState(() {});
+                    break;
+                }
+              },
+              child: const Icon(Icons.add),
+            )
+      : null;
 
-      pageType==TypePage.isQuestion?
-  const SizedBox()
-      : FloatingActionButton(onPressed: ()async {
-    switch (pageType){
-      case TypePage.isTypeQuestions: onShowDialogTypeQuest(Modified.add); break;
-      case TypePage.isBankQuestion: onShowDialogBankQuest(Modified.add); break;
-      case TypePage.isQuestion:
-        //onShowDialogQuest(Modified.add);
-        questions= await Navigator.push(context, MaterialPageRoute(builder: (context) => InputQuestionScreen(idBankQuest: idParentPage),));
-        setState(() {
+  void onShowDialogTypeQuest(Modified value, {int? select}) {
+    String textEdit = select != null ? typeQuestions![select].name : "";
+    TextEditingController nameTypeQuestions =
+        TextEditingController(text: textEdit);
+    showDialog(
+        context: context,
+        builder: (context) {
+          switch (value) {
+            case Modified.edit:
+              return MyCustomDialog(
+                title: "Please input type questions!",
+                content: MyTextFiled(
+                  controller: nameTypeQuestions,
+                ),
+                firstButton: "OK",
+                onFirstButton: () async {
+                  //typeQuestions ??= List<TypeQuestion>.empty(growable: true);
 
+                  //typeQuestions!.add(TypeQuestion(id: DateTime.now().toString(),name: nameTypeQuestions.value.text));
+                  if (typeQuestions != null && select != null) {
+                    typeQuestions![select] = typeQuestions![select]
+                        .copyWith(name: nameTypeQuestions.value.text);
+                    await (controller as QuestionController).saveTypeQuestion();
+                  }
+                },
+              );
+            case Modified.delete:
+              return MyCustomDialog(
+                title: AppLocalizations.of(context).translate("Are you sure?"),
+                content: Text(AppLocalizations.of(context).translate(
+                    "If you agree, all related data will be deleted")),
+                firstButton: "OK",
+                onFirstButton: () async {
+                  await (controller as QuestionController)
+                      .deleteTypeQuestion(typeQuestions![select!].id);
+                },
+              );
+            default:
+              return MyCustomDialog(
+                title: AppLocalizations.of(context)
+                    .translate("Please input type questions!"),
+                content: MyTextFiled(
+                  controller: nameTypeQuestions,
+                ),
+                firstButton: "OK",
+                onFirstButton: () async {
+                  typeQuestions ??= List<TypeQuestion>.empty(growable: true);
+
+                  typeQuestions!.add(TypeQuestion(
+                      id: DateTime.now().toString(),
+                      name: nameTypeQuestions.value.text));
+
+                  await (controller as QuestionController).saveTypeQuestion();
+                },
+              );
+          }
         });
-        break;
-
-    }
-
-
-  },child: const Icon(Icons.add),)
-  :null;
-
-  void onShowDialogTypeQuest(Modified value,{int? select}){
-    String textEdit= select!=null?typeQuestions![select] .name:"";
-    TextEditingController nameTypeQuestions= TextEditingController( text:textEdit);
-    showDialog(context: context, builder: (context) {
-
-      switch (value){
-        case Modified.edit: return MyCustomDialog(
-          title: "Please input type questions!",
-          content:
-          MyTextFiled(
-            controller: nameTypeQuestions,),
-          firstButton: "OK",
-          onFirstButton: ()async{
-            //typeQuestions ??= List<TypeQuestion>.empty(growable: true);
-
-
-            //typeQuestions!.add(TypeQuestion(id: DateTime.now().toString(),name: nameTypeQuestions.value.text));
-            if(typeQuestions!=null && select!=null) {
-              typeQuestions![select] = typeQuestions![select].copyWith(
-                  name: nameTypeQuestions.value.text);
-              await (controller as QuestionController).saveTypeQuestion(
-                  typeQuestions!);
-            }
-
-          },
-
-        );
-        case Modified.delete: return MyCustomDialog(
-          title: AppLocalizations.of(context).translate("Are you sure?"),
-          content:
-          Text(AppLocalizations.of(context).translate("If you agree, all related data will be deleted")),
-          firstButton: "OK",
-          onFirstButton: ()async{
-           await (controller as QuestionController).deleteTypeQuestion(typeQuestions![select!].id);
-          },
-
-        );
-        default: return MyCustomDialog(
-          title: AppLocalizations.of(context).translate("Please input type questions!"),
-          content:
-          MyTextFiled(controller: nameTypeQuestions,),
-          firstButton: "OK",
-          onFirstButton: ()async{
-            typeQuestions ??= List<TypeQuestion>.empty(growable: true);
-
-
-            typeQuestions!.add(TypeQuestion(id: DateTime.now().toString(),name: nameTypeQuestions.value.text));
-
-            await (controller as QuestionController).saveTypeQuestion(typeQuestions!);
-
-          },
-
-        );
-      }
-
-
-  });
   }
-  void onShowDialogBankQuest(Modified value,{int? select}){
-    String textEdit= select!=null?bankQuestions![select] .name:"";
-    TextEditingController nameBankQuestions= TextEditingController( text:textEdit);
-    showDialog(context: context, builder: (context) {
 
-      switch (value){
-        case Modified.edit: return MyCustomDialog(
-          title: "Please input bank name questions!",
-          content:
-          MyTextFiled(
-            controller: nameBankQuestions,),
-          firstButton: "OK",
-          onFirstButton: ()async{
-            if(bankQuestions!=null && select!=null) {
-              bankQuestions![select] = bankQuestions![select].copyWith(
-                  name: nameBankQuestions.value.text);
-              await (controller as QuestionController).saveBankQuestion(
-                  bankQuestions!,idParentPage);
-            }
+  void onShowDialogBankQuest(
+      {required Modified value, required String idTypeQuest, int? select}) {
+    //String textEdit= select!=null?bankQuestions![select] .name:"";
+    String? textEdit =
+        select != null ? allBankQuestions?[idTypeQuest]?[select].name : "";
+    TextEditingController nameBankQuestions =
+        TextEditingController(text: textEdit);
+    showDialog(
+        context: context,
+        builder: (context) {
+          switch (value) {
+            case Modified.edit:
+              return MyCustomDialog(
+                title: "Please input bank name questions!",
+                content: MyTextFiled(
+                  controller: nameBankQuestions,
+                ),
+                firstButton: "OK",
+                onFirstButton: () async {
+                  if (select != null) {
+                    allBankQuestions![idTypeQuest]![select] =
+                        allBankQuestions![idTypeQuest]![select]
+                            .copyWith(name: nameBankQuestions.value.text);
+                    if (allBankQuestions![idTypeQuest] != null) {
+                      await (controller as QuestionController).saveBankQuestion(
+                          allBankQuestions![idTypeQuest]!, idTypeQuest);
+                    }
+                  }
+                },
+              );
+            case Modified.delete:
+              return MyCustomDialog(
+                title: AppLocalizations.of(context).translate("Are you sure?"),
+                content: Text(AppLocalizations.of(context).translate(
+                    "If you agree, all related data will be deleted")),
+                firstButton: "OK",
+                onFirstButton: () async {
+                  if (allBankQuestions?[idTypeQuest] != null) {
+                    //await (controller as QuestionController).saveBankQuestion(
+                    //  allBankQuestions![idTypeQuest]!,idTypeQuest);
 
-          },
+                    await (controller as QuestionController).deleteBankQuestion(
+                        idTypeQuestion: idTypeQuest,
+                        idBankQuestion:
+                            allBankQuestions![idTypeQuest]![select!].id);
+                  }
+                },
+              );
+            default:
+              return MyCustomDialog(
+                title: AppLocalizations.of(context)
+                    .translate("Please input name bank questions!"),
+                content: MyTextFiled(
+                  controller: nameBankQuestions,
+                ),
+                firstButton: "OK",
+                onFirstButton: () async {
+                  allBankQuestions ??= {};
+                  allBankQuestions![idTypeQuest] ??=
+                      List<BankQuestion>.empty(growable: true);
 
-        );
-        case Modified.delete: return MyCustomDialog(
-          title: AppLocalizations.of(context).translate("Are you sure?"),
-          content:
-          Text(AppLocalizations.of(context).translate("If you agree, all related data will be deleted")),
-          firstButton: "OK",
-          onFirstButton: ()async{
-            await (controller as QuestionController).deleteBankQuestion(bankQuestions![select!].id);
-          },
+                  allBankQuestions![idTypeQuest]!.add(BankQuestion(
+                      id: DateTime.now().toString(),
+                      name: nameBankQuestions.value.text,
+                      idTypeQuestion: idTypeQuest));
 
-        );
-        default: return MyCustomDialog(
-          title: AppLocalizations.of(context).translate("Please input name bank questions!"),
-          content:
-          MyTextFiled(controller: nameBankQuestions,),
-          firstButton: "OK",
-          onFirstButton: ()async{
-            bankQuestions ??= List<BankQuestion>.empty(growable: true);
-
-
-            bankQuestions!.add(BankQuestion(id: DateTime.now().toString(),name: nameBankQuestions.value.text,idTypeQuestion: idParentPage));
-
-            await (controller as QuestionController).saveBankQuestion(bankQuestions!,idParentPage);
-
-          },
-
-        );
-      }
-
-
-    });
+                  await (controller as QuestionController).saveBankQuestion(
+                      allBankQuestions![idTypeQuest]!, idTypeQuest);
+                },
+              );
+          }
+        });
   }
-  void onShowDialogQuest(Modified value,{int? select}){
-    List<Widget> widgets= List<Widget>.empty(growable: true);
+
+  void onShowDialogQuest(Modified value, {int? select}) {
+    List<Widget> widgets = List<Widget>.empty(growable: true);
 
     // List<Widget> contents(){
     //
@@ -380,147 +401,242 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
     //
     // }
 
+    String textEdit = select != null ? typeQuestions![select].name : "";
+    TextEditingController nameTypeQuestions =
+        TextEditingController(text: textEdit);
+    showDialog(
+        context: context,
+        builder: (context) {
+          switch (value) {
+            case Modified.edit:
+              return MyCustomDialog(
+                title: "",
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    MyTextFiled(
+                      controller: nameTypeQuestions,
+                    ),
+                    MyTextFiled(
+                      controller: nameTypeQuestions,
+                    ),
+                  ],
+                ),
+                firstButton: "OK",
+                onFirstButton: () async {
+                  //typeQuestions ??= List<TypeQuestion>.empty(growable: true);
 
+                  //typeQuestions!.add(TypeQuestion(id: DateTime.now().toString(),name: nameTypeQuestions.value.text));
+                  if (typeQuestions != null && select != null) {
+                    typeQuestions![select] = typeQuestions![select]
+                        .copyWith(name: nameTypeQuestions.value.text);
+                    await (controller as QuestionController).saveTypeQuestion();
+                  }
+                },
+              );
+            case Modified.delete:
+              return MyCustomDialog(
+                title: AppLocalizations.of(context).translate("Are you sure?"),
+                content: Text(AppLocalizations.of(context).translate(
+                    "If you agree, all related data will be deleted")),
+                firstButton: "OK",
+                onFirstButton: () async {
+                  await (controller as QuestionController)
+                      .deleteTypeQuestion(typeQuestions![select!].id);
+                  typeQuestions = await (controller as QuestionController)
+                      .getTypeQuestions();
+                  setState(() {});
+                },
+              );
+            default:
+              return MyCustomDialog(
+                title: "",
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: widgets.isNotEmpty ? widgets : [],
+                  ),
+                ),
+                firstButton: "OK",
+                onFirstButton: () async {
+                  typeQuestions ??= List<TypeQuestion>.empty(growable: true);
 
-    String textEdit= select!=null?typeQuestions![select] .name:"";
-    TextEditingController nameTypeQuestions= TextEditingController( text:textEdit);
-    showDialog(context: context, builder: (context) {
+                  typeQuestions!.add(TypeQuestion(
+                      id: DateTime.now().toString(),
+                      name: nameTypeQuestions.value.text));
 
-      switch (value){
-        case Modified.edit: return MyCustomDialog(
-          title: "",
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [MyTextFiled(
-              controller: nameTypeQuestions,),
-              MyTextFiled(
-                controller: nameTypeQuestions,),],
-          ),
-
-          firstButton: "OK",
-          onFirstButton: ()async{
-            //typeQuestions ??= List<TypeQuestion>.empty(growable: true);
-
-
-            //typeQuestions!.add(TypeQuestion(id: DateTime.now().toString(),name: nameTypeQuestions.value.text));
-            if(typeQuestions!=null && select!=null) {
-              typeQuestions![select] = typeQuestions![select].copyWith(
-                  name: nameTypeQuestions.value.text);
-              await (controller as QuestionController).saveTypeQuestion(
-                  typeQuestions!);
-            }
-
-          },
-
-        );
-        case Modified.delete: return MyCustomDialog(
-          title: AppLocalizations.of(context).translate("Are you sure?"),
-          content:
-          Text(AppLocalizations.of(context).translate("If you agree, all related data will be deleted")),
-          firstButton: "OK",
-          onFirstButton: ()async{
-            await (controller as QuestionController).deleteTypeQuestion(typeQuestions![select!].id);
-            typeQuestions= await (controller as QuestionController).getTypeQuestions();
-            setState(() {
-
-            });
-          },
-
-        );
-        default: return MyCustomDialog(
-          title: "",
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-
-              children: widgets.isNotEmpty?widgets:
-
-              [
-              ],
-            ),
-          ),
-
-
-          firstButton: "OK",
-          onFirstButton: ()async{
-            typeQuestions ??= List<TypeQuestion>.empty(growable: true);
-
-
-            typeQuestions!.add(TypeQuestion(id: DateTime.now().toString(),name: nameTypeQuestions.value.text));
-
-            await (controller as QuestionController).saveTypeQuestion(typeQuestions!);
-
-          },
-
-        );
-      }
-
-
-    });
+                  await (controller as QuestionController).saveTypeQuestion();
+                },
+              );
+          }
+        });
   }
 
-  void setVisibilityTypeBank(String idTypeBank,bool show){
-    if(show){
-      if(!showBank.contains(idTypeBank)){
+  void setVisibilityTypeBank(String idTypeBank, bool show) {
+    if (show) {
+      if (!showBank.contains(idTypeBank)) {
         showBank.add(idTypeBank);
       }
-    }else{
+    } else {
       showBank.remove(idTypeBank);
     }
-    (controller as QuestionController).update();
+    setState(() {});
 
+    //(controller as QuestionController).update();
   }
-
-
-
-
-
-
-
 
   @override
   MyController createController() {
     return QuestionController(this);
   }
 
-
-
-
-
-
-
   @override
   Widget setBody() {
-
-
-
-
-    switch (pageType){
-
+    switch (pageType) {
       case TypePage.isTypeQuestions:
-        if(typeQuestions!=null) {
-
-
-
-
+        if (typeQuestions != null) {
           /// list quest
           listTitles.clear();
+          for (int i = 0; i < typeQuestions!.length; i++) {
+            TypeQuestion type = typeQuestions![i];
+            int? lengthBank = allBankQuestions?[type.id]?.length;
+            bool show = showBank.contains(type.id);
 
-          for (var type in typeQuestions!) {
-            bool show=showBank.contains(type.id);
+            List<Widget> trailing = List<Widget>.empty(growable: true);
+            if (isEdit) {
+              trailing.add(
+                IconButton(
+                    onPressed: () {
+                      onShowDialogTypeQuest(Modified.edit, select: i);
+                    },
+                    icon: const Icon(
+                      Icons.edit,
+                      color: Colors.blue,
+                    )),
+              );
+              trailing.add(IconButton(
+                  onPressed: () {
+                    onShowDialogTypeQuest(Modified.delete, select: i);
+                  },
+                  icon: const Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  )));
+            }
+            if (lengthBank != null || isEdit) {
+              trailing.add(show
+                  ? const Icon(Icons.expand_less)
+                  : const Icon(Icons.expand_more));
+            }
 
-            listTitles.add(MyListTile(title: type.name, context: context,trailing:show?const Icon(Icons.expand_less):const Icon(Icons.expand_more),
-            onTap: (){
-              setVisibilityTypeBank(type.id,!show);
-            },
+            listTitles.add(MyListTile(
+              styleText: const TextStyle(fontWeight: FontWeight.bold),
+              title: type.name,
+              context: context,
+              trailing: Row(
+                  mainAxisSize: MainAxisSize.min, children: trailing.toList()),
+              onTap: () {
+                setVisibilityTypeBank(type.id, !show);
+              },
             ));
+
             /// column bankQuest
-            List<Widget> banks= List<Widget>.empty(growable: true);
-            allBankQuestions?[type.id]?.forEach((element) {
+            List<Widget> banks = List<Widget>.empty(growable: true);
+            if (lengthBank != null) {
+              for (int j = 0; j < lengthBank; j++) {
+                BankQuestion? bankQuestion = allBankQuestions?[type.id]?[j];
+                if (bankQuestion != null) {
+                  banks.add(MyListTile(
+                    onTap: () async {
+                      if (isEdit) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => QuestionScreen(
+                                  typePage: TypePage.isQuestion,
+                                  edit: isEdit,
+                                  parent: bankQuestion,
+                                  idParent: bankQuestion.id,
+                                  title: AppLocalizations.of(context).translate("Bank Question:")+ bankQuestion.name
+                              ),
+                            ));
+                      } else {
+                        questions = await (controller as QuestionController)
+                            .getQuestions(bankQuestion.id);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ShowChoice(
+                                  title: "Choice",
+                                  bankQuestion: bankQuestion,
+                                  // questions: questions ??
+                                  //     [
+                                  //       Question(
+                                  //           idBankQuestion: "idBankQuestion",
+                                  //           numberQuestion: 4,
+                                  //           id: "id",
+                                  //           question: "question",
+                                  //           answers: [])
+                                  //     ]
+                              ),
+                            ));
+                      }
+                    },
+                    padding: const EdgeInsets.only(left: 20),
+                    title: bankQuestion
+                        .name, //allBankQuestions![type.id]![i].name,
+
+                    context: context,
+                    trailing: isEdit
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                                IconButton(
+                                    onPressed: () {
+                                      onShowDialogBankQuest(
+                                          select: j,
+                                          value: Modified.edit,
+                                          idTypeQuest: type.id);
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.blue,
+                                    )),
+                                IconButton(
+                                    onPressed: () {
+                                      onShowDialogBankQuest(
+                                          select: j,
+                                          value: Modified.delete,
+                                          idTypeQuest: type.id);
+                                    },
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    )),
+                              ])
+                        : null,
+                  ));
+                }
+              }
+            }
+            if (isEdit) {
               banks.add(MyListTile(
-                  padding: const EdgeInsets.only(left: 20),
-                  title: type.name, context: context));
-            },);
+                title: "Click to add bank",
+                context: context,
+                onTap: () {
+                  onShowDialogBankQuest(
+                      value: Modified.add, idTypeQuest: type.id);
+                },
+                padding: const EdgeInsets.only(left: 20),
+              ));
+            }
+
+            // allBankQuestions?[type.id]?.forEach((element) {
+            //   banks.add(MyListTile(
+            //       padding: const EdgeInsets.only(left: 20),
+            //       title: element.name, context: context));
+            // },);
+
             Widget bankQuest = Visibility(
               visible: show,
               child: Column(
@@ -528,239 +644,324 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
               ),
             );
 
-
             listTitles.add(bankQuest);
-
           }
 
-          return
-
-            ListView(
-              children:
-              listTitles,
+          return ListView(
+            children: listTitles.toList(),
           );
 
           return ListView.builder(
-
             itemCount: typeQuestions!.length,
-            itemBuilder: (context, index) =>MyListTile(title: typeQuestions![index].name,
-                onTap: ()async{
-
-              Navigator.push(context,MaterialPageRoute(builder: (context) => QuestionScreen(typePage: TypePage.isBankQuestion,edit: isEdit,idParent: typeQuestions![index].id,title: "Bank Questions"),));
-              },
-                trailing:isEdit?
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-    children:<Widget>
-    [
-      IconButton(onPressed: (){
-        onShowDialogTypeQuest(Modified.edit,select: index);
-      }, icon: const Icon(Icons.edit,color: Colors.blue,)),
-      IconButton(onPressed: (){
-        onShowDialogTypeQuest(Modified.delete,select: index);
-      }, icon: const Icon(Icons.delete,color: Colors.red,)),
-    ]
-
-    ):null,
-
-
-
-                context: context),);
-        }
-        else {
+            itemBuilder: (context, index) => MyListTile(
+                title: typeQuestions![index].name,
+                onTap: () async {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => QuestionScreen(
+                            typePage: TypePage.isBankQuestion,
+                            edit: isEdit,
+                            idParent: typeQuestions![index].id,
+                            title: "Bank Questions"),
+                      ));
+                },
+                trailing: isEdit
+                    ? Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                        IconButton(
+                            onPressed: () {
+                              onShowDialogTypeQuest(Modified.edit,
+                                  select: index);
+                            },
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Colors.blue,
+                            )),
+                        IconButton(
+                            onPressed: () {
+                              onShowDialogTypeQuest(Modified.delete,
+                                  select: index);
+                            },
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            )),
+                      ])
+                    : null,
+                context: context),
+          );
+        } else {
           return Container();
         }
 
       case TypePage.isBankQuestion:
-        if(bankQuestions!=null) {
+        if (bankQuestions != null) {
           return ListView.builder(
-
             itemCount: bankQuestions!.length,
-            itemBuilder: (context, index) =>MyListTile(title: bankQuestions![index].name,
-                onTap: ()async{
-              if(isEdit){
-                Navigator.push(context,MaterialPageRoute(builder: (context) => QuestionScreen(typePage: TypePage.isQuestion,edit: isEdit,
-
-                    parent: bankQuestions![index],
-                    idParent: bankQuestions![index].id,title: "Questions"),));
-
-              }else{
-                questions=  await (controller as QuestionController).getQuestions(bankQuestions![index].id);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ShowChoice(title: "Choice",
-                    bankQuestion: bankQuestions![index],
-
-                    questions: questions??[Question(idBankQuestion: "idBankQuestion", numberQuestion: 4, id: "id", question: "question", answers: [])]),));
-              }
-
-
+            itemBuilder: (context, index) => MyListTile(
+                title: bankQuestions![index].name,
+                onTap: () async {
+                  if (isEdit) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => QuestionScreen(
+                              typePage: TypePage.isQuestion,
+                              edit: isEdit,
+                              parent: bankQuestions![index],
+                              idParent: bankQuestions![index].id,
+                              title: "Questions"),
+                        ));
+                  } else {
+                    questions = await (controller as QuestionController)
+                        .getQuestions(bankQuestions![index].id);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShowChoice(
+                              title: "Choice",
+                              bankQuestion: bankQuestions![index],
+                              // questions: questions ??
+                              //     [
+                              //       Question(
+                              //           idBankQuestion: "idBankQuestion",
+                              //           numberQuestion: 4,
+                              //           id: "id",
+                              //           question: "question",
+                              //           answers: [])
+                              //     ]
+                          ),
+                        ));
+                  }
                 },
-                trailing:isEdit?
-                Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children:<Widget>
-                    [
-                      IconButton(onPressed: (){
-                        onShowDialogBankQuest(Modified.edit,select: index);
-                      }, icon: const Icon(Icons.edit,color: Colors.blue,)),
-                      IconButton(onPressed: (){
-                        onShowDialogBankQuest(Modified.delete,select: index);
-                      }, icon: const Icon(Icons.delete,color: Colors.red,)),
-                    ]
-
-                ):null,
-
-
-
-                context: context),);
-        }
-        else {
+                trailing: isEdit
+                    ? Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                        IconButton(
+                            onPressed: () {
+                              //onShowDialogBankQuest(Modified.edit,select: index);
+                            },
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Colors.blue,
+                            )),
+                        IconButton(
+                            onPressed: () {
+                              //onShowDialogBankQuest(Modified.delete,select: index);
+                            },
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            )),
+                      ])
+                    : null,
+                context: context),
+          );
+        } else {
           return Container();
         }
       case TypePage.isQuestion:
-
-        if(questions!=null) {
-
-         return
-
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
+        if (questions != null) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   margin: const EdgeInsets.only(left: 10),
                   child: Row(
                     children: [
-                      IconButton(onPressed: (){
-                        (controller as QuestionController).downloadInputForm();
-                      }, icon:Image.asset("assets/images/download.png",height: 30),
-
-                        tooltip: AppLocalizations.of(context).translate("Download excel input form"),
+                      IconButton(
+                        onPressed: () {
+                          (controller as QuestionController)
+                              .downloadInputForm();
+                        },
+                        icon: Image.asset("assets/images/download.png",
+                            height: 30),
+                        tooltip: AppLocalizations.of(context)
+                            .translate("Download excel input form"),
                       ),
-                      IconButton(onPressed: (){
-                        (controller as QuestionController).saveListQuestionToDisk(questions!, (parent is BankQuestion)? TiengViet.parse((parent as BankQuestion).name):"bank"
-                        , MyConstant.fileNameQuest);
-                      }, icon:Image.asset("assets/images/save.png",height: 30),
-                          tooltip: AppLocalizations.of(context).translate("Save BankQuest"),
-
-
+                      IconButton(
+                        onPressed: () {
+                          (controller as QuestionController)
+                              .saveListQuestionToDisk(
+                                  questions!,
+                                  (parent is BankQuestion)
+                                      ? TiengViet.parse(
+                                          (parent as BankQuestion).name)
+                                      : "bank",
+                                  MyConstant.fileNameQuest);
+                        },
+                        icon: Image.asset("assets/images/save.png", height: 30),
+                        tooltip: AppLocalizations.of(context)
+                            .translate("Save BankQuest"),
                       ),
-                      const Icon(Icons.drag_indicator,size: 20,),
-                      IconButton(onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => InputQuestionScreen(idBankQuest: idParentPage),)).then((value) {
-                          setState(() {
-                            questions=value;
+                      const Icon(
+                        Icons.drag_indicator,
+                        size: 20,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => InputQuestionScreen(
+                                    idBankQuest: idParentPage),
+                              )).then((value) {
+                            setState(() {
+                              questions = value;
+                            });
                           });
-                        });
-
-                      }, icon:Image.asset("assets/images/add_quest.png",height: 30),
-                        tooltip: AppLocalizations.of(context).translate("Add quest manual"),
-
-
+                        },
+                        icon: Image.asset("assets/images/add_quest.png",
+                            height: 30),
+                        tooltip: AppLocalizations.of(context)
+                            .translate("Add quest manual"),
                       ),
-                      IconButton(onPressed: (){
-                        actionInputFromPzoFile(typeFile: ["xlsx","xls"]);
-
-                      }, icon:Image.asset("assets/images/excel.png",height: 30),
-                        tooltip: AppLocalizations.of(context).translate("Add from excel"),
-
-
+                      IconButton(
+                        onPressed: () {
+                          actionInputFromPzoFile(typeFile: ["xlsx", "xls"]);
+                        },
+                        icon:
+                            Image.asset("assets/images/excel.png", height: 30),
+                        tooltip: AppLocalizations.of(context)
+                            .translate("Add from excel"),
                       ),
-                      IconButton(onPressed: (){
-                        actionInputFromPzoFile(typeFile: ["bin"]);
-                      }, icon:Image.asset("assets/icons/logo.png",height: 30),
-                        tooltip: AppLocalizations.of(context).translate("Add from pzo file"),
-
-
+                      IconButton(
+                        onPressed: () {
+                          actionInputFromPzoFile(typeFile: ["bin"]);
+                        },
+                        icon: Image.asset("assets/icons/logo.png", height: 30),
+                        tooltip: AppLocalizations.of(context)
+                            .translate("Add from pzo file"),
                       ),
                     ],
-                  )
-                ),
-                 MyTextFiled(
-                   margin: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                   hintText: "Search",
-                   onChanged: (value){
-                     searchValue=value;
-                     setState(() {
+                  )),
+              MyTextFiled(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                hintText: "Search",
+                onChanged: (value) {
+                  searchValue = value;
+                  setState(() {});
+                },
+              ),
+              Expanded(
+                child: ListView.builder(
+                  //shrinkWrap: true,
 
-                     });
-                   },
-
-                ),
-
-
-                    Expanded(child:
-                        ListView.builder(
-                          //shrinkWrap: true,
-
-                          itemCount: questions!.length,
-                          itemBuilder: (context, index) {
-                            List<Widget> answers= List<Widget>.empty(growable: true);
-                            answers.add(Text(AppLocalizations.of(context).translate("Question:")+questions![index].question),);
-                            for(int i=0;i<questions![index].numberQuestion;i++){
-                              String textAnswer=questions![index].answers[i].text;
-                              if( questions![index].answerCorrect==questions![index].answers[i])
-                              {
-                                answers.add(Text(textAnswer,style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),));
-                              }else{
-                                answers.add(Text(textAnswer));
-                              }
-
-                            }
-                            if(isEdit){
-                              return
-                              questions![index].question.contains(searchValue??"")?
-                                Row(
-                                  //crossAxisAlignment: CrossAxisAlignment.start,
-                                  //mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width*0.7,
-                                      margin: const EdgeInsets.all(5),
-                                      child: Column(
-                                        //mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: answers,
-                                      ),
-                                    ),
-                                    const Expanded(child: SizedBox()),
-
-                                    IconButton(onPressed: ()async{
-                                      questions= await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                          InputQuestionScreen(idBankQuest: idParentPage,
-                                            actionQuest: ActionQuest.edit,
-                                            index: index,
-                                            quests: questions,
-                                            question: questions?[index],
-
-                                          ),));
-                                      setState(() {
-
-                                      });
-                                    }, icon: const Icon(Icons.edit,color: Colors.blue,)),
-                                    IconButton(onPressed: ()async{
-                                      questions!.removeAt(index);
-                                      await (controller as QuestionController).saveQuestion(questions!, idParentPage);
-                                      setState(() {
-
-                                      });
-                                    }, icon: const Icon(Icons.delete,color: Colors.red,)),
-                                  ],
-
-                                ):const SizedBox();
-
-                            }else{
-                              return Container();
-                            }
-                          },
+                  itemCount: questions!.length,
+                  itemBuilder: (context, index) {
+                    List<Widget> answers = List<Widget>.empty(growable: true);
+                    answers.add(
+                      Text(AppLocalizations.of(context).translate("Question:") +
+                          questions![index].question),
+                    );
+                    if(questions![index].questionImage!=null){
+                      Uint8List? questionImage=questions![index].questionImage!=null? controller.base64ToImageBytes(questions![index].questionImage!):null;
+                      Widget imageQuest=  Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            questionImage != null
+                                ? Image.memory(
+                              questionImage,
+                              width: 60,//  200,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            )
+                                : Text(controller.ConvertMutiLaguage('Not image select', context)),
+                            const SizedBox(height: 10),
+                          ],
                         ),
+                      );
+                      answers.add(imageQuest);
+                    }
+                    for (int i = 0; i < questions![index].numberQuestion; i++) {
+                      String textAnswer = questions![index].answers[i].text;
+                      if (questions![index].answerCorrect ==
+                          questions![index].answers[i]) {
+                        answers.add(Text(
+                          textAnswer,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ));
+                      } else {
+                        answers.add(Text(textAnswer));
+                      }
+                    }
+                    if (isEdit) {
+                      return questions![index]
+                              .question
+                              .contains(searchValue ?? "")
+                          ? Row(
+                              //crossAxisAlignment: CrossAxisAlignment.start,
+                              //mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.7,
+                                  margin: const EdgeInsets.all(5),
+                                  child: Column(
+                                    //mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: answers,
+                                  ),
+                                ),
+                                const Expanded(child: SizedBox()),
+                                IconButton(
+                                    onPressed: () async {
+                                      questions = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                InputQuestionScreen(
+                                              idBankQuest: idParentPage,
+                                              actionQuest: ActionQuest.edit,
+                                              index: index,
+                                              quests: questions,
+                                              question: questions?[index],
+                                            ),
+                                          ));
+                                      setState(() {});
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.blue,
+                                    )),
+                                IconButton(
+                                    onPressed: () async {
 
-                    ),
+                                      controller.showConfirmDialog(onContinue:
+                                      ()async{
+                                        String idDelete=questions![index].id;
+                                        questions!.removeAt(index);
+                                        await (controller as QuestionController)
+                                            .saveQuestion(
+                                            questions!, idParentPage,idQuestDelete: idDelete);
+
+                                        setState(() {});
+                                      }
+                                      );
 
 
-
-              ],
-            );
-
+                                    },
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    )),
+                              ],
+                            )
+                          : const SizedBox();
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
+              ),
+            ],
+          );
 
           // return ListView.builder(
           //
@@ -824,26 +1025,17 @@ class _QuestionScreenState extends MyState<QuestionScreen> {
           //     }
           //   },
           // );
-        }
-        else {
+        } else {
           return Container();
         }
     }
-
-
   }
-
-
-
-
 
   @override
   String setTitle() {
-    return widget.title??"Type Question";
+    return widget.title ?? "Type Question";
   }
-
 }
-
 
 class InputBottomSheet extends StatefulWidget {
   const InputBottomSheet({super.key});
@@ -860,6 +1052,3 @@ class _InputBottomSheetState extends State<InputBottomSheet> {
     );
   }
 }
-
-
-

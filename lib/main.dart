@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vietjet_tool/common/local_storage/my_storage.dart';
+import 'package:vietjet_tool/common/template/my_state.dart';
 import 'package:vietjet_tool/controllers/provider/provider.dart';
 import 'package:vietjet_tool/models/fuel/fuel.dart';
 import 'package:vietjet_tool/models/person/person.dart';
@@ -14,8 +15,10 @@ import 'package:vietjet_tool/models/questions/save_score/save_score.dart';
 import 'package:vietjet_tool/models/questions/type_question/type_question.dart';
 import 'package:vietjet_tool/models/questions/wrong_question/wrong_question.dart';
 import 'package:vietjet_tool/models/theme_models/my_color_scheme.dart';
+import 'package:vietjet_tool/models/user/myUser.dart';
 import 'package:vietjet_tool/theme/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:vietjet_tool/ui/splash/splash_controller.dart';
 import 'package:vietjet_tool/ui/splash/splash_screen.dart';
 
 import 'common/localizations/appLocalizations.dart';
@@ -55,9 +58,10 @@ void main() async{
   Hive.registerAdapter(AnswerAdapter());
   Hive.registerAdapter(WrongQuestionAdapter());
   Hive.registerAdapter(SaveScoreAdapter());
+  Hive.registerAdapter(MyUserAdapter());
   //Hive.registerAdapter(Wrong)
 
-  //typeid 8
+  //typeid 9
 
 
 
@@ -72,6 +76,7 @@ void main() async{
       providers: [
         ChangeNotifierProvider(create: (_) => ChangeTheme()),
         ChangeNotifierProvider(create: (_) => ChangeTimeUtc()),
+        Provider<SplashController>(create: (_) => SplashController(null)),
       ],
       child: const MyApp(
       ),

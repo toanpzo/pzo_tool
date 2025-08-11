@@ -17,16 +17,23 @@ import 'package:vietjet_tool/widgets/button/MyIconTextButton.dart';
 import 'package:vietjet_tool/widgets/button/my_popup_menu.dart';
 import 'package:vietjet_tool/widgets/dialog/dialogs.dart';
 
+import '../../models/my_menu/my_menu.dart';
 import '../../widgets/button/button_widget.dart';
+import '../../widgets/menu/my_menu.dart';
 
 class ScanDocument extends StatefulWidget {
-  const ScanDocument({super.key});
+  final TypeScan? typeScan;
+  bool? scanIdRow;
+   ScanDocument({super.key,this.typeScan, this.scanIdRow});
 
   @override
   State<ScanDocument> createState() => _ScanDocumentState();
 }
 
 class _ScanDocumentState extends MyState<ScanDocument> {
+
+  MyMenuType menuType=MyMenuType.gridView;
+  List<MyMenu> menus=List<MyMenu>.empty(growable: true);
 
   List<String> _pictures = [];
     Uint8List? pdfFinalData;
@@ -39,7 +46,120 @@ class _ScanDocumentState extends MyState<ScanDocument> {
 
   @override
   Future<void> afterLoadData() async{
-    //pdfFinalData =await (controller as ScanDocumentController).pdfFinal.save();
+    int imageColorPrimary=Theme.of(context).primaryColor.value;
+    (controller as ScanDocumentController).typeScan=widget.typeScan??TypeScan.selectScan;
+    switch (widget.typeScan){
+      case TypeScan.selectScan:
+        menus.add(MyMenu(id: DateTime.now().toString(),
+            assetImage:  "assets/images/scan/scanDocument.png",
+            name: "Scan Document", level: 2, routerName: "/scan/scanDocument"));
+        menus.add(MyMenu(id: DateTime.now().toString(), name: "Scan ID",
+            assetImage:  "assets/images/scan/scanId.png",
+            level: 2, routerName: "/scan/scanId"));
+        menus.add(MyMenu(id: DateTime.now().toString(), name: "Scan PassPort",
+            assetImage:  "assets/images/scan/scanPassport.png",
+            level: 2, routerName: "/scan/scanPassPort"));
+        break;
+        default:
+          (controller as ScanDocumentController).typeScan=widget.typeScan??TypeScan.scanDocument;
+          if(widget.scanIdRow==null&&widget.typeScan==TypeScan.scanID){
+            await showDialog(context: context, builder: (context) =>
+                MyCustomDialog(
+                  title: "Select Scan", content: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Material(
+
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12), // bo góc splash
+                        onTap: () {
+                          Navigator.pop(context);
+                          setState(() {
+                            widget.scanIdRow = true;
+                          });
+                        },
+                        child: Container(
+                          height: 100,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Color(imageColorPrimary), // nền trắng (hoặc màu bạn thích)
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.credit_card_outlined, size: 30),
+                              SizedBox(width: 10),
+                              Icon(Icons.credit_card_outlined, size: 30),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Material(
+
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12), // bo góc splash
+                        onTap: () {
+                          Navigator.pop(context);
+                          setState(() {
+                            widget.scanIdRow = false;
+                          });
+                        },
+                        child: Container(
+                          height: 100,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Color(imageColorPrimary), // nền trắng (hoặc màu bạn thích)
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.credit_card_outlined, size: 30),
+                              SizedBox(width: 10),
+                              Icon(Icons.credit_card_outlined, size: 30),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                  actions: [],
+
+                ),);
+          }
+     onPressedNew();
+     break;
+    }
+
+
+
+
+    // (controller as ScanDocumentController).typeScan=widget.typeScan??TypeScan.scanDocument;
+    // onPressedNew();
 
 
   }
@@ -52,7 +172,7 @@ class _ScanDocumentState extends MyState<ScanDocument> {
       MyStorage().getPathFromFilePicker(typeFile: "pdf",changePath: true);
     }, values: 1,contentString: "Change local save document"));
     items.add(MyPopupmenuItem(function: (){
-      onPressedAdd();
+      onPressedNew();
     }, values: 2,contentString: "Pdf format"));
     items.add(MyPopupmenuItem(function: ()async{
       pdfFinalData= await (controller as ScanDocumentController).buildPdf(_pictures,pageFormat: PdfPageFormat.standard);
@@ -72,49 +192,57 @@ class _ScanDocumentState extends MyState<ScanDocument> {
 
       });
     }, values: 5,contentString: "Pdf format undi"));
-    items.add(MyPopupmenuItem(function:onPressedScanId, values: 6,contentString: "Scan ID"));
+    items.add(MyPopupmenuItem(function:(){
+      (controller as ScanDocumentController).typeScan=TypeScan.scanID;
+       onPressedNew();
+    }, values: 6,contentString: "Scan ID"));
+    items.add(MyPopupmenuItem(function:(){
+      (controller as ScanDocumentController).typeScan=TypeScan.scanPassPort;
+      onPressedNew();
+    }, values: 7,contentString: "Scan PassPort"));
     MyPopupMenu popupMenu=MyPopupMenu(items: items,);
     return [popupMenu];
   }
 
   @override
   Widget? get bottomNavigationBar {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        MyIconTextButton(iconButton: IconButton(onPressed: onPressedNew, icon:Image.asset("assets/images/new.png",height: 30),),
-          label: AppLocalizations.of(context).translate("New"),),
-        MyIconTextButton(iconButton:IconButton(onPressed: onPressedAdd, icon:Image.asset("assets/images/add.png",height: 30),),
-          label: AppLocalizations.of(context).translate("Add"),),
-        MyIconTextButton(iconButton: IconButton(onPressed: (){
-          if(pdfFinalData!=null) {
-            MyStorage().writeFile(pdfFinalData!, "PzoScan", typeFile: "pdf");
-          }
-        }, icon:Image.asset("assets/images/save.png",height: 30),),
-          label: AppLocalizations.of(context).translate("Save"),),
-        MyIconTextButton(iconButton: IconButton(onPressed: ()async{
-          var result= await showModalBottomSheet(context: context, builder: (context) => const FormatPdf(),);
+    if((controller as ScanDocumentController).typeScan!=TypeScan.selectScan) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          MyIconTextButton(iconButton: IconButton(onPressed: onPressedNew,
+            icon: Image.asset("assets/images/new.png", height: 30),),
+            label: AppLocalizations.of(context).translate("New"),),
+          MyIconTextButton(iconButton: IconButton(onPressed: onPressedAdd,
+            icon: Image.asset("assets/images/add.png", height: 30),),
+            label: AppLocalizations.of(context).translate("Add"),),
+          MyIconTextButton(iconButton: IconButton(onPressed: () {
+            if (pdfFinalData != null) {
+              MyStorage().writeFile(pdfFinalData!, "PzoScan", typeFile: "pdf");
+            }
+          }, icon: Image.asset("assets/images/save.png", height: 30),),
+            label: AppLocalizations.of(context).translate("Save"),),
+          MyIconTextButton(iconButton: IconButton(onPressed: () async {
+            var result = await showModalBottomSheet(
+              context: context, builder: (context) => const FormatPdf(),);
 
 
-          if(result!=false){
-            pdfFinalData= await (controller as ScanDocumentController).buildPdf(_pictures,pageFormat: PdfPageFormat.a4);
-            setState(() {
+            if (result != false) {
+              pdfFinalData =
+              await (controller as ScanDocumentController).buildPdf(
+                  _pictures, pageFormat: PdfPageFormat.a4);
+              setState(() {
 
 
-            });
-
-          }
-
-
-
-        }, icon:Image.asset("assets/images/pdfFormat.png",height: 30),),
-          label: AppLocalizations.of(context).translate("Format PDF"),),
+              });
+            }
+          }, icon: Image.asset("assets/images/pdfFormat.png", height: 30),),
+            label: AppLocalizations.of(context).translate("Format PDF"),),
 
 
-
-
-      ],
-    );
+        ],
+      );
+    }
   }
 
 
@@ -128,9 +256,13 @@ class _ScanDocumentState extends MyState<ScanDocument> {
 
 
   void onPressedAdd() async {
+    if((controller as ScanDocumentController).typeScan==TypeScan.scanID) return;
     List<String> pictures;
     try {
-      pictures = await CunningDocumentScanner.getPictures(isGalleryImportAllowed: true) ?? [];
+
+      pictures = await CunningDocumentScanner.getPictures(
+
+          isGalleryImportAllowed: true) ?? [];
       if (!mounted) return;
       _pictures.addAll(pictures);
       pdfFinalData= await (controller as ScanDocumentController).buildPdf(_pictures);
@@ -139,7 +271,7 @@ class _ScanDocumentState extends MyState<ScanDocument> {
 
       });
     } catch (exception) {
-      print("fhdjkshfjkdsh");
+      print("onPressedAdd $exception");
       // Handle exception here
     }
   }
@@ -147,6 +279,10 @@ class _ScanDocumentState extends MyState<ScanDocument> {
   void onPressedNew() async {
     List<String> pictures;
     try {
+
+
+
+
       bool? results;
       if(_pictures.isNotEmpty) {
         results = await showDialog(context: context, builder: (context) =>
@@ -166,10 +302,18 @@ class _ScanDocumentState extends MyState<ScanDocument> {
       }
 
    //   await CunningDocumentScanner.getPictures(isGalleryImportAllowed: true);
-      pictures = await CunningDocumentScanner.getPictures(isGalleryImportAllowed: true) ?? [];
+      int numberPage=10000;
+      switch((controller as ScanDocumentController).typeScan){
+        case TypeScan.scanID: numberPage=2;break;
+        default: numberPage=(controller as ScanDocumentController).vip?10000:10;break;
+      }
+
+      pictures = await CunningDocumentScanner.getPictures(
+          noOfPages: numberPage,
+          isGalleryImportAllowed: true) ?? [];
       if (!mounted) return;
       _pictures=pictures;
-      pdfFinalData= await (controller as ScanDocumentController).buildPdf(_pictures);
+      pdfFinalData= await (controller as ScanDocumentController).buildPdf(_pictures,scanIdRow: widget.scanIdRow);
       setState(() {
 
       });
@@ -186,7 +330,9 @@ class _ScanDocumentState extends MyState<ScanDocument> {
           isGalleryImportAllowed: true) ?? [];
       if (!mounted) return;
       _pictures=pictures;
-      pdfFinalData= await (controller as ScanDocumentController).scanId(_pictures);
+      pdfFinalData= await (controller as ScanDocumentController).scanId(
+          imageToPdf: _pictures,
+          );
       setState(() {
 
       });
@@ -199,71 +345,33 @@ class _ScanDocumentState extends MyState<ScanDocument> {
 
   @override
   Widget setBody() {
-//     final pdfController = PdfController(
-//       document: PdfDocument.openData(pdfFinalData??Uint8List.fromList(  [1,2,5,54,54,5,45])),
-//     );
-//
-// // Simple Pdf view with one render of page (loose quality on zoom)
-//     return PdfView(
-//       controller: pdfController,
-//     );
+if((controller as ScanDocumentController).typeScan==TypeScan.selectScan) {
+  return MyMenuWidgets(menuType: menuType, menus: menus);
+}else {
+  myViewState = MyViewState.loading;
+  if (pdfFinalData == null) {
+    myViewState = MyViewState.loaded;
+  }
+
+  return
+
+    pdfFinalData != null ?
+    SfPdfViewer.memory(pdfFinalData!,
+
+      onDocumentLoaded: (detail) {
+        myViewState = MyViewState.loaded;
+      },
+
+    )
 
 
+        : Center(
+      child: IconButton(onPressed: onPressedNew,
+        icon: Image.asset("assets/images/new.png", height: 50),),
 
 
-
-
-      return
-
-  //    Column(
-  //      children: [
-      //   Row(
-      //   mainAxisAlignment: MainAxisAlignment.center,
-      //   children: [
-      //     _pictures.isNotEmpty?
-      //     MyButton(content: "Save",
-      //       onPressed: ()async{
-      //       if(pdfFinalData!=null) {
-      //         MyStorage().writeFile(pdfFinalData!, "PzoScan", typeFile: "pdf");
-      //       }
-      //       },
-      //     ):const SizedBox(),
-      //     MyButton(content: "Add",
-      //       onPressed: onPressedAdd,
-      //     ),
-      //     MyButton(content: "New",
-      //       onPressed: onPressedNew,
-      //     )
-      //   ],
-      // ),
-       //Expanded(child:
-       //SingleChildScrollView(
-      // child:
-       pdfFinalData!=null?
-       // PDFView(
-       //   autoSpacing: false,
-       //   pdfData: pdfFinalData,
-       // )
-       SfPdfViewer.memory(pdfFinalData!,
-
-       )
-
-
-           :Center(
-         child: IconButton(onPressed: onPressedNew, icon:Image.asset("assets/images/new.png",height: 50),),
-
-
-       );
-      //   ,
-    //),
-     //  )
-
-
-
-  //    ]);
-
-
-
+    );
+}
 
 
 
