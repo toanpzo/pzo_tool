@@ -15,9 +15,10 @@ import '../../common/localizations/appLocalizations.dart';
 import '../../common/template/my_state.dart';
 import '../../main.dart';
 import '../../models/my_menu/my_menu.dart';
-import '../../models/user/myUser.dart';
 import '../../widgets/dialog/dialogs.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../models/user/my_user.dart';
 
 class MyController {
   MyState? myState;

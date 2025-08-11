@@ -4,7 +4,6 @@ import 'package:vietjet_tool/common/Constant/constant.dart';
 import 'package:vietjet_tool/common/local_storage/my_storage.dart';
 import 'package:vietjet_tool/controllers/apiServiceController.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
-import 'package:vietjet_tool/models/user/myUser.dart';
 
 import '../../common/template/my_state.dart';
 import '../../controllers/gg_drive_controller/ggDriveController.dart';

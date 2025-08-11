@@ -15,7 +15,6 @@ import 'package:vietjet_tool/models/questions/save_score/save_score.dart';
 import 'package:vietjet_tool/models/questions/type_question/type_question.dart';
 import 'package:vietjet_tool/models/questions/wrong_question/wrong_question.dart';
 import 'package:vietjet_tool/models/theme_models/my_color_scheme.dart';
-import 'package:vietjet_tool/models/user/myUser.dart';
 import 'package:vietjet_tool/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:vietjet_tool/ui/splash/splash_controller.dart';
@@ -26,6 +25,7 @@ import 'common/router/my_router.dart';
 import 'models/questions/anwser/answer.dart';
 import 'models/questions/bank_question/bank_question.dart';
 import 'models/theme_models/my_theme.dart';
+import 'models/user/my_user.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
