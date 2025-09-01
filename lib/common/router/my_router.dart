@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vietjet_tool/ui/air_craft/air_craft.dart';
+import 'package:vietjet_tool/ui/find_roster/find_roster_screen.dart';
 import 'package:vietjet_tool/ui/fuelCalc/fuel_calc.dart';
 import 'package:vietjet_tool/ui/home/my_home.dart';
 import 'package:vietjet_tool/ui/mel_cat/mel_cat_screen.dart';
@@ -43,6 +44,8 @@ class RouteController {
         return MaterialPageRoute(builder: (context) => const FuelCalcScreen());
       case '/aircraft/mel':
         return MaterialPageRoute(builder: (context) => const MelCatScreen());
+      case '/aircraft/findRoster':
+        return MaterialPageRoute(builder: (context) => const FindRosterScreen());
         default:
         {
           return MaterialPageRoute(builder: (context) => const MyHome());

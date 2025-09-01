@@ -9,20 +9,58 @@ class MyUser with _$MyUser {
 
   @HiveType(typeId: 9, adapterName: 'MyUserAdapter')
   const factory MyUser({
+    @JsonKey(name: 'id')
+    @HiveField(4)
+      String? id,
     @JsonKey(name: 'name')
     @HiveField(0)
-     required String name,
+      String? name,
     @JsonKey(name: 'age')
     @HiveField(1)
      int? age,
     @JsonKey(name: 'vip')
     @HiveField(2)
-    required bool vip,
+    @Default(false)
+     bool vip,
     @JsonKey(name: 'vipExd')
     @HiveField(3)
-    required DateTime vipExd,
+     DateTime? vipExd,
+    @JsonKey(name: 'userName')
+    @HiveField(5)
+     String? userName,
+    @JsonKey(name: 'pass')
+    @HiveField(6)
+     String? pass,
+    @JsonKey(name: 'email')
+    @HiveField(7)
+     String? email,
+    @JsonKey(name: 'address')
+    @HiveField(8)
+     String? address,
+    @JsonKey(name: 'crud')
+    @HiveField(9)
+    @Default(0)
+    int crud,
+    
+
   }) = _MyUser;
 
-  factory MyUser.fromJson(Map<String, Object?> json)
-  => _$MyUserFromJson(json);
+  factory MyUser.withDefaults({
+    String? id,
+    String? name,
+    String? userName,
+    String? pass
+  }) {
+    final now = DateTime.now();
+    final generatedId = id ?? now.millisecondsSinceEpoch.toString();
+
+    return MyUser(
+      id: generatedId,
+      name: name ?? generatedId,
+      userName: userName ?? generatedId,
+      pass: pass ??generatedId
+
+    );
+  }
+
 }

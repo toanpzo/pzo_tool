@@ -1,4 +1,18 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+
+
+
+class ApiResult<T> {
+  final T? data;
+  final String? error;
+
+  ApiResult.success(this.data) : error = null;
+  ApiResult.failure(this.error) : data = null;
+
+  bool get isSuccess => data != null;
+}
 
 class ApiService {
   static final ApiService _instance = ApiService._internal();
@@ -35,40 +49,106 @@ class ApiService {
     _dio.options.headers['Authorization'] = 'Bearer $token';
   }
 
-  /// GET
-  Future<Response> get(String endpoint,
-      {Map<String, dynamic>? queryParams}) async {
+
+
+
+  Future<ApiResult<Response>> get(
+      String endpoint, {
+        Map<String, dynamic>? queryParams,
+      }) async {
     try {
-      return await _dio.get(endpoint, queryParameters: queryParams);
+      if(!(await wakeup(60))) {
+        return ApiResult.failure("Wakeup Sever Error");
+      }
+        final res = await _dio.get(endpoint, queryParameters: queryParams);
+        return ApiResult.success(res);
+
+
     } catch (e) {
-      throw _handleError(e);
+      return ApiResult.failure(_handleError(e));
     }
   }
 
-  /// POST
-  Future<Response> post(String endpoint, {dynamic data}) async {
+  Future<ApiResult<Response>> post(
+      String endpoint, {
+        dynamic data,
+        Map<String, dynamic>? queryParams,
+      }) async {
     try {
-      return await _dio.post(endpoint, data: data);
+      if(!(await wakeup(60))) {
+        return ApiResult.failure("Wakeup Sever Error");
+      }
+      final res = await _dio.post(endpoint, data: data, queryParameters: queryParams);
+      return ApiResult.success(res);
     } catch (e) {
-      throw _handleError(e);
+      return ApiResult.failure(_handleError(e));
     }
   }
 
-  /// PATCH
-  Future<Response> patch(String endpoint, {dynamic data}) async {
+  Future<ApiResult<Response>> postMultipart(
+      String endpoint,
+      Map<String, dynamic> fields,
+      File file, {
+        String fileFieldName = "file",
+        Map<String, dynamic>? queryParams,
+      }) async {
     try {
-      return await _dio.patch(endpoint, data: data);
+      if (!(await wakeup(60))) {
+        return ApiResult.failure("Wakeup Sever Error");
+      }
+
+      String fileName = file.path.split("/").last;
+
+      final formData = FormData.fromMap({
+        ...fields,
+        fileFieldName: await MultipartFile.fromFile(
+          file.path,
+          filename: fileName,
+        ),
+      });
+
+      final res = await _dio.post(
+        endpoint,
+        data: formData,
+        queryParameters: queryParams,
+      );
+
+      return ApiResult.success(res);
     } catch (e) {
-      throw _handleError(e);
+      return ApiResult.failure(_handleError(e));
     }
   }
 
-  /// DELETE
-  Future<Response> delete(String endpoint, {dynamic data}) async {
+
+  Future<ApiResult<Response>> patch(
+      String endpoint, {
+        dynamic data,
+        Map<String, dynamic>? queryParams,
+      }) async {
     try {
-      return await _dio.delete(endpoint, data: data);
+      if(!(await wakeup(60))) {
+        return ApiResult.failure("Wakeup Sever Error");
+      }
+      final res = await _dio.patch(endpoint, data: data, queryParameters: queryParams);
+      return ApiResult.success(res);
     } catch (e) {
-      throw _handleError(e);
+      return ApiResult.failure(_handleError(e));
+    }
+  }
+
+  Future<ApiResult<Response>> delete(
+      String endpoint, {
+        dynamic data,
+        Map<String, dynamic>? queryParams,
+      }) async {
+    try {
+      if(!(await wakeup(60))) {
+        return ApiResult.failure("Wakeup Sever Error");
+      }
+      final res = await _dio.delete(endpoint, data: data, queryParameters: queryParams);
+      return ApiResult.success(res);
+    } catch (e) {
+      return ApiResult.failure(_handleError(e));
     }
   }
 
@@ -87,4 +167,39 @@ class ApiService {
     }
     return 'Unknown error!';
   }
+
+
+
+  /// wakeup service
+  Future<bool> wakeup(int timeout) async {
+    final start = DateTime.now();
+
+    while (true) {
+      if (DateTime.now().difference(start) > Duration(seconds: timeout )) {
+        print("⏰ Timeout sau timeout, service không wakeup được.");
+        return false;
+      }
+
+      try {
+        final response = await _dio
+            .get(
+          "",
+          options: Options(receiveTimeout: Duration(seconds: timeout ), sendTimeout: Duration(seconds: timeout )),
+        );
+
+        if (response.statusCode == 200) {
+          print("✅ Service woke up: ${response.data}");
+          return true;
+        } else {
+          print("⚠️ Service trả về ${response.statusCode}, thử lại sau...");
+        }
+      } catch (e) {
+        print("❌ Lỗi khi gọi service: $e");
+      }
+      await Future.delayed(const Duration(seconds: 5));
+    }
+
+  }
+
 }
+

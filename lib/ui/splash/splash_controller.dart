@@ -6,7 +6,6 @@ import 'package:vietjet_tool/controllers/apiServiceController.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
 
 import '../../common/template/my_state.dart';
-import '../../controllers/gg_drive_controller/ggDriveController.dart';
 
 class SplashController extends MyController{
 
@@ -44,7 +43,7 @@ class SplashController extends MyController{
     //String? a= await GgDriveController().readTextFileFromDrive(fileName: "a.pzo");
   }
   static Future<void> loadApiService() async {
-
+    await ApiService().wakeup(60);
 
   }
 

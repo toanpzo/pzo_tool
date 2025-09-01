@@ -21,6 +21,7 @@ import 'package:vietjet_tool/models/theme_models/my_theme.dart';
 
 import '../../models/questions/bank_question/bank_question.dart';
 import '../../models/user/my_user.dart';
+import '../../models/version/version.dart';
 import '../Constant/constant.dart';
 
 class MyStorage {
@@ -135,6 +136,26 @@ class MyStorage {
 
   Future<MyUser?> getUser() async {
     final box= await Hive.openBox("user");
+    return box.get("value");
+  }
+
+  Future<void> setVersionServer(Version value) async {
+    final box= await Hive.openBox("version");
+    box.put("value", value);
+  }
+
+  Future<Version?> getVersionServer() async {
+    final box= await Hive.openBox("version");
+    return box.get("value");
+  }
+
+  Future<void> setVersionLocal(Version value) async {
+    final box= await Hive.openBox("version");
+    box.put("value", value);
+  }
+
+  Future<Version?> getVersionLocal() async {
+    final box= await Hive.openBox("version");
     return box.get("value");
   }
 

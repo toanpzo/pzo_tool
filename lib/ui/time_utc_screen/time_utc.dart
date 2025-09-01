@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:vietjet_tool/controllers/apiServiceController.dart';
 import 'package:vietjet_tool/controllers/provider/provider.dart';
 
 class TimeUTC extends StatefulWidget {
@@ -32,12 +33,17 @@ class _TimeUTCState extends State<TimeUTC> {
 
   late Timer _timer;
   late DateTime _now;
+  int countTime=0;
 
   @override
   void initState() {
     super.initState();
     _now = DateTime.now();
-    _timer = Timer.periodic(Duration(seconds: 1), (_) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      countTime++;
+      if(countTime%895==0){
+        ApiService().wakeup(60);
+      }
       setState(() {
         _now = DateTime.now();
       });

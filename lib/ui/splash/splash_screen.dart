@@ -148,10 +148,6 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async{
       try {
-
-        String baseUrl= await MyStorage().getApiBaseUrl()??MyConstant.baseUrl;
-        ApiService(baseUrl: baseUrl);
-
         final splashController = Provider.of<SplashController>(
             context, listen: false);
         print(splashController);

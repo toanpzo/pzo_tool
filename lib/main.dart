@@ -15,13 +15,16 @@ import 'package:vietjet_tool/models/questions/save_score/save_score.dart';
 import 'package:vietjet_tool/models/questions/type_question/type_question.dart';
 import 'package:vietjet_tool/models/questions/wrong_question/wrong_question.dart';
 import 'package:vietjet_tool/models/theme_models/my_color_scheme.dart';
+import 'package:vietjet_tool/models/version/version.dart';
 import 'package:vietjet_tool/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:vietjet_tool/ui/splash/splash_controller.dart';
 import 'package:vietjet_tool/ui/splash/splash_screen.dart';
 
+import 'common/Constant/constant.dart';
 import 'common/localizations/appLocalizations.dart';
 import 'common/router/my_router.dart';
+import 'controllers/apiServiceController.dart';
 import 'models/questions/anwser/answer.dart';
 import 'models/questions/bank_question/bank_question.dart';
 import 'models/theme_models/my_theme.dart';
@@ -59,9 +62,10 @@ void main() async{
   Hive.registerAdapter(WrongQuestionAdapter());
   Hive.registerAdapter(SaveScoreAdapter());
   Hive.registerAdapter(MyUserAdapter());
+  Hive.registerAdapter(VersionAdapter());
   //Hive.registerAdapter(Wrong)
 
-  //typeid 9
+  //typeid 10
 
 
 
@@ -70,6 +74,7 @@ void main() async{
 
 
   runApp(
+
     /// Providers are above [MyApp] instead of inside it, so that tests
     /// can use [MyApp] while mocking the providers
     MultiProvider(
@@ -106,6 +111,8 @@ class _MyAppState extends State<MyApp> {
   Locale? _locale;
 
   void loadData()async{
+    String baseUrl= await MyStorage().getApiBaseUrl()??MyConstant.baseUrl;
+    ApiService(baseUrl: baseUrl);
     MyTheme myTheme = await MyStorage().getTheme();
     //await Future.delayed(Duration(seconds: 3));
     if (!mounted) return;

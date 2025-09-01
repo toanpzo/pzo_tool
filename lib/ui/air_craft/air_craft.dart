@@ -38,6 +38,12 @@ class _AirCraftToolScreenState extends MyState<AirCraftToolScreen> {
             Navigator.pushNamed(context, "/aircraft/mel");
           },
         ),
+        MyButton(content: "findRoster",padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+          width: width*0.9,
+          onPressed: (){
+            Navigator.pushNamed(context, "/aircraft/findRoster");
+          },
+        ),
       ],
     );
   }
