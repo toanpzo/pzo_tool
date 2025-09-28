@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 //import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:pdf/pdf.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -308,15 +309,26 @@ class _ScanDocumentState extends MyState<ScanDocument> {
         default: numberPage=(controller as ScanDocumentController).vip?10000:10;break;
       }
 
-      pictures = await CunningDocumentScanner.getPictures(
-          noOfPages: numberPage,
-          isGalleryImportAllowed: true) ?? [];
-      if (!mounted) return;
-      _pictures=pictures;
-      pdfFinalData= await (controller as ScanDocumentController).buildPdf(_pictures,scanIdRow: widget.scanIdRow);
-      setState(() {
+      if (kIsWeb) {
+        final ImagePicker picker = ImagePicker();
+        final images = await picker.pickMultiImage();
+        if (!mounted) return;
+        _pictures = images?.map((x) => x.path).toList() ?? [];
+        pdfFinalData = await (controller as ScanDocumentController)
+            .buildPdf(_pictures, scanIdRow: widget.scanIdRow);
+        setState(() {});
+      }else {
+        pictures = await CunningDocumentScanner.getPictures(
+            noOfPages: numberPage,
+            isGalleryImportAllowed: true) ?? [];
+        if (!mounted) return;
+        _pictures = pictures;
+        pdfFinalData = await (controller as ScanDocumentController).buildPdf(
+            _pictures, scanIdRow: widget.scanIdRow);
+        setState(() {
 
-      });
+        });
+      }
     } catch (exception) {
       // Handle exception here
     }

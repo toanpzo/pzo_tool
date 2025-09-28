@@ -1,32 +1,19 @@
-name: Deploy Flutter Web to GitHub Pages
-
+name: Flutter Web Deploy
 on:
   push:
     branches:
-      - master   # chạy khi push lên branch master
-
+      - master
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'  # dùng phiên bản stable mới nhất
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build Flutter Web
-        run: flutter build web --release
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+          flutter-version: '3.22.0'
+      - run: flutter pub get
+      - run: flutter build web --release
+      - uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}  # token mặc định của GitHub Actions
-          publish_dir: ./build/web                   # thư mục chứa file web sau khi build
-          publish_branch: gh-pages                   # branch chứa nội dung deploy
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web
