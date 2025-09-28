@@ -17,3 +17,5 @@ samples, guidance on mobile development, and a full API reference.
 
 
 /Users/toanpzo/Documents/flutter/bin/flutter pub run build_runner build --delete-conflicting-outputs
+
+new
