@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-
+enum Crud { create, read, update, delete }
 
 
 class ApiResult<T> {
@@ -24,6 +24,11 @@ class ApiService {
   }
 
   late Dio _dio;
+
+  bool checkPermission(int permission,Crud crud){
+     int bitMask = 1 << (3 - crud.index); 
+    return (permission & bitMask) != 0;
+  }
 
   ApiService._internal() {
     _dio = Dio();
