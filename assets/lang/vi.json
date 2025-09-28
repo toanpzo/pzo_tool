@@ -1,0 +1,63 @@
+{
+    "page URL server&& login": "-----",
+
+
+
+    "language": "Ngôn ngữ",
+    "LANGUAGE": "NGÔN NGỮ",
+    "login":"Đăng nhập",
+    "LOGIN":"ĐĂNG NHẬP",
+    "connect":"Kết nối",
+    "CONNECT":"KẾT NỐI",
+    "welcomeLogin":"XIN CHÀO! MỜI ĐĂNG NHẬP",
+    "userName":"Tên Đăng Nhập",
+    "pass":"Mật khẩu",
+    "remember":"Nhớ mật khẩu",
+    "signin":"Đăng Nhập",
+    "SIGNIN":"ĐĂNG NHẬP",
+    "forgotPass":"Quên mật khẩu",
+    "FORGOTPASS":"QUÊN MẬT KHẨU?",
+    "getNew":"Tạo mới",
+    "GETNEW":"TẠO MỚI",
+    "notAccount":"Bạn chưa có tài khoản?",
+    "NOTACCOUNT":"BẠN CHƯA CÓ TÀI KHOẢN?",
+    "signup": "Đăng ký",
+    "SIGNUP": "ĐĂNG KÝ",
+    "tapHere":"Nhấn vào đây",
+    "TAPHERE":"NHẤN VÀO ĐÂY",
+    "ok":"Đồng ý",
+    "OK":"ĐỒNG Ý",
+    "cancel":"Hủy",
+    "CANCEL":"HỦY",
+    "yes": "Đồng ý",
+    "YES": "ĐỒNG Ý",
+    "no": "Không đồng ý",
+    "NO": "KHÔNG ĐỒNG Ý",
+
+    "WARNING":"CẢNH BÁO",
+    "SUCCESS": "THÀNH CÔNG",
+
+
+
+    "page singup/fogotpass,": "------",
+    "welcomeForgotPass": "Bạn quên mật khẩu? Hãy nhập email để tạo mật khẩu mới",
+    "welcomeSignup": "Xin chào! Tạo tài khoản mới thôi.",
+    "email": "Email",
+    "name": "Tên của bạn",
+    "haveAccount": "Bạn đã có tài khoản?",
+    "HAVEACCOUNT": "BẠN ĐÃ CÓ TÀI KHOẢN?",
+    "RESET": "TẠO MẬT KHẨU MỚI",
+    "warningEmailNotFound": "Không tìm thấy email này",
+    "warningNotSetPass": "Không thể tạo mật khẩu mới",
+    "warningSetPassOk": "Tạo mật khẩu mới thành công!",
+    "REGISTER": "ĐĂNG KÝ",
+    "warningRegisterOk": "Đăng ký thành công",
+    "warningExistUserName": "Tên đăng nhập hoặc email đã tồn tại",
+    "warningNotRegisterThisTime": "Không thể đăng ký trong lúc này",
+    "new": "mới",
+    "warningErrorReferrerApp": "Hãy nhập đúng mã liên kết",
+    "warningErrorNotConnect": "Lỗi Server không thể kết nối lúc này!",
+    "fuelCalc": "Tính toán nhiên liệu",
+    "melCalc": "Tính thời hạn MEL"
+
+}
