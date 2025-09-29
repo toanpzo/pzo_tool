@@ -6,7 +6,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vietjet_tool/common/local_storage/my_storage.dart';
-import 'package:vietjet_tool/common/template/my_state.dart';
 import 'package:vietjet_tool/controllers/provider/provider.dart';
 import 'package:vietjet_tool/models/fuel/fuel.dart';
 import 'package:vietjet_tool/models/person/person.dart';
@@ -158,7 +157,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Pzo Tools',
       locale: _locale?? const Locale('vi', 'VN'),
       supportedLocales: const [
         Locale('en', 'US'),
