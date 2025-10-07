@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
+import 'package:vietjet_tool/models/base_model/base_model.dart';
 part 'type_question.freezed.dart';
 part 'type_question.g.dart';
 
@@ -10,15 +11,13 @@ class TypeQuestion with _$TypeQuestion {
   //@JsonSerializable(explicitToJson: true)
 
   @HiveType(typeId: 5, adapterName: 'TypeQuestionAdapter')
-   factory TypeQuestion({
+  factory TypeQuestion({
     //@JsonKey(name: 'id')
-    @HiveField(0)
-    required String id,
+    @HiveField(0) required String id,
     //@JsonKey(name: 'name')
-    @HiveField(1)
-    required String name,
+    @HiveField(1) required String name,
   }) = _TypeQuestion;
 
-  factory TypeQuestion.fromJson(Map<String, Object?> json)
-  => _$TypeQuestionFromJson(json);
+  factory TypeQuestion.fromJson(Map<String, Object?> json) =>
+      _$TypeQuestionFromJson(json);
 }

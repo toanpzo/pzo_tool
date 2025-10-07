@@ -17,7 +17,7 @@ class VersionAdapter extends TypeAdapter<_$VersionImpl> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return _$VersionImpl(
-      id: fields[4] as String?,
+      checkSum: fields[4] as String?,
       model: fields[1] as String,
       revision: fields[2] as String,
       revisionDate: fields[3] as DateTime,
@@ -29,7 +29,7 @@ class VersionAdapter extends TypeAdapter<_$VersionImpl> {
     writer
       ..writeByte(4)
       ..writeByte(4)
-      ..write(obj.id)
+      ..write(obj.checkSum)
       ..writeByte(1)
       ..write(obj.model)
       ..writeByte(2)
@@ -55,7 +55,7 @@ class VersionAdapter extends TypeAdapter<_$VersionImpl> {
 
 _$VersionImpl _$$VersionImplFromJson(Map<String, dynamic> json) =>
     _$VersionImpl(
-      id: json['id'] as String?,
+      checkSum: json['checkSum'] as String?,
       model: json['model'] as String,
       revision: json['revision'] as String,
       revisionDate: DateTime.parse(json['revisionDate'] as String),
@@ -63,7 +63,7 @@ _$VersionImpl _$$VersionImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$VersionImplToJson(_$VersionImpl instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'checkSum': instance.checkSum,
       'model': instance.model,
       'revision': instance.revision,
       'revisionDate': instance.revisionDate.toIso8601String(),

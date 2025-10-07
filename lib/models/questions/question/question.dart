@@ -1,7 +1,6 @@
-
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
+import 'package:vietjet_tool/models/base_model/base_model.dart';
 import 'package:vietjet_tool/models/questions/anwser/answer.dart';
 
 part 'question.freezed.dart';
@@ -13,34 +12,26 @@ class Question with _$Question {
 
   @HiveType(typeId: 6, adapterName: 'QuestionAdapter')
   factory Question({
-   // @JsonKey(name: 'idBankQuestion')
-    @HiveField(0)
-    required String idBankQuestion,
+    // @JsonKey(name: 'idBankQuestion')
+    @HiveField(0) required String idBankQuestion,
 
-   // @JsonKey(name: 'numberQuestion')
-    @HiveField(1)
-    required int numberQuestion,
+    // @JsonKey(name: 'numberQuestion')
+    @HiveField(1) required int numberQuestion,
 
     //@JsonKey(name: 'id')
-    @HiveField(2)
-    required String id,
+    @HiveField(2) required String id,
 
     //@JsonKey(name: 'question')
-    @HiveField(3)
-    required String question,
+    @HiveField(3) required String question,
 
-   // @JsonKey(name: 'questionImage')
-    @HiveField(4)
-     String? questionImage,
+    // @JsonKey(name: 'questionImage')
+    @HiveField(4) String? questionImage,
 
-   // @JsonKey(name: 'answers')
-    @HiveField(5)
-    required List<Answer> answers,
+    // @JsonKey(name: 'answers')
+    @HiveField(5) required List<Answer> answers,
 
-   // @JsonKey(name: 'answerCorrect')
-    @HiveField(6)
-    Answer? answerCorrect,
-
+    // @JsonKey(name: 'answerCorrect')
+    @HiveField(6) Answer? answerCorrect,
 
     // @JsonKey(name: 'answer1Text')
     // @HiveField(4)
@@ -88,6 +79,6 @@ class Question with _$Question {
     //  String? answerCorrect,
   }) = _Question;
 
-  factory Question.fromJson(Map<String, Object?> json)
-  => _$QuestionFromJson(json);
+  factory Question.fromJson(Map<String, Object?> json) =>
+      _$QuestionFromJson(json);
 }

@@ -1,23 +1,25 @@
-
-
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:vietjet_tool/common/Constant/constant.dart';
+import 'package:vietjet_tool/common/local_storage/my_storage.dart';
 import 'package:vietjet_tool/controllers/apiServiceController.dart';
-
-
+import 'package:vietjet_tool/controllers/my_controller.dart';
+import 'package:vietjet_tool/models/version/version.dart';
 
 class GoogleDriveController {
   final String ggUrl = "/google-drive";
 
   // 📌 Endpoint constants
-  final String endPointListFile       = "/listFile";
-  final String endPointListFolder     = "/listFolder";
-  final String endPointCreateFile     = "/create-file";
+  final String endPointListFile = "/listFile";
+  final String endPointListFolder = "/listFolder";
+  final String endPointCreateFile = "/create-file";
   final String endPointCreateFileText = "/create-file-content";
-  final String endPointReplaceFile    = "/replace-file";
+  final String endPointReplaceFile = "/replace-file";
   final String endPointReplaceContent = "/replace-file-content";
-  final String endPointCreateFolder   = "/create-folder";
-  final String endPointDownload       = "/download";
+  final String endPointCreateFolder = "/create-folder";
+  final String endPointDownload = "/download";
 
   /// 📂 List files
   Future<ApiResult> listFiles({String? name, int? pageSize}) {
@@ -30,7 +32,7 @@ class GoogleDriveController {
       queryParams['pageSize'] = pageSize;
     }
 
-    return ApiService().get(endPointListFile, queryParams: queryParams);
+    return ApiService().get(ggUrl + endPointListFile, queryParams: queryParams);
   }
 
   /// 📂 List folders
@@ -39,7 +41,8 @@ class GoogleDriveController {
   }
 
   /// 📄 Create file (upload file multipart)
-  Future<ApiResult> createFile(String fileName, String parentFolderId, File file) {
+  Future<ApiResult> createFile(
+      String fileName, String parentFolderId, File file) {
     return ApiService().postMultipart(
       "$ggUrl$endPointCreateFile?parentFolderId=$parentFolderId",
       {"fileName": fileName},
@@ -49,13 +52,16 @@ class GoogleDriveController {
   }
 
   /// 📄 Create file from content
-  Future<ApiResult> createFileContent(String parentFolderId, String fileName, String content, {String mimeType = "text/plain"}) {
+  Future<ApiResult> createFileContent(
+      String parentFolderId, String fileName, String content,
+      {String mimeType = "text/plain"}) {
     final body = {
       "fileName": fileName,
       "content": content,
       "mimeType": mimeType,
     };
-    return ApiService().post("$ggUrl$endPointCreateFileText/$parentFolderId", data: body);
+    return ApiService()
+        .post("$ggUrl$endPointCreateFileText/$parentFolderId", data: body);
   }
 
   /// 🔄 Replace file (upload file multipart)
@@ -69,13 +75,15 @@ class GoogleDriveController {
   }
 
   /// 🔄 Replace file content
-  Future<ApiResult> replaceFileContent(String fileId, String content, {String? fileName, String? mimeType}) {
+  Future<ApiResult> replaceFileContent(String fileId, String content,
+      {String? fileName, String? mimeType}) {
     final body = {
       "content": content,
       if (fileName != null) "fileName": fileName,
       if (mimeType != null) "mimeType": mimeType,
     };
-    return ApiService().post("$ggUrl$endPointReplaceContent/$fileId", data: body);
+    return ApiService()
+        .post("$ggUrl$endPointReplaceContent/$fileId", data: body);
   }
 
   /// 📂 Create folder
@@ -95,6 +103,54 @@ class GoogleDriveController {
   /// ⬇️ Download file
   Future<ApiResult> downloadFile(String fileId) {
     return ApiService().get("$ggUrl$endPointDownload/$fileId");
+  }
+
+  String buildContent(List<Object> models, Version version) {
+    Map<String, dynamic> mapModel = {};
+    mapModel["version"] = DateTime.now().microsecondsSinceEpoch.toString();
+    mapModel["revisionDate"] = DateTime.now().toIso8601String();
+    mapModel["dataModel"] = models.map((e) {
+      final jsonMap = (e as dynamic).toJson();
+      return jsonMap;
+    }).toList();
+    version = version.copyWith(
+        revision: mapModel["version"], revisionDate: mapModel["revisionDate"]);
+
+    return jsonEncode(mapModel);
+  }
+
+  /// file is model
+  Future<ApiResult> createOrReplaceFileModel(List<Object> models,
+      {String? fileId, //have fileId => replace, else create
+      String? parentFolderId,
+      String? path,
+      String mimeType = "text/plain"}) async {
+    String parentFolderIdDefault =
+        await MyStorage().getIdFolderPzoTool() ?? MyConstant.idAppFolder;
+    String fileName = "${MyController.getModelName(models[0])}.pzo";
+
+    Version version = await MyStorage().getVersionServer() ??
+        Version(
+            model: MyController.getModelName(models[0]),
+            revision: "0",
+            revisionDate: DateTime.fromMillisecondsSinceEpoch(0));
+
+    if (path != null) {
+      fileName = path + fileName;
+    }
+
+    String content = buildContent(models, version);
+    print(content);
+    ApiResult apiResult;
+    if (fileId == null) {
+      apiResult = await createFileContent(
+          parentFolderId ?? parentFolderIdDefault, fileName, content,
+          mimeType: mimeType);
+    } else {
+      apiResult = await replaceFileContent(fileId, content, mimeType: mimeType);
+    }
+
+    return apiResult;
   }
 }
 

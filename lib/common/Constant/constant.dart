@@ -10,7 +10,14 @@ class MyConstant{
   static const keyUploadPhotoIOS="486195116690-l235ibq25j929n9jeo8bfi5rpihhivgv.apps.googleusercontent.com";
 
   /// gg drive (of toannoithat1992@gmail.com)
-  static const String appFolderName="PzoTool";
+  static const String appFolderName="Pzo_Tool_Service";
+  static const String idAppFolder="1vrQ2PVn4INPwBT9835IsE5-CSqCV7ZT8";
+
+  static const String userTable="User.pzo";
+  static const String versionTable="Version.pzo";
+
+
+
 
 
 

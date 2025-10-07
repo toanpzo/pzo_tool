@@ -20,9 +20,9 @@ Version _$VersionFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Version {
-  @JsonKey(name: 'id')
+  @JsonKey(name: 'checkSum')
   @HiveField(4)
-  String? get id => throw _privateConstructorUsedError;
+  String? get checkSum => throw _privateConstructorUsedError;
   @JsonKey(name: 'model')
   @HiveField(1)
   String get model => throw _privateConstructorUsedError;
@@ -44,7 +44,7 @@ abstract class $VersionCopyWith<$Res> {
       _$VersionCopyWithImpl<$Res, Version>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'id') @HiveField(4) String? id,
+      {@JsonKey(name: 'checkSum') @HiveField(4) String? checkSum,
       @JsonKey(name: 'model') @HiveField(1) String model,
       @JsonKey(name: 'revision') @HiveField(2) String revision,
       @JsonKey(name: 'revisionDate') @HiveField(3) DateTime revisionDate});
@@ -63,15 +63,15 @@ class _$VersionCopyWithImpl<$Res, $Val extends Version>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? checkSum = freezed,
     Object? model = null,
     Object? revision = null,
     Object? revisionDate = null,
   }) {
     return _then(_value.copyWith(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      checkSum: freezed == checkSum
+          ? _value.checkSum
+          : checkSum // ignore: cast_nullable_to_non_nullable
               as String?,
       model: null == model
           ? _value.model
@@ -97,7 +97,7 @@ abstract class _$$VersionImplCopyWith<$Res> implements $VersionCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'id') @HiveField(4) String? id,
+      {@JsonKey(name: 'checkSum') @HiveField(4) String? checkSum,
       @JsonKey(name: 'model') @HiveField(1) String model,
       @JsonKey(name: 'revision') @HiveField(2) String revision,
       @JsonKey(name: 'revisionDate') @HiveField(3) DateTime revisionDate});
@@ -114,15 +114,15 @@ class __$$VersionImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? checkSum = freezed,
     Object? model = null,
     Object? revision = null,
     Object? revisionDate = null,
   }) {
     return _then(_$VersionImpl(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      checkSum: freezed == checkSum
+          ? _value.checkSum
+          : checkSum // ignore: cast_nullable_to_non_nullable
               as String?,
       model: null == model
           ? _value.model
@@ -146,7 +146,7 @@ class __$$VersionImplCopyWithImpl<$Res>
 @HiveType(typeId: 10, adapterName: 'VersionAdapter')
 class _$VersionImpl implements _Version {
   const _$VersionImpl(
-      {@JsonKey(name: 'id') @HiveField(4) this.id,
+      {@JsonKey(name: 'checkSum') @HiveField(4) this.checkSum,
       @JsonKey(name: 'model') @HiveField(1) required this.model,
       @JsonKey(name: 'revision') @HiveField(2) required this.revision,
       @JsonKey(name: 'revisionDate') @HiveField(3) required this.revisionDate});
@@ -155,9 +155,9 @@ class _$VersionImpl implements _Version {
       _$$VersionImplFromJson(json);
 
   @override
-  @JsonKey(name: 'id')
+  @JsonKey(name: 'checkSum')
   @HiveField(4)
-  final String? id;
+  final String? checkSum;
   @override
   @JsonKey(name: 'model')
   @HiveField(1)
@@ -173,7 +173,7 @@ class _$VersionImpl implements _Version {
 
   @override
   String toString() {
-    return 'Version(id: $id, model: $model, revision: $revision, revisionDate: $revisionDate)';
+    return 'Version(checkSum: $checkSum, model: $model, revision: $revision, revisionDate: $revisionDate)';
   }
 
   @override
@@ -181,7 +181,8 @@ class _$VersionImpl implements _Version {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$VersionImpl &&
-            (identical(other.id, id) || other.id == id) &&
+            (identical(other.checkSum, checkSum) ||
+                other.checkSum == checkSum) &&
             (identical(other.model, model) || other.model == model) &&
             (identical(other.revision, revision) ||
                 other.revision == revision) &&
@@ -192,7 +193,7 @@ class _$VersionImpl implements _Version {
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, id, model, revision, revisionDate);
+      Object.hash(runtimeType, checkSum, model, revision, revisionDate);
 
   @JsonKey(ignore: true)
   @override
@@ -210,7 +211,7 @@ class _$VersionImpl implements _Version {
 
 abstract class _Version implements Version {
   const factory _Version(
-      {@JsonKey(name: 'id') @HiveField(4) final String? id,
+      {@JsonKey(name: 'checkSum') @HiveField(4) final String? checkSum,
       @JsonKey(name: 'model') @HiveField(1) required final String model,
       @JsonKey(name: 'revision') @HiveField(2) required final String revision,
       @JsonKey(name: 'revisionDate')
@@ -220,9 +221,9 @@ abstract class _Version implements Version {
   factory _Version.fromJson(Map<String, dynamic> json) = _$VersionImpl.fromJson;
 
   @override
-  @JsonKey(name: 'id')
+  @JsonKey(name: 'checkSum')
   @HiveField(4)
-  String? get id;
+  String? get checkSum;
   @override
   @JsonKey(name: 'model')
   @HiveField(1)

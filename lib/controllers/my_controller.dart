@@ -1,6 +1,3 @@
-
-
-
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -19,6 +16,7 @@ import '../../widgets/dialog/dialogs.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../models/user/my_user.dart';
+import 'package:crypto/crypto.dart';
 
 class MyController {
   MyState? myState;
@@ -27,10 +25,10 @@ class MyController {
   late final Map<String, Future<void>> loadingFutures;
 
   MyController(
-      this.myState, {
-        this.keysToLoad,
-        this.loadingFunctions,
-      }) {
+    this.myState, {
+    this.keysToLoad,
+    this.loadingFunctions,
+  }) {
     if (keysToLoad != null &&
         loadingFunctions != null &&
         keysToLoad!.every((key) => loadingFunctions!.containsKey(key))) {
@@ -44,7 +42,8 @@ class MyController {
     }
   }
 
-  Future<void> loadDataFuture()async{// mac dinh load loadDataFuture0
+  Future<void> loadDataFuture() async {
+    // mac dinh load loadDataFuture0
   }
 
   // Future<void> loadDataFuture0()async{
@@ -78,179 +77,169 @@ class MyController {
   //
   // }
 
+  Future<void> loadData() async {}
 
-
-
-  Future<void> loadData()async{
-
+  void update() {
+    myState?.setState(() {});
   }
 
-
-
-  void update(){
-    myState?.setState(() {
-
-    });
+  void setViewState(MyViewState myViewState) {
+    myState?.myViewState = myViewState;
+    myState?.setState(() {});
   }
 
-  void setViewState(MyViewState myViewState ){
-    myState?.myViewState=myViewState;
-    myState?.setState(() {
-
-    });
-  }
-
-  void  showErrorDialog(String error){
-    BuildContext? context =navigatorKey.currentContext;
-    if(context!=null) {
-      showDialog(context: navigatorKey.currentContext!,
+  void showErrorDialog(String error) {
+    BuildContext? context = navigatorKey.currentContext;
+    if (context != null) {
+      showDialog(
+        context: navigatorKey.currentContext!,
         builder: (context) =>
-            MyAlertDialog(title: "Error", message: error, action: "Ok"),);
+            MyAlertDialog(title: "Error", message: error, action: "Ok"),
+      );
     }
   }
-  void showSuccessDialog(String message){
-    BuildContext? context =navigatorKey.currentContext;
-    if(context!=null) {
-      showDialog(context: navigatorKey.currentContext!,
-          builder: (context) =>
-              MyAlertDialog(title: "ok", message: message));
+
+  void showSuccessDialog(String message) {
+    BuildContext? context = navigatorKey.currentContext;
+    if (context != null) {
+      showDialog(
+          context: navigatorKey.currentContext!,
+          builder: (context) => MyAlertDialog(title: "ok", message: message));
     }
   }
-  void showConfirmDialog({String? message,  required VoidCallback onContinue}){
-    BuildContext? context =navigatorKey.currentContext;
-    if(context!=null) {
-      showDialog(context: navigatorKey.currentContext!,
-          builder: (context) =>
-              MyConfirmDialog(
+
+  void showConfirmDialog({String? message, required VoidCallback onContinue}) {
+    BuildContext? context = navigatorKey.currentContext;
+    if (context != null) {
+      showDialog(
+          context: navigatorKey.currentContext!,
+          builder: (context) => MyConfirmDialog(
                 message: message,
-                actionTitle:  AppLocalizations.of(context).translate("Ok") ,
+                actionTitle: AppLocalizations.of(context).translate("Ok"),
                 cancelTitle: AppLocalizations.of(context).translate("Cancel"),
-                onContinue: (){
+                onContinue: () {
                   onContinue.call();
                   Navigator.pop(context);
                 },
               ));
     }
   }
-  void showCusTomDialog({required String title,required Widget content
-    ,List<Widget>? actions,String? firstButton,VoidCallback? onFirstButton,String? secondButton,VoidCallback? onSecondButton,
-  }){
-    BuildContext? context =navigatorKey.currentContext;
-    if(context!=null) {
-      showDialog(context: navigatorKey.currentContext!,
-          builder: (context) =>
-              MyCustomDialog(title: title, content: content,
+
+  void showCusTomDialog({
+    required String title,
+    required Widget content,
+    List<Widget>? actions,
+    String? firstButton,
+    VoidCallback? onFirstButton,
+    String? secondButton,
+    VoidCallback? onSecondButton,
+  }) {
+    BuildContext? context = navigatorKey.currentContext;
+    if (context != null) {
+      showDialog(
+          context: navigatorKey.currentContext!,
+          builder: (context) => MyCustomDialog(
+                title: title,
+                content: content,
                 actions: actions,
                 firstButton: firstButton,
                 onFirstButton: onFirstButton,
                 onSecondButton: onSecondButton,
                 secondButton: secondButton,
-              )
+              ));
+    }
+  }
 
+  static void showErrorDialogEvery(String error) {
+    BuildContext? context = navigatorKey.currentContext;
+    if (context != null) {
+      showDialog(
+        context: navigatorKey.currentContext!,
+        builder: (context) =>
+            MyAlertDialog(title: "Error", message: error, action: "Ok"),
       );
     }
   }
 
-
-  static void showErrorDialogEvery(String error) {
-    BuildContext? context =navigatorKey.currentContext;
-    if(context!=null) {
-      showDialog(context: navigatorKey.currentContext!,
-        builder: (context) =>
-            MyAlertDialog(title: "Error", message: error, action: "Ok"),);
-    }
-  }
-
-  static void showSuccessDialogEvery(String message){
-    BuildContext? context =navigatorKey.currentContext;
-    if(context!=null) {
-      showDialog(context: navigatorKey.currentContext!,
+  static void showSuccessDialogEvery(String message) {
+    BuildContext? context = navigatorKey.currentContext;
+    if (context != null) {
+      showDialog(
+          context: navigatorKey.currentContext!,
           builder: (context) =>
               MyAlertDialog(title: "Success", message: message));
     }
   }
 
-  Future<bool> getExStoragePermission() async{
+  Future<bool> getExStoragePermission() async {
     try {
       Permission permission = Permission.storage;
 
       DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       if (Platform.isAndroid) {
-        AndroidDeviceInfo androidDeviceInfo = await deviceInfoPlugin
-            .androidInfo;
+        AndroidDeviceInfo androidDeviceInfo =
+            await deviceInfoPlugin.androidInfo;
         if (androidDeviceInfo.version.sdkInt >= 33) {
           permission = Permission.manageExternalStorage;
         }
       }
       return getPermission(permission);
-    }
-    catch(e){
+    } catch (e) {
       showErrorDialog(e.toString());
       return false;
     }
   }
-  Future<bool> getPermission(Permission permission) async{
+
+  Future<bool> getPermission(Permission permission) async {
     try {
-      PermissionStatus status=await permission.request();
+      PermissionStatus status = await permission.request();
       if (status.isGranted) {
         return true;
-
       } else if (status.isPermanentlyDenied) {
         // Notification permissions permanently denied, open app settings
         return await openAppSettings();
       }
       return false;
-
-    }
-    catch(e){
+    } catch (e) {
       showErrorDialog(e.toString());
       return false;
     }
   }
 
-  Future<void> actionWithPermission(Permission permission,Function function ) async{
+  Future<void> actionWithPermission(
+      Permission permission, Function function) async {
     try {
       PermissionStatus status = await permission.request();
       if (status.isGranted) {
         function;
       } else if (status.isDenied) {
         showErrorDialog("Not Permission ${permission.toString()}");
-
       } else if (status.isPermanentlyDenied) {
         // Notification permissions permanently denied, open app settings
         await openAppSettings();
       }
-
-
-    }
-    catch(e){
+    } catch (e) {
       showErrorDialog(e.toString());
     }
   }
-  Future<void> actionWithPermissionStorage(  Function function ) async {
+
+  Future<void> actionWithPermissionStorage(Function function) async {
     try {
       //PermissionStatus status = await Permission.storage.request();
 
-      Permission permission= Permission.storage;
+      Permission permission = Permission.storage;
 
-      DeviceInfoPlugin  deviceInfoPlugin =DeviceInfoPlugin();
-      if(Platform.isAndroid){
-        AndroidDeviceInfo androidDeviceInfo = await deviceInfoPlugin.androidInfo;
-        if(androidDeviceInfo.version.sdkInt>=33){
-          permission= Permission.manageExternalStorage;
+      DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidDeviceInfo =
+            await deviceInfoPlugin.androidInfo;
+        if (androidDeviceInfo.version.sdkInt >= 33) {
+          permission = Permission.manageExternalStorage;
         }
         await actionWithPermission(permission, function);
-      }else{
+      } else {
         await actionWithPermission(permission, function);
       }
-
-
-
-
-
-
-
-
 
       // if (status.isGranted) {
       //   function;
@@ -261,17 +250,12 @@ class MyController {
       //   // Notification permissions permanently denied, open app settings
       //   await openAppSettings();
       // }
-
-
-    }
-    catch(e){
+    } catch (e) {
       showErrorDialog(e.toString());
     }
   }
 
-
-
-  Future<void> setVipFirstTime()async{
+  Future<void> setVipFirstTime() async {
     // MyUser? user= await MyStorage().getUser();
     // user ??= MyUser(name: "user${DateTime.now().toString()}", age: 18);
     // /// if vip process
@@ -285,34 +269,38 @@ class MyController {
     // await MyStorage().setUser(user);
   }
 
-  Future<void> setVip(String code)async{
-    MyUser? user= await MyStorage().getUser();
-    if(user!=null){
+  Future<void> setVip(String code) async {
+    MyUser? user = await MyStorage().getUser();
+    if (user != null) {
       //check code
 
-      int vipDay=0;
-      switch (code){
-        case "ToanPzo":vipDay=30;break;
-        case "CancelVip":vipDay=-35;break;
-        default: vipDay=0;break;
+      int vipDay = 0;
+      switch (code) {
+        case "ToanPzo":
+          vipDay = 30;
+          break;
+        case "CancelVip":
+          vipDay = -35;
+          break;
+        default:
+          vipDay = 0;
+          break;
       }
 
-
-      DateTime vipExd=user.vipExd??DateTime.now();
-      vipExd=vipExd.add(Duration(days: vipDay));
-      user=user.copyWith(vipExd: vipExd);
+      DateTime vipExd = user.vipExd ?? DateTime.now();
+      vipExd = vipExd.add(Duration(days: vipDay));
+      user = user.copyWith(vipExd: vipExd);
       await MyStorage().setUser(user);
     }
   }
 
-  Future<bool> getVip()async{
-    MyUser? user =await MyStorage().getUser();
-    if(user!=null){
-      DateTime vipExd=user.vipExd??DateTime.now();
-      if(vipExd.isAfter(DateTime.now())){
+  Future<bool> getVip() async {
+    MyUser? user = await MyStorage().getUser();
+    if (user != null) {
+      DateTime vipExd = user.vipExd ?? DateTime.now();
+      if (vipExd.isAfter(DateTime.now())) {
         return true;
-      }
-      else{
+      } else {
         return false;
       }
     }
@@ -340,44 +328,52 @@ class MyController {
   //
   // }
 
-
-
   /// menu
   MyMenu createMyMenu(
-      {
-        Object? arguments ,
-        String? assetImage ,
-        int? colorBox ,
-        int? colorImage ,
-        int? colorText ,
-        String? image ,
-        String?  id, required String name, required int level, required String routerName
-      }
-      ){
-
-    MyMenu menu=MyMenu(
+      {Object? arguments,
+      String? assetImage,
+      int? colorBox,
+      int? colorImage,
+      int? colorText,
+      String? image,
+      String? id,
+      required String name,
+      required int level,
+      required String routerName}) {
+    MyMenu menu = MyMenu(
         arguments: arguments,
         assetImage: assetImage,
         colorBox: colorBox,
         colorImage: colorImage,
         colorText: colorText,
         image: image,
-        id: id??DateTime.now().toString(), name: name, level: level, routerName: routerName);
+        id: id ?? DateTime.now().toString(),
+        name: name,
+        level: level,
+        routerName: routerName);
     return menu;
   }
 
   ///convert
-  double ConvertCmToPt(double cm ){
+  String shaPass(String input) {
+    final firstHash = sha256.convert(utf8.encode(input)).toString();
 
-    return (cm/2.54)*72;
+    final start = 2; // vì index bắt đầu từ 0
+    final halfLength = (firstHash.length / 2).floor();
+    final sliced = firstHash.substring(start, start + halfLength);
+
+    final secondHash = sha256.convert(utf8.encode(sliced)).toString();
+
+    return secondHash;
   }
 
-  String ConvertMutiLaguage(String text,BuildContext context){
+  double ConvertCmToPt(double cm) {
+    return (cm / 2.54) * 72;
+  }
 
-
+  String ConvertMutiLaguage(String text, BuildContext context) {
     return AppLocalizations.of(context).translate(text);
   }
-
 
   Future<String> imageToBase64(File imageFile) async {
     final bytes = await imageFile.readAsBytes();
@@ -389,13 +385,9 @@ class MyController {
     return base64Decode(base64String);
   }
 
-
-
-
   Future<XFile?> pickImage() async {
     final picker = ImagePicker();
-    final pickedFile =
-    await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     return pickedFile;
   }
@@ -407,6 +399,17 @@ class MyController {
     return frame.image;
   }
 
+  /// model
+  static String getModelName(Object o) {
+    final typeName = o.runtimeType.toString();
+
+    final regex = RegExp(r'_?\$?(\w+)Impl');
+    final match = regex.firstMatch(typeName);
+    if (match != null) {
+      return match.group(1)!; // "MyUser"
+    }
+    return typeName.startsWith('_') ? typeName.substring(1) : typeName;
+  }
 }
 
 

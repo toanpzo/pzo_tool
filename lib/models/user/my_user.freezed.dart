@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+MyUser _$MyUserFromJson(Map<String, dynamic> json) {
+  return _MyUser.fromJson(json);
+}
+
 /// @nodoc
 mixin _$MyUser {
   @JsonKey(name: 'id')
@@ -47,6 +51,7 @@ mixin _$MyUser {
   @HiveField(9)
   int get crud => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $MyUserCopyWith<MyUser> get copyWith => throw _privateConstructorUsedError;
 }
@@ -242,6 +247,9 @@ class _$MyUserImpl implements _MyUser {
       @JsonKey(name: 'address') @HiveField(8) this.address,
       @JsonKey(name: 'crud') @HiveField(9) this.crud = 0});
 
+  factory _$MyUserImpl.fromJson(Map<String, dynamic> json) =>
+      _$$MyUserImplFromJson(json);
+
   @override
   @JsonKey(name: 'id')
   @HiveField(4)
@@ -306,6 +314,7 @@ class _$MyUserImpl implements _MyUser {
             (identical(other.crud, crud) || other.crud == crud));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, age, vip, vipExd,
       userName, pass, email, address, crud);
@@ -315,6 +324,13 @@ class _$MyUserImpl implements _MyUser {
   @pragma('vm:prefer-inline')
   _$$MyUserImplCopyWith<_$MyUserImpl> get copyWith =>
       __$$MyUserImplCopyWithImpl<_$MyUserImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$MyUserImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _MyUser implements MyUser {
@@ -329,6 +345,8 @@ abstract class _MyUser implements MyUser {
       @JsonKey(name: 'email') @HiveField(7) final String? email,
       @JsonKey(name: 'address') @HiveField(8) final String? address,
       @JsonKey(name: 'crud') @HiveField(9) final int crud}) = _$MyUserImpl;
+
+  factory _MyUser.fromJson(Map<String, dynamic> json) = _$MyUserImpl.fromJson;
 
   @override
   @JsonKey(name: 'id')

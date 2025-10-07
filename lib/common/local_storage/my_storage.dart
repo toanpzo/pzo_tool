@@ -10,6 +10,8 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' show AnchorElement;
 import 'package:vietjet_tool/common/template/my_state.dart';
+import 'package:vietjet_tool/controllers/apiServiceController.dart';
+import 'package:vietjet_tool/controllers/gg_drive_controller/ggDriveController.dart';
 import 'package:vietjet_tool/controllers/my_controller.dart';
 import 'package:vietjet_tool/models/fuel/fuel.dart';
 import 'package:vietjet_tool/models/questions/question/question.dart';
@@ -97,7 +99,7 @@ class MyStorage {
     // return myTheme;
   }
 
-
+/// api ggDrive
   Future<void> setAccessTokenDrive(Map value) async {// {"token":"fjkhdsjk","exp":datetime}
     final box= await Hive.openBox("AccessTokenDrive");
     box.put("value", value);
@@ -126,6 +128,40 @@ class MyStorage {
   Future<String?> getApiBaseUrl() async {
     final box= await Hive.openBox("apiBaseUrl");
     return box.get("value");
+  }
+
+  Future<void> setIdFolderPzoTool(String value) async {
+    final box= await Hive.openBox("IdFolderPzoTool");
+    box.put("value", value);
+  }
+
+  Future<String?> getIdFolderPzoTool() async {
+    final box= await Hive.openBox("IdFolderPzoTool");
+    String? idFolderPzoTool=box.get("value");
+
+    if(idFolderPzoTool!=null) {
+      return idFolderPzoTool;
+    }
+
+    ApiResult apiResult= await GoogleDriveController().listFolders();
+    if (apiResult.data != null && apiResult.data is List) {
+      final List<dynamic> folders = apiResult.data;
+
+      for (final item in folders) {
+        // Đảm bảo dữ liệu dạng Map
+        final map = item as Map<String, dynamic>;
+        if (map['name'] == 'Pzo_Tool_Service') {
+          final id = map['id'] as String;
+          // Lưu lại để lần sau dùng
+          await setIdFolderPzoTool(id);
+          return id;
+        }
+      }
+    }
+
+      return null;
+
+
   }
 
 
@@ -158,6 +194,10 @@ class MyStorage {
     final box= await Hive.openBox("version");
     return box.get("value");
   }
+
+
+
+  /// end api gg
 
   Future<void> setFuel(Fuel value) async {
     final box= await Hive.openBox("fuel");
